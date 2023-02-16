@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <bpmn-toolbar v-if="getEditorConfig.toolbar" />
+    <!--<bpmn-toolbar v-if="getEditorConfig.toolbar" />-->
     <div class="main-content">
       <bpmn-designer :xml.sync="xmlString" />
-      <bpmn-panel v-if="getEditorConfig.penalMode === 'custom'" />
-      <div
-        v-else
-        class="camunda-panel"
-        id="camunda-panel"></div>
+      <!--<bpmn-panel v-if="getEditorConfig.penalMode === 'custom'" />-->
+      <!--<div-->
+      <!--  v-else-->
+      <!--  class="camunda-panel"-->
+      <!--  id="camunda-panel"></div>-->
     </div>
 
-    <bpmn-settings />
-    <bpmn-context-menu />
+    <!--<bpmn-settings />-->
+    <!--<bpmn-context-menu />-->
   </div>
 </template>
 
@@ -22,6 +22,8 @@ import { mapGetters } from 'vuex'
 import BpmnToolbar from '../packages/components/Toolbar'
 import BpmnContextMenu from '@packages/components/ContextMenu/ContextMenu'
 import BpmnPanel from '@packages/components/Panel'
+import diagramXML from '@packages/default/newDiagram.bpmn'
+
 export default {
     name: 'App',
     components: { BpmnPanel, BpmnContextMenu, BpmnToolbar, BpmnSettings, BpmnDesigner },
@@ -33,7 +35,11 @@ export default {
     computed: {
         ...mapGetters(['getEditorConfig'])
     },
+
     mounted () {
+        if (diagramXML && !this.xmlString) {
+            this.xmlString = diagramXML
+        }
         document.body.addEventListener('contextmenu', function (ev) {
             ev.preventDefault()
         })

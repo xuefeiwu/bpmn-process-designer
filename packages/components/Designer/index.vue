@@ -35,10 +35,10 @@ export default {
 
             await this.$nextTick()
             const modeler = initModeler(this.$refs.designerRef, modelerModules, this)
-            if (!oldSetting || setting.processEngine !== oldSetting.processEngine) {
-                await createNewDiagram(modeler)
-            } else {
+            if (this.xml) {
                 await createNewDiagram(modeler, this.xml, setting)
+            } else {
+                await createNewDiagram(modeler)
             }
         }, 100)
     },

@@ -28,6 +28,12 @@ module.exports = defineConfig({
   },
   chainWebpack(config) {
     config.module.rule("svg").exclude.add(resolve("packages/bpmn-icons")).end();
+    config.module // 将xml-loader替换成raw-loader
+        .rule('raw-loader')
+        .test(/.(bpmn|xml)$/)
+        .use('raw-loader')
+        .loader('raw-loader')
+        .end();
     config.module
       .rule("icons")
       .test(/\.svg$/)
