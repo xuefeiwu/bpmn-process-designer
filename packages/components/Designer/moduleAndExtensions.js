@@ -56,11 +56,11 @@ export default function (settings) {
     // settings.contextPadMode === 'rewrite' && modules.push(RewriteContextPad)
 
     // 配置 自定义渲染
-    settings.rendererMode === 'enhancement' && modules.push(EnhancementRenderer)
-    if (settings.rendererMode === 'rewrite') {
-        modules.push(RewriteRenderer)
-        options['bpmnRenderer'] = { ...(settings.customTheme || {}), useCurve: settings.useCurve }
-    }
+    // settings.rendererMode === 'enhancement' && modules.push(EnhancementRenderer)
+    // if (settings.rendererMode === 'rewrite') {
+    //     modules.push(RewriteRenderer)
+    //     options['bpmnRenderer'] = { ...(settings.customTheme || {}), useCurve: settings.useCurve }
+    // }
 
     // 配置模板选择弹窗（会影响默认 popupmenu）
     // if (settings.templateChooser || settings.penalMode !== 'custom') {
