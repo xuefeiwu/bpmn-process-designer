@@ -12,6 +12,7 @@ import { catchError } from '@utils/printCatch'
 import moduleAndExtensions from './moduleAndExtensions'
 import initModeler from './initModeler'
 import {loadProcessHistory, loadProcessModel} from '../../../api/process'
+import {notEmpty} from '@utils/tool'
 
 export default {
     name: 'BpmnDesigner',
@@ -23,7 +24,8 @@ export default {
             token: '',
             modelId: '',
             headParams: {},
-            sequenceFlowIds: []
+            sequenceFlowIds: [],
+            auditHistoryList: []
         }
     },
     computed: {
@@ -36,6 +38,27 @@ export default {
         }
     },
     methods: {
+        /**
+         * 获取元素节点
+         * @param elementRegistry
+         * @param nodeId
+         * @returns {*}
+         */
+        getElement (elementRegistry, nodeId) {
+            return elementRegistry.filter(
+                (item) => item.id == nodeId
+            )
+        },
+        /**
+         * 设置节点颜色
+         * @param modeling
+         * @param color
+         */
+        setColor (modeling, element, color) {
+            modeling.setColor(element, {
+                stroke: color
+            })
+        },
         reloadProcess: debounce(async function (setting, oldSetting) {
             const modelerModules = moduleAndExtensions(setting)
             await this.$nextTick()
@@ -46,18 +69,31 @@ export default {
                 await createNewDiagram(modeler)
             }
 
-            if (this.sequenceFlowIds && this.sequenceFlowIds.length > 0) {
-                // 设置已完成的线条颜色
-                this.sequenceFlowIds.forEach(value => {
-                    const elementRegistry = modeler.get('elementRegistry')
-                    const sequenceFlowList = elementRegistry.filter(
-                        (item) => item.id == value
-                    )
+            const elementRegistry = modeler.get('elementRegistry')
+            const modeling = modeler.get('modeling')
 
-                    const modeling = modeler.get('modeling')
-                    modeling.setColor(sequenceFlowList, {
-                        stroke: 'limegreen'
-                    })
+            // 设置已完成的线条颜色
+            if (this.sequenceFlowIds && this.sequenceFlowIds.length > 0) {
+                this.sequenceFlowIds.forEach(value => {
+                    const _element = this.getElement(elementRegistry, value)
+                    this.setColor(modeling, _element, 'limegreen')
+                })
+            }
+
+            // 设置已完成和未完成的节点颜色
+            if (this.auditHistoryList && this.auditHistoryList.length > 0) {
+                this.auditHistoryList.forEach(item => {
+                    var _element = this.getElement(elementRegistry, item.nodeKey)
+                    if (item.type == 'startEvent' || item.type == 'endEvent') {
+                        this.setColor(modeling, _element, 'rgb(248, 152, 0)')
+
+                    } else if (item.type == 'userTask' || item.type == 'businessRuleTask' || item.type == 'serviceTask') {
+                        if (!notEmpty(item.completeTime)) {
+                            this.setColor(modeling, _element, 'rgb(255, 0, 0)')
+                        } else {
+                            this.setColor(modeling, _element, '#3366ff')
+                        }
+                    }
                 })
             }
         }, 100),
@@ -84,6 +120,7 @@ export default {
                     if (res.code == '0') {
                         this.xml = res.XML
                         this.sequenceFlowIds = res.sequenceFlowIds
+                        this.auditHistoryList = res.data
                     }
                 }).finally(() => {
                 })
