@@ -5,8 +5,31 @@ function resolve(dir) {
   return path.join(__dirname, dir);
 }
 
+const port = process.env.port || process.env.npm_config_port || 9528
+
 module.exports = defineConfig({
-  publicPath: process.env.NODE_ENV === "production" ? "././" : "/",
+  publicPath: '/',
+  outputDir: 'dist',
+  assetsDir: 'static',
+  lintOnSave: false,
+  productionSourceMap: false,
+  devServer: {
+    port: port,
+    open: true,
+    // 代理配置
+    proxy: {
+      // 这里的api 表示如果我们的请求地址有/api的时候,就出触发代理机制
+      // localhost:8888/api/abc  => 代理给另一个服务器
+      // 本地的前端  =》 本地的后端  =》 代理我们向另一个服务器发请求 （行得通）
+      // 本地的前端  =》 另外一个服务器发请求 （跨域 行不通）
+      '/': {
+        target: process.env.VUE_APP_BASE_API, // 跨域请求的地址
+        changeOrigin: true, // 是否跨域 需要设置此值为true 才可以让本地服务代理我们发出请求
+        ws: false,
+      }
+    }
+    // before: require('./mock/mock-server.js')
+  },
   pages: {
     index: {
       entry: "playground/main.js",

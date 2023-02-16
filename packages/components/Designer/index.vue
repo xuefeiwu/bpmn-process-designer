@@ -11,13 +11,13 @@ import { createNewDiagram } from '@utils/xml'
 import { catchError } from '@utils/printCatch'
 import moduleAndExtensions from './moduleAndExtensions'
 import initModeler from './initModeler'
+import {loadProcessHistory, loadProcessModel} from '../../../api/process'
 
 export default {
     name: 'BpmnDesigner',
-    props: {
-        xml: {
-            type: String,
-            default: undefined
+    data () {
+        return {
+            xml: undefined
         }
     },
     computed: {
@@ -32,7 +32,6 @@ export default {
     methods: {
         reloadProcess: debounce(async function (setting, oldSetting) {
             const modelerModules = moduleAndExtensions(setting)
-
             await this.$nextTick()
             const modeler = initModeler(this.$refs.designerRef, modelerModules, this)
             if (this.xml) {
@@ -40,7 +39,57 @@ export default {
             } else {
                 await createNewDiagram(modeler)
             }
-        }, 100)
+        }, 100),
+
+        /**
+         * 获取请求参数
+         * @param name
+         * @returns {string|null}
+         */
+        getParamter (name) {
+            var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
+            var params = window.location.search.substr(1).match(reg)
+            if (params != null) return unescape(params[2])
+            return null
+        },
+
+        async getProcessHistory () { // 该方法模拟请求后台获取bpmn文件地址
+            const instId = this.getParamter('instId')
+            const processInstanceModelId = this.getParamter('processInstanceModelId')
+            const messageId = this.getParamter('messageId')
+            const modelId = this.getParamter('modelId')
+
+            const headParams = {
+                headers: {
+                    'x-access-token': messageId
+                }
+            }
+
+            let remoteXML = ''
+            if (instId || processInstanceModelId) {
+                await loadProcessHistory(
+                    instId,
+                    processInstanceModelId,
+                    headParams
+                ).then((res) => {
+                    if (res.code == '0') {
+                        remoteXML = res.XML
+                    }
+                }).finally(() => {
+                })
+            }
+
+            if (modelId) {
+                await loadProcessModel(modelId, headParams).then((res) => {
+                    if (res.code == '0') {
+                        remoteXML = res.xml
+                    }
+                }).finally(() => {
+                })
+            }
+
+            this.xml = remoteXML
+        }
     },
     watch: {
         getEditor: {
@@ -48,6 +97,7 @@ export default {
             deep: true,
             handler: async function (value, oldValue) {
                 try {
+                    await this.getProcessHistory()
                     this.reloadProcess(value, oldValue)
                 } catch (e) {
                     catchError(e)
