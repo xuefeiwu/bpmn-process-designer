@@ -17,7 +17,12 @@ export default {
     name: 'BpmnDesigner',
     data () {
         return {
-            xml: undefined
+            xml: '',
+            instId: '',
+            processInstanceModelId: '',
+            token: '',
+            modelId: '',
+            headParams: {}
         }
     },
     computed: {
@@ -54,41 +59,25 @@ export default {
         },
 
         async getProcessHistory () { // 该方法模拟请求后台获取bpmn文件地址
-            const instId = this.getParamter('instId')
-            const processInstanceModelId = this.getParamter('processInstanceModelId')
-            const messageId = this.getParamter('messageId')
-            const modelId = this.getParamter('modelId')
-
-            const headParams = {
-                headers: {
-                    'x-access-token': messageId
-                }
-            }
-
-            let remoteXML = ''
-            if (instId || processInstanceModelId) {
+            if (this.instId || this.processInstanceModelId) {
                 await loadProcessHistory(
-                    instId,
-                    processInstanceModelId,
-                    headParams
+                    this.instId,
+                    this.processInstanceModelId,
+                    this.headParams
                 ).then((res) => {
                     if (res.code == '0') {
-                        remoteXML = res.XML
+                        this.xml = res.XML
                     }
                 }).finally(() => {
                 })
-            }
-
-            if (modelId) {
-                await loadProcessModel(modelId, headParams).then((res) => {
+            } else if (this.modelId) {
+                await loadProcessModel(this.modelId, this.headParams).then((res) => {
                     if (res.code == '0') {
-                        remoteXML = res.xml
+                        this.xml = res.xml
                     }
                 }).finally(() => {
                 })
             }
-
-            this.xml = remoteXML
         }
     },
     watch: {
@@ -97,6 +86,17 @@ export default {
             deep: true,
             handler: async function (value, oldValue) {
                 try {
+                    this.instId = this.getParamter('instId')
+                    this.processInstanceModelId = this.getParamter('processInstanceModelId')
+                    this.token = this.getParamter('messageId')
+                    this.modelId = this.getParamter('modelId')
+
+                    this.headParams = {
+                        headers: {
+                            'x-access-token': this.token
+                        }
+                    }
+
                     await this.getProcessHistory()
                     this.reloadProcess(value, oldValue)
                 } catch (e) {
