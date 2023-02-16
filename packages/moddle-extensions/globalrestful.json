@@ -1,0 +1,56 @@
+{
+  "name": "RESTFUL",
+  "uri": "http://www.shareniu.com/RESTFUL/spec/BPMN/20100524/restful",
+  "types": [
+    {
+      "name": "Global",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "url",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "desc",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "header",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "invokeMode",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "callTime",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "callNodes",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "scope",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "callNode",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ],
+  "associations": [],
+  "prefix": "restful"
+}

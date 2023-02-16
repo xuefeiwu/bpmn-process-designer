@@ -13,15 +13,15 @@
 </template>
 
 <script>
-import BpmnImport from "./tools/Import";
-import BpmnExports from "./tools/Exports";
-import BpmnPreviews from "./tools/Previews";
-import BpmnAligns from "./tools/Aligns";
-import BpmnScales from "./tools/Scales";
-import BpmnCommands from "./tools/Commands";
-import BpmnExternals from "./tools/Externals";
+import BpmnImport from './tools/Import'
+import BpmnExports from './tools/Exports'
+import BpmnPreviews from './tools/Previews'
+import BpmnAligns from './tools/Aligns'
+import BpmnScales from './tools/Scales'
+import BpmnCommands from './tools/Commands'
+import BpmnExternals from './tools/Externals'
 export default {
-  name: "BpmnToolbar",
-  components: { BpmnExternals, BpmnCommands, BpmnScales, BpmnAligns, BpmnPreviews, BpmnExports, BpmnImport }
-};
+    name: 'BpmnToolbar',
+    components: { BpmnExternals, BpmnCommands, BpmnScales, BpmnAligns, BpmnPreviews, BpmnExports, BpmnImport }
+}
 </script>

@@ -1,7 +1,7 @@
-import { catchError, catchWarning } from "./printCatch";
+import { catchError, catchWarning } from './printCatch'
 
-export function emptyXML(key, name) {
-  return `<?xml version="1.0" encoding="UTF-8"?>
+export function emptyXML (key, name) {
+    return `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions 
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -14,21 +14,21 @@ export function emptyXML(key, name) {
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="${key}" />
   </bpmndi:BPMNDiagram>
-</bpmn:definitions>`;
+</bpmn:definitions>`
 }
 
-export async function createNewDiagram(modeler, newXml, settings) {
-  try {
-    const timestamp = Date.now();
-    const { processId, processName } = settings || {};
-    const newId = processId ? processId : `Process_${timestamp}`;
-    const newName = processName || `业务流程_${timestamp}`;
-    const xmlString = newXml || emptyXML(newId, newName);
-    const { warnings } = await modeler.importXML(xmlString);
-    if (warnings && warnings.length) {
-      warnings.forEach(catchWarning);
+export async function createNewDiagram (modeler, newXml, settings) {
+    try {
+        const timestamp = Date.now()
+        const { processId, processName } = settings || {}
+        const newId = processId ? processId : `Process_${timestamp}`
+        const newName = processName || `业务流程_${timestamp}`
+        const xmlString = newXml || emptyXML(newId, newName)
+        const { warnings } = await modeler.importXML(xmlString)
+        if (warnings && warnings.length) {
+            warnings.forEach(catchWarning)
+        }
+    } catch (e) {
+        catchError(e)
     }
-  } catch (e) {
-    catchError(e);
-  }
 }

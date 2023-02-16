@@ -12,6 +12,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-html2canvas':'off',
+    "no-unused-vars":"off",
     'no-BMAP_STATUS_SUCCESS':'off',
     //不适用分号;
     'semi': [

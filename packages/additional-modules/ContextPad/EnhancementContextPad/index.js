@@ -1,8 +1,8 @@
-import enhancementContextPadProvider from "./enhancementContextPadProvider";
+import enhancementContextPadProvider from './enhancementContextPadProvider'
 
 const enhancementContextPad = {
-  __init__: ["enhancementContextPadProvider"],
-  enhancementContextPadProvider: ["type", enhancementContextPadProvider]
-};
+    __init__: ['enhancementContextPadProvider'],
+    enhancementContextPadProvider: ['type', enhancementContextPadProvider]
+}
 
-export default enhancementContextPad;
+export default enhancementContextPad

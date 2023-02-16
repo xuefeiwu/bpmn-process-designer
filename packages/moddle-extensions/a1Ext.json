@@ -1,0 +1,375 @@
+{
+  "name": "a1bpm.ext for BPMN",
+  "uri": "http://www.a1bpm.com/schema/1.0/A1",
+  "prefix": "extA1",
+  "types": [
+    {
+      "name": "VariableDef",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "uniqueId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "varType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "varName",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "varKey",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "dataType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "description",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "defaultVal",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "required",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Properties",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "subjectRule",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "description",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "propNotifyType",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "parameterUserAssign",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "propSkipRules",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "propDateType",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "dateTypeDay",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "dateTypeHour",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "dateTypeMinute",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "startMethod",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+
+    {
+      "name": "GlobalForm",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "formValue",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "type",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "parentFlowKey",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "ExtProperties",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "PropertiesDef",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "PropertiesDef",
+      "superClass": [
+        "extA1:ExtProperties"
+      ],
+      "properties": [
+        {
+          "name": "subjectRule",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "description",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "propNotifyType",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "parameterUserAssign",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "propSkipRules",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "propDateType",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "dateTypeDay",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "dateTypeHour",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "dateTypeMinute",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "uniqueId",
+          "isAttr": true,
+          "type": "String"
+        }
+
+      ]
+    }
+    , {
+      "name": "Buttons",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "Button",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "Button",
+      "superClass": [
+        "extA1:ExtProperties"
+      ],
+      "properties": [
+        {
+          "name": "alias",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "btnName",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "cssName",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "beforeScript",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "afterScript",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "groovyScript",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "urlForm",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+    ,
+    {
+      "name": "UserRules",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "UserRule",
+          "isMany": true
+        }
+      ]
+    }
+    ,
+    {
+      "name": "UserRule",
+      "superClass": [
+        "extA1:UserRules"
+      ],
+      "properties": [
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "pluginType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "pluginVal",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "logicCal",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "ruleId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "ruleVal",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "ruleDisplayName",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "specId",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ],
+
+
+  "associations": []
+}
+
+

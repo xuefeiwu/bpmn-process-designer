@@ -1,8 +1,8 @@
-import enhancementPaletteProvider from "./enhancementPaletteProvider";
+import enhancementPaletteProvider from './enhancementPaletteProvider'
 
 const EnhancementPalette = {
-  __init__: ["enhancementPaletteProvider"],
-  enhancementPaletteProvider: ["type", enhancementPaletteProvider]
-};
+    __init__: ['enhancementPaletteProvider'],
+    enhancementPaletteProvider: ['type', enhancementPaletteProvider]
+}
 
-export default EnhancementPalette;
+export default EnhancementPalette

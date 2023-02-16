@@ -1,3 +1,3 @@
 class EnhancementPopupMenuProvider {}
 
-export default EnhancementPopupMenuProvider;
+export default EnhancementPopupMenuProvider

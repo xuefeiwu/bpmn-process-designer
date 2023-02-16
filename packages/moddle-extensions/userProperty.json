@@ -1,0 +1,74 @@
+{
+  "name": "NODE",
+  "uri": "http://www.shareniu.com/NODE/spec//NODE",
+  "types": [
+    {
+      "name": "UserProperty",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "backNode",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "backUserMode",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "dateType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "jumpType",
+          "isAttr": true,
+          "type": "String"
+        },
+
+        {
+          "name": "nodePropertiesDay",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "notifyType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "postHandler",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "prevHand",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "nodePropertiesHour",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "nodePropertiesMinute",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ],
+  "associations": [],
+  "prefix": "node"
+}

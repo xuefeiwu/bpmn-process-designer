@@ -1,0 +1,38 @@
+{
+  "name": "a1bpm.category for BPMN",
+  "uri": "http://a1bpm.category/schema/bpmn/ExtCategory/1.0",
+  "prefix": "A1Category",
+  "types": [
+    {
+      "name": "CategoryDefinitions",
+      "extends": [ "bpmn:Definitions" ],
+      "properties": [
+        {
+          "name": "categoryId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "title",
+          "isAttr": true,
+          "type": "String"
+        }
+      ,
+        {
+          "name": "typeKey",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "modelId",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ],
+  "enumerations": [],
+  "associations": []
+}
+
+

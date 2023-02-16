@@ -4,11 +4,11 @@
  * @param [chars] {string}
  * @returns {string}
  */
-export default function uuid(length = 8, chars) {
-  let result = "";
-  const charsString = chars || "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  for (let i = length; i > 0; --i) {
-    result += charsString[Math.floor(Math.random() * charsString.length)];
-  }
-  return result;
+export default function uuid (length = 8, chars) {
+    let result = ''
+    const charsString = chars || '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    for (let i = length; i > 0; --i) {
+        result += charsString[Math.floor(Math.random() * charsString.length)]
+    }
+    return result
 }

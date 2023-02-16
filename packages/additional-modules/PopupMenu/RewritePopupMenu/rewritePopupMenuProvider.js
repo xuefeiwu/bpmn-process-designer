@@ -1,3 +1,3 @@
 class RewritePopupMenuProvider {}
 
-export default RewritePopupMenuProvider;
+export default RewritePopupMenuProvider

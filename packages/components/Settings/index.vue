@@ -1,16 +1,35 @@
 <template>
-  <div class="bpmn-settings" @click.stop>
-    <div class="toggle-button" @click="changeModelVisible">
-      <lucide-icon name="Settings" :size="40" color="#ffffff" />
+  <div
+    class="bpmn-settings"
+    @click.stop>
+    <div
+      class="toggle-button"
+      @click="changeModelVisible">
+      <lucide-icon
+        name="Settings"
+        :size="40"
+        color="#ffffff" />
     </div>
-    <el-drawer :visible.sync="modelVisible" :size="600" title="偏好设置" append-to-body>
+    <el-drawer
+      :visible.sync="modelVisible"
+      :size="600"
+      title="偏好设置"
+      append-to-body>
       <div class="settings-form">
-        <el-form :model="editorSettings" size="mini" label-width="128px" label-suffix="：">
+        <el-form
+          :model="editorSettings"
+          size="mini"
+          label-width="128px"
+          label-suffix="：">
           <el-form-item label="流程名称">
-            <el-input v-model="editorSettings.processName" clearable />
+            <el-input
+              v-model="editorSettings.processName"
+              clearable />
           </el-form-item>
           <el-form-item label="流程ID">
-            <el-input v-model="editorSettings.processId" clearable />
+            <el-input
+              v-model="editorSettings.processId"
+              clearable />
           </el-form-item>
           <el-form-item label="工具栏">
             <el-switch v-model="editorSettings.toolbar" />
@@ -51,7 +70,9 @@
           <el-form-item label="Penal模式">
             <el-radio-group v-model="editorSettings.penalMode">
               <el-radio label="default">默认</el-radio>
-              <el-radio label="rewrite" disabled>重写版</el-radio>
+              <el-radio
+                label="rewrite"
+                disabled>重写版</el-radio>
               <el-radio label="custom">自定义</el-radio>
             </el-radio-group>
           </el-form-item>
@@ -80,7 +101,10 @@
           <el-form-item label="其他示例扩展">
             <el-switch v-model="editorSettings.otherModule" />
           </el-form-item>
-          <el-form-item label="自定义主题" class="theme-list" v-if="editorSettings.rendererMode === 'rewrite'">
+          <el-form-item
+            label="自定义主题"
+            class="theme-list"
+            v-if="editorSettings.rendererMode === 'rewrite'">
             <div class="theme-item">
               <div class="theme-item_label">
                 <el-tooltip content="该功能只修改了显示部分，路径调整依然沿用折线计算方式，慎用！！！">
@@ -91,13 +115,23 @@
                 <el-switch v-model="editorSettings.useCurve" />
               </div>
             </div>
-            <div class="theme-item" v-for="keyItem in themeColorKeys" :key="keyItem">
+            <div
+              class="theme-item"
+              v-for="keyItem in themeColorKeys"
+              :key="keyItem">
               <div class="theme-item_label">{{ keyItem }}：</div>
-              <el-color-picker color-format="hex" v-model="editorSettings.customTheme[keyItem]" />
+              <el-color-picker
+                color-format="hex"
+                v-model="editorSettings.customTheme[keyItem]" />
             </div>
-            <div class="theme-item" v-for="keyItem in themeOpacityKeys" :key="keyItem">
+            <div
+              class="theme-item"
+              v-for="keyItem in themeOpacityKeys"
+              :key="keyItem">
               <div class="theme-item_label">{{ keyItem }}：</div>
-              <el-input-number v-model="editorSettings.customTheme[keyItem]" :step="0.1" />
+              <el-input-number
+                v-model="editorSettings.customTheme[keyItem]"
+                :step="0.1" />
             </div>
           </el-form-item>
         </el-form>
@@ -119,68 +153,68 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import { defaultSettings } from "../../preset-configuration/editor.config";
-import { debounce } from "min-dash";
+import { mapGetters } from 'vuex'
+import { defaultSettings } from '../../preset-configuration/editor.config'
+import { debounce } from 'min-dash'
 
 export default {
-  name: "BpmnSettings",
-  props: {
-    settings: {
-      type: Object,
-      default: () => defaultSettings
-    }
-  },
-  data() {
-    return {
-      modelVisible: false,
-      themeColorKeys: [
-        "defaultFillColor",
-        "defaultStartEventColor",
-        "defaultEndEventColor",
-        "defaultIntermediateEventColor",
-        "defaultIntermediateThrowEventColor",
-        "defaultIntermediateCatchEventColor",
-        "defaultTaskColor",
-        "defaultLabelColor",
-        "defaultGatewayColor",
-        "defaultSequenceColor"
-      ],
-      themeOpacityKeys: [
-        "defaultStartEventOpacity",
-        "defaultEndEventOpacity",
-        "defaultIntermediateThrowEventOpacity",
-        "defaultIntermediateCatchEventOpacity",
-        "defaultTaskOpacity",
-        "defaultLabelOpacity",
-        "defaultGatewayOpacity",
-        "defaultSequenceOpacity"
-      ],
-      editorSettings: this.settings
-    };
-  },
-  computed: {
-    ...mapGetters(["getEditor"])
-  },
-  watch: {
-    editorSettings: {
-      deep: true,
-      handler() {
-        if (this.editorSettings.penalMode !== "custom") {
-          this.editorSettings.processEngine = "camunda";
+    name: 'BpmnSettings',
+    props: {
+        settings: {
+            type: Object,
+            default: () => defaultSettings
         }
-        this.updateEditorState();
-      }
-    }
-  },
-  methods: {
-    changeModelVisible(event) {
-      event.stopPropagation();
-      this.modelVisible = !this.modelVisible;
     },
-    updateEditorState: debounce(function () {
-      this.editorSettings && this.$store.commit("setConfiguration", { ...this.editorSettings });
-    }, 100)
-  }
-};
+    data () {
+        return {
+            modelVisible: false,
+            themeColorKeys: [
+                'defaultFillColor',
+                'defaultStartEventColor',
+                'defaultEndEventColor',
+                'defaultIntermediateEventColor',
+                'defaultIntermediateThrowEventColor',
+                'defaultIntermediateCatchEventColor',
+                'defaultTaskColor',
+                'defaultLabelColor',
+                'defaultGatewayColor',
+                'defaultSequenceColor'
+            ],
+            themeOpacityKeys: [
+                'defaultStartEventOpacity',
+                'defaultEndEventOpacity',
+                'defaultIntermediateThrowEventOpacity',
+                'defaultIntermediateCatchEventOpacity',
+                'defaultTaskOpacity',
+                'defaultLabelOpacity',
+                'defaultGatewayOpacity',
+                'defaultSequenceOpacity'
+            ],
+            editorSettings: this.settings
+        }
+    },
+    computed: {
+        ...mapGetters(['getEditor'])
+    },
+    watch: {
+        editorSettings: {
+            deep: true,
+            handler () {
+                if (this.editorSettings.penalMode !== 'custom') {
+                    this.editorSettings.processEngine = 'camunda'
+                }
+                this.updateEditorState()
+            }
+        }
+    },
+    methods: {
+        changeModelVisible (event) {
+            event.stopPropagation()
+            this.modelVisible = !this.modelVisible
+        },
+        updateEditorState: debounce(function () {
+            this.editorSettings && this.$store.commit('setConfiguration', { ...this.editorSettings })
+        }, 100)
+    }
+}
 </script>

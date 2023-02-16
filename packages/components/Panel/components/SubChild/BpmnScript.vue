@@ -3,12 +3,12 @@
 </template>
 
 <script>
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue'
 
 export default {
-  name: "BpmnScript",
-  setup() {
-    return {};
-  }
-};
+    name: 'BpmnScript',
+    setup () {
+        return {}
+    }
+}
 </script>

@@ -1,6 +1,8 @@
 <template>
   <div class="edit-item">
-    <div class="edit-item_label" :style="labelStyle">{{ label }}：</div>
+    <div
+      class="edit-item_label"
+      :style="labelStyle">{{ label }}：</div>
     <div class="edit-item_content">
       <slot></slot>
     </div>
@@ -9,31 +11,31 @@
 
 <script>
 export default {
-  name: "EditItem",
-  props: {
-    label: {
-      type: String,
-      default: ""
+    name: 'EditItem',
+    props: {
+        label: {
+            type: String,
+            default: ''
+        },
+        textAlign: {
+            type: String,
+            default: 'right',
+            validator: (val) => ['left', 'center', 'right'].indexOf(val) !== -1
+        },
+        labelWidth: {
+            type: Number,
+            default: 80
+        }
     },
-    textAlign: {
-      type: String,
-      default: "right",
-      validator: (val) => ["left", "center", "right"].indexOf(val) !== -1
-    },
-    labelWidth: {
-      type: Number,
-      default: 80
+    computed: {
+        labelStyle () {
+            return {
+                width: `${this.labelWidth}px`,
+                textAlign: this.textAlign
+            }
+        }
     }
-  },
-  computed: {
-    labelStyle() {
-      return {
-        width: `${this.labelWidth}px`,
-        textAlign: this.textAlign
-      };
-    }
-  }
-};
+}
 </script>
 
 <style scoped lang="scss">

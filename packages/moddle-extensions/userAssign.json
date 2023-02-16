@@ -1,0 +1,79 @@
+{
+  "name": "USERASSIGN",
+  "uri": "http://www.shareniu.com/NODEUSERS/spec//USERASSIGN",
+  "types": [
+    {
+      "name": "UserRule",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "pluginType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "pluginVal",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "logicCal",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "ruleId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "ruleVal",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "ruleDisplayName",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "specId",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "UserStrategy",
+      "superClass": [
+        "userassign:UserRule"
+      ],
+      "properties": [
+        {
+          "name": "pluginType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "pluginVal",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "logicCal",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ],
+  "associations": [],
+  "prefix": "userAssign"
+}

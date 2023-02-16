@@ -1,8 +1,8 @@
-import rewriteContextPadProvider from "./rewriteContextPadProvider";
+import rewriteContextPadProvider from './rewriteContextPadProvider'
 
 const rewriteContextPad = {
-  __init__: ["contextPadProvider"],
-  contextPadProvider: ["type", rewriteContextPadProvider]
-};
+    __init__: ['contextPadProvider'],
+    contextPadProvider: ['type', rewriteContextPadProvider]
+}
 
-export default rewriteContextPad;
+export default rewriteContextPad

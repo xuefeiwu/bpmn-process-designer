@@ -1,8 +1,8 @@
-import EnhancementRenderer from "./EnhancementRenderer";
+import EnhancementRenderer from './EnhancementRenderer'
 
 const enhancementRenderer = {
-  __init__: ["enhancementRenderer"],
-  enhancementRenderer: ["type", EnhancementRenderer]
-};
+    __init__: ['enhancementRenderer'],
+    enhancementRenderer: ['type', EnhancementRenderer]
+}
 
-export default enhancementRenderer;
+export default enhancementRenderer

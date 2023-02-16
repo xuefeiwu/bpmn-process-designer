@@ -1,8 +1,8 @@
-import rewritePopupMenuProvider from "./rewritePopupMenuProvider";
+import rewritePopupMenuProvider from './rewritePopupMenuProvider'
 
 const rewritePopupMenu = {
-  __init__: ["replaceMenuProvider"],
-  replaceMenuProvider: ["type", rewritePopupMenuProvider]
-};
+    __init__: ['replaceMenuProvider'],
+    replaceMenuProvider: ['type', rewritePopupMenuProvider]
+}
 
-export default rewritePopupMenu;
+export default rewritePopupMenu

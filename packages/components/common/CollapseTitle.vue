@@ -7,14 +7,14 @@
 
 <script>
 export default {
-  name: "CollapseTitle",
-  props: {
-    title: {
-      type: String,
-      default: ""
+    name: 'CollapseTitle',
+    props: {
+        title: {
+            type: String,
+            default: ''
+        }
     }
-  }
-};
+}
 </script>
 
 <style scoped lang="scss">
