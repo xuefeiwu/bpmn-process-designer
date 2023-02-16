@@ -1,33 +1,33 @@
 // ** 官方流程模拟 module
-import TokenSimulationModule from 'bpmn-js-token-simulation'
-// camunda 官方侧边栏扩展
-import {
-    BpmnPropertiesPanelModule,
-    BpmnPropertiesProviderModule,
-    CloudElementTemplatesPropertiesProviderModule,
-    CamundaPlatformPropertiesProviderModule
-} from 'bpmn-js-properties-panel'
-// 官方扩展工具 元素模板选择
-import ElementTemplateChooserModule from '@bpmn-io/element-template-chooser'
-import ConnectorsExtensionModule from 'bpmn-js-connectors-extension'
+// import TokenSimulationModule from 'bpmn-js-token-simulation'
+// // camunda 官方侧边栏扩展
+// import {
+//     BpmnPropertiesPanelModule,
+//     BpmnPropertiesProviderModule,
+//     CloudElementTemplatesPropertiesProviderModule,
+//     CamundaPlatformPropertiesProviderModule
+// } from 'bpmn-js-properties-panel'
+// // 官方扩展工具 元素模板选择
+// import ElementTemplateChooserModule from '@bpmn-io/element-template-chooser'
+// import ConnectorsExtensionModule from 'bpmn-js-connectors-extension'
 // 官方 默认点状背景
 import Grid from 'diagram-js/lib/features/grid-snapping/visuals'
 // 流程图校验部分
-import lintModule from 'bpmn-js-bpmnlint'
-import { resolver, rules } from '@packages/additional-modules/Lint/bpmnlint'
-// 小地图
-import minimapModule from 'diagram-js-minimap'
+// import lintModule from 'bpmn-js-bpmnlint'
+// import { resolver, rules } from '@packages/additional-modules/Lint/bpmnlint'
+// // 小地图
+// import minimapModule from 'diagram-js-minimap'
 
 // moddle 定义文件
 import activitiModdleDescriptors from '@packages/moddle-extensions/activiti.json'
 import camundaModdleDescriptors from '@packages/moddle-extensions/camunda.json'
 import flowableModdleDescriptors from '@packages/moddle-extensions/flowable.json'
 import miyueModdleDescriptors from '@packages/moddle-extensions/miyue.json'
-import a1CategoryDefinitions from '@packages/moddle-extensions/a1CategoryDefinitions.json'
-import a1ExtVar from '@packages/moddle-extensions/a1Ext.json'
-import globalrestfulDescriptor from '@packages/moddle-extensions/globalrestful.json'
-import userAssignDescriptor from '@packages/moddle-extensions/userAssign.json'
-import userProperty from '@packages/moddle-extensions/userProperty.json'
+import a1CategoryDefinitions from '@packages/moddle-extensions/customer/a1CategoryDefinitions.json'
+import a1ExtVar from '@packages/moddle-extensions/customer/a1Ext.json'
+import globalrestfulDescriptor from '@packages/moddle-extensions/customer/globalrestful.json'
+import userAssignDescriptor from '@packages/moddle-extensions/customer/userAssign.json'
+import userProperty from '@packages/moddle-extensions/customer/userProperty.json'
 
 // 自定义扩展部分
 import EnhancementPalette from '@packages/additional-modules/Palette/EnhancementPalette'

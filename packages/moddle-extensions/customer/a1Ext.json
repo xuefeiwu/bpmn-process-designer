@@ -1,0 +1,760 @@
+{
+  "name": "a1bpm.ext for BPMN",
+  "uri": "http://www.a1bpm.com/schema/1.0/A1",
+  "prefix": "extA1",
+  "types": [
+    {
+      "name": "Properties",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "subjectRule",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "description",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "propNotifyType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "parameterUserAssign",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "propSkipRules",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "propDateType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "dateTypeDay",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "dateTypeHour",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "dateTypeMinute",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "startMethod",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "GlobalForm",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "formValue",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "type",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "parentFlowKey",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "ExtProperties",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "PropertiesDef",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "PropertiesDef",
+      "superClass": [
+        "extA1:ExtProperties"
+      ],
+      "properties": [
+        {
+          "name": "subjectRule",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "description",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "propNotifyType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "parameterUserAssign",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "propSkipRules",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "propDateType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "dateTypeDay",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "dateTypeHour",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "dateTypeMinute",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "uniqueId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "startMethod",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Buttons",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "Button",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "Button",
+      "superClass": [
+        "extA1:ExtProperties"
+      ],
+      "properties": [
+        {
+          "name": "alias",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "btnName",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "cssName",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "beforeScript",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "afterScript",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "groovyScript",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "urlForm",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "UserRules",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "UserRule",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "UserRule",
+      "superClass": [
+        "extA1:UserRules"
+      ],
+      "properties": [
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "pluginType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "pluginVal",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "logicCal",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "ruleId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "ruleVal",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "ruleDisplayName",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "specId",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "UserPropertyes",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "UserProperty",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "UserProperty",
+      "superClass": [
+        "extA1:UserPropertyes"
+      ],
+      "properties": [
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "backNode",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "backUserMode",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "dateType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "jumpType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "nodePropertiesDay",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "notifyType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "postHandler",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "prevHand",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "nodePropertiesHour",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "nodePropertiesMinute",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "window",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "executor",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "choose",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "parallelFlag",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "openExpireFlag",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "expireHandlerModel",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Globals",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "Global",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "Global",
+      "superClass": [
+        "extA1:Globals"
+      ],
+      "properties": [
+        {
+          "name": "url",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "desc",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "header",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "invokeMode",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "callTime",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "callNodes",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "scope",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "VariableDefs",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "VariableDef",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "VariableDef",
+      "superClass": [
+        "extA1:VariableDefs"
+      ],
+      "properties": [
+        {
+          "name": "uniqueId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "varType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "varName",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "varKey",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "dataType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "description",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "defaultVal",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "required",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "Conditions",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "Condition",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "Condition",
+      "superClass": [
+        "extA1:Conditions"
+      ],
+      "properties": [
+        {
+          "name": "jsonData",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "CommonScripts",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "CommonScript",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "CommonScript",
+      "superClass": [
+        "extA1:CommonScripts"
+      ],
+      "properties": [
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "previous",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "complete",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "invalid",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "revoke",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "backToNode",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "transactionUrge",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "deleted",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "SignNodes",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "SignNode",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "SignNode",
+      "superClass": [
+        "extA1:SignNodes"
+      ],
+      "properties": [
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "signType",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "signScale",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "all",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "pass",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "unPass",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "leaderId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "leaderName",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "GlobalForms",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "GlobalForm",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "GlobalForm",
+      "superClass": [
+        "extA1:GlobalForms"
+      ],
+      "properties": [
+        {
+          "name": "formValue",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "parentFlowKey",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "type",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    },
+    {
+      "name": "ExtAttributes",
+      "superClass": [
+        "bpmn:RootElement"
+      ],
+      "properties": [
+        {
+          "name": "child",
+          "type": "ExtAttribute",
+          "isMany": true
+        }
+      ]
+    },
+    {
+      "name": "ExtAttribute",
+      "superClass": [
+        "extA1:ExtAttributes"
+      ],
+      "properties": [
+        {
+          "name": "name",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "nodeId",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "val",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
+          "name": "flag",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ],
+  "associations": []
+}
