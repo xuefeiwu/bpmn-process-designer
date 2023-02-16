@@ -22,7 +22,8 @@ export default {
             processInstanceModelId: '',
             token: '',
             modelId: '',
-            headParams: {}
+            headParams: {},
+            sequenceFlowIds: []
         }
     },
     computed: {
@@ -43,6 +44,21 @@ export default {
                 await createNewDiagram(modeler, this.xml, setting)
             } else {
                 await createNewDiagram(modeler)
+            }
+
+            if (this.sequenceFlowIds && this.sequenceFlowIds.length > 0) {
+                // 设置已完成的线条颜色
+                this.sequenceFlowIds.forEach(value => {
+                    const elementRegistry = modeler.get('elementRegistry')
+                    const sequenceFlowList = elementRegistry.filter(
+                        (item) => item.id == value
+                    )
+
+                    const modeling = modeler.get('modeling')
+                    modeling.setColor(sequenceFlowList, {
+                        stroke: 'limegreen'
+                    })
+                })
             }
         }, 100),
 
@@ -67,6 +83,7 @@ export default {
                 ).then((res) => {
                     if (res.code == '0') {
                         this.xml = res.XML
+                        this.sequenceFlowIds = res.sequenceFlowIds
                     }
                 }).finally(() => {
                 })
