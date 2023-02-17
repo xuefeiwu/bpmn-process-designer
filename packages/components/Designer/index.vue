@@ -1,9 +1,15 @@
 <template>
+
   <div
     :class="['bpmn-designer', bgClass]"
     ref="designerRef">
-    <node-audit-history-tip v-if="showNodeAuditHistoryTip"/>
+
+    <node-audit-history-tip
+      v-if="showNodeAuditHistoryTip"
+      :offset-x="offsetX"
+      :offset-y="offsetY"/>
   </div>
+
 </template>
 
 <script>
@@ -32,7 +38,9 @@ export default {
             headParams: {},
             sequenceFlowIds: [],
             auditHistoryList: [],
-            showNodeAuditHistoryTip: true
+            showNodeAuditHistoryTip: false,
+            offsetX: 0,
+            offsetY: 0
         }
     },
     computed: {
@@ -114,21 +122,21 @@ export default {
             this.eventBus.on('element.hover', function (e) {
                 const element = e.element
                 if (nodeTypeList.indexOf(element.type) != -1) {
-                    that.showAuditHistoryTip(element)
+                    that.showAuditHistoryTip(element, e.originalEvent.offsetX, element.y)
                 }
             })
 
             this.eventBus.on('element.out', function (e) {
                 const element = e.element
                 if (nodeTypeList.indexOf(element.type) != -1) {
-                    // that.showNodeAuditHistoryTip = false
+                    that.showNodeAuditHistoryTip = false
                 }
             })
         },
         /**
          * 显示审批历史
          */
-        showAuditHistoryTip (element) {
+        showAuditHistoryTip (element, offsetX, offsetY) {
             if (element.type != 'bpmn:StartEvent' && element.type != 'bpmn:UserTask') {
                 return
             }
@@ -137,6 +145,8 @@ export default {
                 let currentNodeHistoryList = this.auditHistoryList.filter(item => item.nodeKey == element.id)
                 console.log(currentNodeHistoryList)
                 if (currentNodeHistoryList && currentNodeHistoryList.length > 0) {
+                    this.offsetX = (offsetX + 90) + 'px'
+                    this.offsetY = (offsetY - 90) + 'px'
                     this.showNodeAuditHistoryTip = true
                 }
             }
@@ -158,7 +168,6 @@ export default {
         setScroll (runningNodeList) {
             // 当前节点滚动闪烁
             let djsShapeList = document.getElementsByClassName('djs-shape')
-            console.log(djsShapeList)
             for(let djs of djsShapeList){
                 let nodeId = djs.getAttribute('data-element-id')
                 if (runningNodeList.indexOf(nodeId) != -1) {

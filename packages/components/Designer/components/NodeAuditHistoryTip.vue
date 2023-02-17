@@ -1,29 +1,31 @@
 <template>
-  <div style="position: absolute;top:50%;left:50%;border:1px solid #eae9e9;border-radius: 10px;">
+  <div
+    class="showBox"
+    :style="{left:offsetX,top:offsetY}">
     <div
       class="tip-titlebar">
       <span>任务审批详情</span>
     </div>
-    <div style="margin-left: 10px;margin-right: 10px;margin-bottom: 15px;">
+    <div class="showBoxTable">
       <table>
         <template v-for="(item,headIndex) in tableHead">
           <tr :key="headIndex">
             <!--渲染第一列-->
-            <td style="width: 100px;height: 30px;">
-              <span style="font-weight:bold">{{ item.title }}</span>
+            <td style="width: 80px;height: 25px;">
+              <span style="font-weight:bold;font-size: 13px;">{{ item.title }}</span>
             </td>
             <!--任务名称，合并单元格，只执行一次-->
             <template v-if="item.fieldName == 'taskName'" >
               <td
-                style="width: 180px;"
-                :colspan="tableData.length">{{ tableData[0][item.fieldName] }} </td>
+                style="width: 120px;"
+                :colspan="tableData.length"><span style="font-size: 12px;">{{ tableData[0][item.fieldName] }}</span> </td>
             </template>
             <!--其余的按照数组渲染-->
             <template v-else>
               <template v-for="(data,dataIndex) in tableData">
                 <td
                   :key="dataIndex"
-                  style="width: 180px;">{{ data[item.fieldName] }} </td>
+                  style="width: 120px;"><span style="font-size: 12px;">{{ data[item.fieldName] }}</span> </td>
               </template>
             </template>
           </tr>
@@ -36,6 +38,16 @@
 
 <script>
 export default {
+    props: {
+        offsetX: {
+            type: String,
+            default: '0'
+        },
+        offsetY: {
+            type: String,
+            default: '0'
+        }
+    },
     data () {
         return {
             tableData: [
@@ -97,13 +109,25 @@ td{
     word-break:break-all;
 }
 .tip-titlebar{
-    margin-left: 50%;
+    margin-left: 45%;
     margin-bottom: 10px;
     margin-top: 10px;
-    font-size: 16px;
 }
 
 div{
     background-color: #fff;
+}
+
+.showBox{
+    position: fixed;
+    border:1px solid #eae9e9;
+    border-radius: 10px;
+    z-index:999
+}
+
+.showBoxTable{
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 15px;
 }
 </style>
