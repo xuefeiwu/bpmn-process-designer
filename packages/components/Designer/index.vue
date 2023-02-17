@@ -220,6 +220,7 @@ export default {
         this.elementRegistry = this.modeler.get('elementRegistry')
         this.eventBus = this.modeler.get('eventBus')
         await this.reloadProcess()
+        this.modeler.get('canvas').zoom('fit-viewport', 'auto')//画布自适应居中
     }
 }
 </script>
