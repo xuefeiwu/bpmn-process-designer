@@ -6,6 +6,7 @@
 
     <node-audit-history-tip
       v-if="showNodeAuditHistoryTip"
+      :currentNodeHistoryList="currentNodeHistoryList"
       :offset-x="offsetX"
       :offset-y="offsetY"/>
   </div>
@@ -37,7 +38,8 @@ export default {
             modelId: '',
             headParams: {},
             sequenceFlowIds: [],
-            auditHistoryList: [],
+            originAuditHistoryList: [],
+            currentNodeHistoryList: [],
             showNodeAuditHistoryTip: false,
             offsetX: 0,
             offsetY: 0
@@ -91,8 +93,8 @@ export default {
                 })
             }
             // 设置已完成和未完成的节点颜色
-            if (this.auditHistoryList && this.auditHistoryList.length > 0) {
-                this.auditHistoryList.forEach(item => {
+            if (this.originAuditHistoryList && this.originAuditHistoryList.length > 0) {
+                this.originAuditHistoryList.forEach(item => {
                     var _element = this.getElement(item.nodeKey)
                     if (item.type == 'startEvent' || item.type == 'endEvent') {
                         this.setColor(_element, 'rgb(248, 152, 0)')
@@ -137,16 +139,16 @@ export default {
          * 显示审批历史
          */
         showAuditHistoryTip (element, offsetX, offsetY) {
-            if (element.type != 'bpmn:StartEvent' && element.type != 'bpmn:UserTask') {
+            if (element.type != 'bpmn:UserTask') {
                 return
             }
 
-            if (this.auditHistoryList && this.auditHistoryList.length > 0) {
-                let currentNodeHistoryList = this.auditHistoryList.filter(item => item.nodeKey == element.id)
-                console.log(currentNodeHistoryList)
-                if (currentNodeHistoryList && currentNodeHistoryList.length > 0) {
+            if (this.originAuditHistoryList && this.originAuditHistoryList.length > 0) {
+                this.currentNodeHistoryList = this.originAuditHistoryList.filter(item => item.nodeKey == element.id)
+                if (this.currentNodeHistoryList && this.currentNodeHistoryList.length > 0) {
                     this.offsetX = (offsetX + 90) + 'px'
                     this.offsetY = (offsetY - 90) + 'px'
+                    // 构造数据
                     this.showNodeAuditHistoryTip = true
                 }
             }
@@ -187,7 +189,7 @@ export default {
                     if (res.code == '0') {
                         this.xml = res.XML
                         this.sequenceFlowIds = res.sequenceFlowIds
-                        this.auditHistoryList = res.data
+                        this.originAuditHistoryList = res.data
                     }
                 }).finally(() => {
                 })

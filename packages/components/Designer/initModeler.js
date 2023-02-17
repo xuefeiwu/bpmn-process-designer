@@ -69,6 +69,5 @@ export default function (designerDom, moduleAndExtensions, context) {
         return event
     })
 
-    console.log(modeler)
     return modeler
 }
