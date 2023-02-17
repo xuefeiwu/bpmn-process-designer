@@ -1,7 +1,9 @@
 <template>
   <div
     :class="['bpmn-designer', bgClass]"
-    ref="designerRef"></div>
+    ref="designerRef">
+    <node-audit-history-tip v-if="showNodeAuditHistoryTip"/>
+  </div>
 </template>
 
 <script>
@@ -11,9 +13,11 @@ import moduleAndExtensions from './moduleAndExtensions'
 import initModeler from './initModeler'
 import {loadProcessHistory, loadProcessModel} from '../../../api/process'
 import {notEmpty} from '@utils/tool'
+import NodeAuditHistoryTip from '@packages/components/Designer/components/NodeAuditHistoryTip'
 
 export default {
     name: 'BpmnDesigner',
+    components: {NodeAuditHistoryTip},
     data () {
         return {
             modelerModules: {},
@@ -27,7 +31,8 @@ export default {
             modelId: '',
             headParams: {},
             sequenceFlowIds: [],
-            auditHistoryList: []
+            auditHistoryList: [],
+            showNodeAuditHistoryTip: false
         }
     },
     computed: {
@@ -116,7 +121,7 @@ export default {
             this.eventBus.on('element.out', function (e) {
                 const element = e.element
                 if (nodeTypeList.indexOf(element.type) != -1) {
-
+                    that.showNodeAuditHistoryTip = false
                 }
             })
         },
@@ -132,7 +137,7 @@ export default {
                 let currentNodeHistoryList = this.auditHistoryList.filter(item => item.nodeKey == element.id)
                 console.log(currentNodeHistoryList)
                 if (currentNodeHistoryList && currentNodeHistoryList.length > 0) {
-
+                    this.showNodeAuditHistoryTip = true
                 }
             }
         },

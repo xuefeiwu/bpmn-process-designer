@@ -2,7 +2,8 @@
 import axios from 'axios'
 
 const service = axios.create({
-    baseURL: process.env.VUE_APP_BASE_API, // 设置axios请求的基础的基础地址s
+    baseURL: process.env.VUE_APP_BASE_API + '/els', // 设置axios请求的基础的基础地址s
+    withCredentials: false,
     timeout: 5000 // 定义5秒超时
 }) // 创建一个axios的实例
 
