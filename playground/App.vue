@@ -22,7 +22,6 @@ import {mapGetters} from 'vuex'
 import BpmnToolbar from '../packages/components/Toolbar'
 import BpmnContextMenu from '@packages/components/ContextMenu/ContextMenu'
 import BpmnPanel from '@packages/components/Panel'
-import {loadProcessHistory, loadProcessModel} from '../api/process'
 
 export default {
     name: 'App',

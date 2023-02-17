@@ -38,3 +38,16 @@
 .layer-selectionOutline {
   fill: none;
 }
+
+@-webkit-keyframes test {
+  to {
+    stroke-dashoffset: 100%;
+  }
+}
+
+// 节点滚动效果
+.node {
+  -webkit-animation: test 18S linear infinite;
+  -webkit-animation-fill-mode: forwards;
+  /*stroke-dasharray: 4px ,4px;*/
+}

@@ -5,10 +5,8 @@
 </template>
 
 <script>
-import { debounce } from 'min-dash'
-import { mapGetters } from 'vuex'
-import { createNewDiagram } from '@utils/xml'
-import { catchError } from '@utils/printCatch'
+import {mapGetters} from 'vuex'
+import {createNewDiagram} from '@utils/xml'
 import moduleAndExtensions from './moduleAndExtensions'
 import initModeler from './initModeler'
 import {loadProcessHistory, loadProcessModel} from '../../../api/process'
@@ -18,6 +16,10 @@ export default {
     name: 'BpmnDesigner',
     data () {
         return {
+            modelerModules: {},
+            modeler: {},
+            elementRegistry: {},
+            eventBus: {},
             xml: '',
             instId: '',
             processInstanceModelId: '',
@@ -29,7 +31,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['getEditor', 'getModeler', 'getModeling']),
+        ...mapGetters(['getEditor', 'getModeling']),
         bgClass () {
             const bg = this.getEditor.bg
             if (bg === 'grid-image') return 'designer-with-bg'
@@ -40,12 +42,12 @@ export default {
     methods: {
         /**
          * 获取元素节点
-         * @param elementRegistry
+         * @param
          * @param nodeId
          * @returns {*}
          */
-        getElement (elementRegistry, nodeId) {
-            return elementRegistry.filter(
+        getElement (nodeId) {
+            return this.elementRegistry.filter(
                 (item) => item.id == nodeId
             )
         },
@@ -54,50 +56,86 @@ export default {
          * @param modeling
          * @param color
          */
-        setColor (modeling, element, color) {
-            modeling.setColor(element, {
+        setColor (element, color) {
+            this.getModeling.setColor(element, {
                 stroke: color
             })
         },
-        reloadProcess: debounce(async function (setting, oldSetting) {
-            const modelerModules = moduleAndExtensions(setting)
-            await this.$nextTick()
-            const modeler = initModeler(this.$refs.designerRef, modelerModules, this)
+        async reloadProcess () {
             if (this.xml) {
-                await createNewDiagram(modeler, this.xml, setting)
+                await createNewDiagram(this.modeler, this.xml, this.getEditor)
             } else {
-                await createNewDiagram(modeler)
+                await createNewDiagram(this.modeler)
             }
 
-            const elementRegistry = modeler.get('elementRegistry')
-            const modeling = modeler.get('modeling')
+            let runningNodeList = new Array()
 
             // 设置已完成的线条颜色
             if (this.sequenceFlowIds && this.sequenceFlowIds.length > 0) {
                 this.sequenceFlowIds.forEach(value => {
-                    const _element = this.getElement(elementRegistry, value)
-                    this.setColor(modeling, _element, 'limegreen')
+                    const _element = this.getElement(value)
+                    this.setColor(_element, 'limegreen')
                 })
             }
-
             // 设置已完成和未完成的节点颜色
             if (this.auditHistoryList && this.auditHistoryList.length > 0) {
                 this.auditHistoryList.forEach(item => {
-                    var _element = this.getElement(elementRegistry, item.nodeKey)
+                    var _element = this.getElement(item.nodeKey)
                     if (item.type == 'startEvent' || item.type == 'endEvent') {
-                        this.setColor(modeling, _element, 'rgb(248, 152, 0)')
+                        this.setColor(_element, 'rgb(248, 152, 0)')
 
                     } else if (item.type == 'userTask' || item.type == 'businessRuleTask' || item.type == 'serviceTask') {
                         if (!notEmpty(item.completeTime)) {
-                            this.setColor(modeling, _element, 'rgb(255, 0, 0)')
+                            this.setColor( _element, 'rgb(255, 0, 0)')
+                            runningNodeList.push(item.nodeKey)
                         } else {
-                            this.setColor(modeling, _element, '#3366ff')
+                            this.setColor(_element, '#3366ff')
                         }
                     }
                 })
             }
-        }, 100),
+            // 设置节点滚动
+            this.setScroll(runningNodeList)
 
+            // 注册点击事件
+            this.registerHoverEvent()
+        },
+        /**
+         * 鼠标焦点事件
+         */
+        registerHoverEvent () {
+            let nodeTypeList = ['bpmn:UserTask', 'bpmn:BusinessRuleTask', 'bpmn:ServiceTask', 'bpmn:StartEvent', 'bpmn:EndEvent']
+            const that = this
+            this.eventBus.on('element.hover', function (e) {
+                const element = e.element
+                if (nodeTypeList.indexOf(element.type) != -1) {
+                    that.showAuditHistoryTip(element)
+                }
+            })
+
+            this.eventBus.on('element.out', function (e) {
+                const element = e.element
+                if (nodeTypeList.indexOf(element.type) != -1) {
+
+                }
+            })
+        },
+        /**
+         * 显示审批历史
+         */
+        showAuditHistoryTip (element) {
+            if (element.type != 'bpmn:StartEvent' && element.type != 'bpmn:UserTask') {
+                return
+            }
+
+            if (this.auditHistoryList && this.auditHistoryList.length > 0) {
+                let currentNodeHistoryList = this.auditHistoryList.filter(item => item.nodeKey == element.id)
+                console.log(currentNodeHistoryList)
+                if (currentNodeHistoryList && currentNodeHistoryList.length > 0) {
+
+                }
+            }
+        },
         /**
          * 获取请求参数
          * @param name
@@ -109,7 +147,22 @@ export default {
             if (params != null) return unescape(params[2])
             return null
         },
-
+        /**
+         * 设置节点滚动
+         */
+        setScroll (runningNodeList) {
+            // 当前节点滚动闪烁
+            let djsShapeList = document.getElementsByClassName('djs-shape')
+            console.log(djsShapeList)
+            for(let djs of djsShapeList){
+                let nodeId = djs.getAttribute('data-element-id')
+                if (runningNodeList.indexOf(nodeId) != -1) {
+                    let children = djs.firstChild
+                    children.classList.add('node')
+                    children.firstChild.setAttribute('stroke-dasharray', '4,4')
+                }
+            }
+        },
         async getProcessHistory () { // 该方法模拟请求后台获取bpmn文件地址
             if (this.instId || this.processInstanceModelId) {
                 await loadProcessHistory(
@@ -134,30 +187,25 @@ export default {
             }
         }
     },
-    watch: {
-        getEditor: {
-            immediate: true,
-            deep: true,
-            handler: async function (value, oldValue) {
-                try {
-                    this.instId = this.getParamter('instId')
-                    this.processInstanceModelId = this.getParamter('processInstanceModelId')
-                    this.token = this.getParamter('messageId')
-                    this.modelId = this.getParamter('modelId')
+    async created () {
+        this.instId = this.getParamter('instId')
+        this.processInstanceModelId = this.getParamter('processInstanceModelId')
+        this.token = this.getParamter('messageId')
+        this.modelId = this.getParamter('modelId')
 
-                    this.headParams = {
-                        headers: {
-                            'x-access-token': this.token
-                        }
-                    }
-
-                    await this.getProcessHistory()
-                    this.reloadProcess(value, oldValue)
-                } catch (e) {
-                    catchError(e)
-                }
+        this.headParams = {
+            headers: {
+                'x-access-token': this.token
             }
         }
+
+        await this.getProcessHistory()
+
+        this.modelerModules = moduleAndExtensions(this.getEditor)
+        this.modeler = initModeler(this.$refs.designerRef, this.modelerModules, this)
+        this.elementRegistry = this.modeler.get('elementRegistry')
+        this.eventBus = this.modeler.get('eventBus')
+        await this.reloadProcess()
     }
 }
 </script>
