@@ -32,7 +32,7 @@ export default {
             headParams: {},
             sequenceFlowIds: [],
             auditHistoryList: [],
-            showNodeAuditHistoryTip: false
+            showNodeAuditHistoryTip: true
         }
     },
     computed: {
@@ -121,7 +121,7 @@ export default {
             this.eventBus.on('element.out', function (e) {
                 const element = e.element
                 if (nodeTypeList.indexOf(element.type) != -1) {
-                    that.showNodeAuditHistoryTip = false
+                    // that.showNodeAuditHistoryTip = false
                 }
             })
         },
