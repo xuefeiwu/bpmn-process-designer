@@ -122,7 +122,10 @@ div{
     position: fixed;
     border:1px solid #eae9e9;
     border-radius: 10px;
-    z-index:999
+    z-index:999;
+    -webkit-box-shadow: #666 0px 0px 10px;
+    -moz-box-shadow: #666 0px 0px 10px;
+    box-shadow: #666 0px 0px 10px;
 }
 
 .showBoxTable{
