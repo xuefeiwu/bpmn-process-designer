@@ -124,7 +124,7 @@ export default {
             this.eventBus.on('element.hover', function (e) {
                 const element = e.element
                 if (nodeTypeList.indexOf(element.type) != -1) {
-                    that.showAuditHistoryTip(element, e.originalEvent.offsetX, element.y)
+                    that.showAuditHistoryTip(element, e.originalEvent.offsetX, e.originalEvent.offsetY)
                 }
             })
 
@@ -146,10 +146,11 @@ export default {
             if (this.originAuditHistoryList && this.originAuditHistoryList.length > 0) {
                 this.currentNodeHistoryList = this.originAuditHistoryList.filter(item => item.nodeKey == element.id)
                 if (this.currentNodeHistoryList && this.currentNodeHistoryList.length > 0) {
-                    this.offsetX = (offsetX + 90) + 'px'
-                    this.offsetY = (offsetY - 90) + 'px'
+                    this.offsetX = (offsetX + element.width) + 'px'
+                    this.offsetY = (offsetY - element.height * 2) + 'px'
                     // 构造数据
                     this.showNodeAuditHistoryTip = true
+                    console.log(this.offsetX, this.offsetY, element)
                 }
             }
         },

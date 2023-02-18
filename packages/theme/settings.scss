@@ -89,13 +89,6 @@
   background-size: 140% 140%;
   background-position: center center;
   display: inline-block;
-  &.wechat {
-    background-image: url('./images/wechat.jpg');
-  }
-  &.alipay {
-    margin-left: 8px;
-    background-image: url('./images/alipay.png');
-  }
 }
 
 .settings-form {
