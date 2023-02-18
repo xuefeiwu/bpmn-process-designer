@@ -1,99 +1,87 @@
 import ContextPadProvider from 'bpmn-js/lib/features/context-pad/ContextPadProvider'
 
-class EnhancementContextPadProvider extends ContextPadProvider {
-    constructor (
-        config,
-        injector,
-        eventBus,
-        contextPad,
-        modeling,
-        elementFactory,
-        connect,
-        create,
-        popupMenu,
-        canvas,
-        rules,
-        translate
-    ) {
-        super(
-            config,
-            injector,
-            eventBus,
-            contextPad,
-            modeling,
-            elementFactory,
-            connect,
-            create,
-            popupMenu,
-            canvas,
-            rules,
-            translate,
-            2000
-        )
+// 重写原型链上的
+ContextPadProvider.prototype.getContextPadEntries = function (element) {}
 
-        this._contextPad = contextPad
-        this._modeling = modeling
-        this._elementFactory = elementFactory
-        this._connect = connect
-        this._create = create
-        this._popupMenu = popupMenu
-        this._canvas = canvas
-        this._rules = rules
-        this._translate = translate
+export default class EnhancementContextPadProvider {
+    constructor ( contextPad, config, injector, translate, bpmnFactory, elementFactory, create, modeling, connect ) {
+        this.create = create
+        this.elementFactory = elementFactory
+        this.translate = translate
+        this.bpmnFactory = bpmnFactory
+        this.modeling = modeling
+        this.connect = connect
+        config = config || {}
+        if (config.autoPlace !== false) {
+            this.autoPlace  = injector.get('autoPlace', false)
+        }
 
-        this._autoPlace = injector.get('autoPlace', false)
+        // 定义这是一个contextPad
+        contextPad.registerProvider(this)
     }
 
     getContextPadEntries (element) {
-        const actions = {}
-        const modeling = this._modeling
+        const {
+            autoPlace,
+            create,
+            elementFactory,
+            translate,
+            modeling,
+            bpmnFactory
+        } = this
 
-        const appendUserTask = (event, element) => {
-            const shape = this._elementFactory.createShape({ type: 'bpmn:UserTask' })
-            this._create.start(event, shape, {
-                source: element
-            })
+        const actions = {}
+
+        // 服务节点,追加节点
+        const appendServiceTask = (event, element) => {
+            if (autoPlace) {
+                const shape = elementFactory.createShape({ type: 'bpmn:ServiceTask' })
+                autoPlace.append(element, shape)
+            } else {
+                appendServiceTaskStart(event, element)
+            }
         }
 
-        const append = this._autoPlace
-            ? (event, element) => {
-                const shape = this._elementFactory.createShape({ type: 'bpmn:UserTask' })
-                this._autoPlace.append(element, shape)
+        const appendServiceTaskStart = (event) => {
+            const shape = elementFactory.createShape({ type: 'bpmn:ServiceTask' })
+            create.start(event, shape, element)
+        }
+
+
+        // 用户节点
+        const appendUserTask = (event, element) => {
+            if (autoPlace) {
+                const shape = elementFactory.createShape({ type: 'bpmn:UserTask' })
+                autoPlace.append(element, shape)
+            } else {
+                appendUserTaskStart(event, element)
             }
-            : appendUserTask
+        }
+
+        const appendUserTaskStart = (event) => {
+            const shape = elementFactory.createShape({ type: 'bpmn:ServiceTask' })
+            create.start(event, shape, element)
+        }
+
+        // 添加服务节点
+        actions['append.service-task'] = {
+            group: 'model',
+            className: 'bpmn-icon-service-task',
+            title: translate('添加服务任务'),
+            action: {
+                dragstart: appendServiceTaskStart,
+                click: appendServiceTask
+            }
+        }
 
         // 添加创建用户任务按钮
         actions['append.append-user-task'] = {
             group: 'model',
             className: 'bpmn-icon-user-task',
-            title: '用户任务',
+            title: translate('添加用户任务'),
             action: {
-                dragstart: appendUserTask,
-                click: append
-            }
-        }
-
-        // 添加一个与edit一组的按钮
-        actions['enhancement-op-1'] = {
-            group: 'edit',
-            className: 'enhancement-op',
-            title: '扩展操作1',
-            action: {
-                click: function (e) {
-                    alert('点击 扩展操作1')
-                }
-            }
-        }
-
-        // 添加一个新分组的自定义按钮
-        actions['enhancement-op'] = {
-            group: 'enhancement',
-            className: 'enhancement-op',
-            title: '扩展删除',
-            action: {
-                click: function (event, delElement) {
-                    modeling.removeElements([...(delElement.incoming || []), ...(delElement.outgoing || []), delElement])
-                }
+                click: appendUserTask,
+                dragstart: appendUserTaskStart
             }
         }
 
@@ -101,4 +89,14 @@ class EnhancementContextPadProvider extends ContextPadProvider {
     }
 }
 
-export default EnhancementContextPadProvider
+EnhancementContextPadProvider.$inject = [
+    'contextPad',
+    'config',
+    'injector',
+    'translate',
+    'bpmnFactory',
+    'elementFactory',
+    'create',
+    'modeling',
+    'connect'
+]
