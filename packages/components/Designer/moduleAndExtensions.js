@@ -1,22 +1,22 @@
 // ** 官方流程模拟 module
-// import TokenSimulationModule from 'bpmn-js-token-simulation'
-// // camunda 官方侧边栏扩展
-// import {
-//     BpmnPropertiesPanelModule,
-//     BpmnPropertiesProviderModule,
-//     CloudElementTemplatesPropertiesProviderModule,
-//     CamundaPlatformPropertiesProviderModule
-// } from 'bpmn-js-properties-panel'
-// // 官方扩展工具 元素模板选择
-// import ElementTemplateChooserModule from '@bpmn-io/element-template-chooser'
-// import ConnectorsExtensionModule from 'bpmn-js-connectors-extension'
+import TokenSimulationModule from 'bpmn-js-token-simulation'
+// camunda 官方侧边栏扩展
+import {
+    BpmnPropertiesPanelModule,
+    BpmnPropertiesProviderModule,
+    CloudElementTemplatesPropertiesProviderModule,
+    CamundaPlatformPropertiesProviderModule
+} from 'bpmn-js-properties-panel'
+// 官方扩展工具 元素模板选择
+import ElementTemplateChooserModule from '@bpmn-io/element-template-chooser'
+import ConnectorsExtensionModule from 'bpmn-js-connectors-extension'
 // 官方 默认点状背景
 import Grid from 'diagram-js/lib/features/grid-snapping/visuals'
 // 流程图校验部分
-// import lintModule from 'bpmn-js-bpmnlint'
-// import { resolver, rules } from '@packages/additional-modules/Lint/bpmnlint'
-// // 小地图
-// import minimapModule from 'diagram-js-minimap'
+import lintModule from 'bpmn-js-bpmnlint'
+import { resolver, rules } from '@packages/additional-modules/Lint/bpmnlint'
+// 小地图
+import minimapModule from 'diagram-js-minimap'
 
 // moddle 定义文件
 import activitiModdleDescriptors from '@packages/moddle-extensions/activiti.json'
@@ -47,71 +47,71 @@ export default function (settings) {
     const options = {} // modeler 其他配置
 
     // 配置 palette (可覆盖 paletteProvider 取消原生侧边栏)
-    // settings.paletteMode === 'enhancement' && modules.push(EnhancementPalette)
-    // settings.paletteMode === 'rewrite' && modules.push(RewritePalette)
-    // settings.paletteMode === 'custom' && modules.push({ paletteProvider: ['type', function () {}] })
+    settings.paletteMode === 'enhancement' && modules.push(EnhancementPalette)
+    settings.paletteMode === 'rewrite' && modules.push(RewritePalette)
+    settings.paletteMode === 'custom' && modules.push({ paletteProvider: ['type', function () {}] })
 
     // 配置 contextPad (可覆盖 contextPadProvider 取消原生上下文菜单)
-    // settings.contextPadMode === 'enhancement' && modules.push(EnhancementContextPad)
-    // settings.contextPadMode === 'rewrite' && modules.push(RewriteContextPad)
+    settings.contextPadMode === 'enhancement' && modules.push(EnhancementContextPad)
+    settings.contextPadMode === 'rewrite' && modules.push(RewriteContextPad)
 
     // 配置 自定义渲染
-    // settings.rendererMode === 'enhancement' && modules.push(EnhancementRenderer)
-    // if (settings.rendererMode === 'rewrite') {
-    //     modules.push(RewriteRenderer)
-    //     options['bpmnRenderer'] = { ...(settings.customTheme || {}), useCurve: settings.useCurve }
-    // }
+    settings.rendererMode === 'enhancement' && modules.push(EnhancementRenderer)
+    if (settings.rendererMode === 'rewrite') {
+        modules.push(RewriteRenderer)
+        options['bpmnRenderer'] = { ...(settings.customTheme || {}), useCurve: settings.useCurve }
+    }
 
     // 配置模板选择弹窗（会影响默认 popupmenu）
-    // if (settings.templateChooser || settings.penalMode !== 'custom') {
-    //     modules.push(BpmnPropertiesPanelModule, BpmnPropertiesProviderModule, CamundaPlatformPropertiesProviderModule)
-    //     moddle = {}
-    //     if (settings.penalMode !== 'custom') {
-    //         options['propertiesPanel'] = { parent: '#camunda-panel' }
-    //         moddle['camunda'] = camundaModdleDescriptors
-    //     }
-    //     if (settings.templateChooser) {
-    //         modules.push(
-    //             CloudElementTemplatesPropertiesProviderModule,
-    //             ElementTemplateChooserModule,
-    //             ConnectorsExtensionModule
-    //         )
-    //         options['exporter'] = {
-    //             name: 'element-template-chooser',
-    //             version: '0.0.1'
-    //         }
-    //         options['connectorsExtension'] = {
-    //             appendAnything: true
-    //         }
-    //     }
-    // }
+    if (settings.templateChooser || settings.penalMode !== 'custom') {
+        modules.push(BpmnPropertiesPanelModule, BpmnPropertiesProviderModule, CamundaPlatformPropertiesProviderModule)
+        moddle = {}
+        if (settings.penalMode !== 'custom') {
+            options['propertiesPanel'] = { parent: '#camunda-panel' }
+            moddle['camunda'] = camundaModdleDescriptors
+        }
+        if (settings.templateChooser) {
+            modules.push(
+                CloudElementTemplatesPropertiesProviderModule,
+                ElementTemplateChooserModule,
+                ConnectorsExtensionModule
+            )
+            options['exporter'] = {
+                name: 'element-template-chooser',
+                version: '0.0.1'
+            }
+            options['connectorsExtension'] = {
+                appendAnything: true
+            }
+        }
+    }
 
     // 设置 lint 校验
-    // if (settings.useLint) {
-    //     modules.push(lintModule)
-    //     options['linting'] = {
-    //         active: true,
-    //         bpmnlint: {
-    //             config: {
-    //                 rules: { ...rules, 'task-required': 'error' }
-    //             },
-    //             resolver
-    //         }
-    //     }
-    // }
+    if (settings.useLint) {
+        modules.push(lintModule)
+        options['linting'] = {
+            active: true,
+            bpmnlint: {
+                config: {
+                    rules: { ...rules, 'task-required': 'error' }
+                },
+                resolver
+            }
+        }
+    }
 
     // 设置 lint 校验
-    // if (settings.useMinimap) {
-    //     modules.push(minimapModule)
-    //     options['minimap'] = {
-    //         open: true
-    //     }
-    // }
+    if (settings.useMinimap) {
+        modules.push(minimapModule)
+        options['minimap'] = {
+            open: true
+        }
+    }
 
     // 设置 lint 校验
-    // if (settings.useMock) {
-    //     modules.push(TokenSimulationModule)
-    // }
+    if (settings.useMock) {
+        modules.push(TokenSimulationModule)
+    }
 
     // 官方网点背景
     if (settings.bg === 'grid') {
@@ -148,15 +148,16 @@ export default function (settings) {
     }
 
     // 流程设计器配置
-    modules.push({
-        paletteProvider: ['value', ''], //禁用/清空左侧工具栏
-        labelEditingProvider: ['value', ''], //禁用节点编辑
-        contextPadProvider: ['value', ''], //禁用图形菜单
-        bendpoints: ['value', {}], //禁用连线拖动
-        //zoomScroll:["value",''],//禁用滚动
-        // moveCanvas: ['value', ''], //禁用拖动整个流程图
-        move: ['value', '']//禁用单个图形拖动
-    })
+    // modules.push({
+    //     paletteProvider: ['value', ''], //禁用/清空左侧工具栏
+    //     labelEditingProvider: ['value', ''], //禁用节点编辑
+    //     contextPadProvider: ['value', ''], //禁用图形菜单
+    //     bendpoints: ['value', {}], //禁用连线拖动
+    //     //zoomScroll:["value",''],//禁用滚动
+    //     // moveCanvas: ['value', ''], //禁用拖动整个流程图
+    //     move: ['value', '']//禁用单个图形拖动
+    // })
+
     // 设置自定义属性
     moddle['miyue'] = miyueModdleDescriptors
     moddle['userAssign'] = userAssignDescriptor

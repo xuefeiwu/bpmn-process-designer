@@ -1,14 +1,7 @@
 <template>
-
   <div
     :class="['bpmn-designer', bgClass]"
     ref="designerRef">
-
-    <node-audit-history-tip
-      v-if="showNodeAuditHistoryTip"
-      :currentNodeHistoryList="currentNodeHistoryList"
-      :offset-x="offsetX"
-      :offset-y="offsetY"/>
   </div>
 
 </template>
@@ -18,13 +11,11 @@ import {mapGetters} from 'vuex'
 import {createNewDiagram} from '@utils/xml'
 import moduleAndExtensions from './moduleAndExtensions'
 import initModeler from './initModeler'
-import {loadProcessHistory, loadProcessModel} from '../../../api/process'
-import {notEmpty} from '@utils/tool'
-import NodeAuditHistoryTip from '@packages/components/Designer/components/NodeAuditHistoryTip'
+import {loadProcessModel} from '../../api/process'
+import diagramXML from '@packages/default/newDiagram.bpmn'
 
 export default {
     name: 'BpmnDesigner',
-    components: {NodeAuditHistoryTip},
     data () {
         return {
             modelerModules: {},
@@ -32,17 +23,9 @@ export default {
             elementRegistry: {},
             eventBus: {},
             xml: '',
-            instId: '',
-            processInstanceModelId: '',
             token: '',
             modelId: '',
-            headParams: {},
-            sequenceFlowIds: [],
-            originAuditHistoryList: [],
-            currentNodeHistoryList: [],
-            showNodeAuditHistoryTip: false,
-            offsetX: 0,
-            offsetY: 0
+            headParams: {}
         }
     },
     computed: {
@@ -77,82 +60,11 @@ export default {
             })
         },
         async reloadProcess () {
-            if (this.xml) {
-                await createNewDiagram(this.modeler, this.xml, this.getEditor)
-            } else {
-                await createNewDiagram(this.modeler)
+            if (!this.xml) {
+                this.xml = diagramXML
             }
+            await createNewDiagram(this.modeler, this.xml, this.getEditor)
 
-            let runningNodeList = new Array()
-
-            // 设置已完成的线条颜色
-            if (this.sequenceFlowIds && this.sequenceFlowIds.length > 0) {
-                this.sequenceFlowIds.forEach(value => {
-                    const _element = this.getElement(value)
-                    this.setColor(_element, 'limegreen')
-                })
-            }
-            // 设置已完成和未完成的节点颜色
-            if (this.originAuditHistoryList && this.originAuditHistoryList.length > 0) {
-                this.originAuditHistoryList.forEach(item => {
-                    var _element = this.getElement(item.nodeKey)
-                    if (item.type == 'startEvent' || item.type == 'endEvent') {
-                        this.setColor(_element, 'rgb(248, 152, 0)')
-
-                    } else if (item.type == 'userTask' || item.type == 'businessRuleTask' || item.type == 'serviceTask') {
-                        if (!notEmpty(item.completeTime)) {
-                            this.setColor( _element, 'rgb(255, 0, 0)')
-                            runningNodeList.push(item.nodeKey)
-                        } else {
-                            this.setColor(_element, '#3366ff')
-                        }
-                    }
-                })
-            }
-            // 设置节点滚动
-            this.setScroll(runningNodeList)
-
-            // 注册点击事件
-            this.registerHoverEvent()
-        },
-        /**
-         * 鼠标焦点事件
-         */
-        registerHoverEvent () {
-            let nodeTypeList = ['bpmn:UserTask', 'bpmn:BusinessRuleTask', 'bpmn:ServiceTask', 'bpmn:StartEvent', 'bpmn:EndEvent']
-            const that = this
-            this.eventBus.on('element.hover', function (e) {
-                const element = e.element
-                if (nodeTypeList.indexOf(element.type) != -1) {
-                    that.showAuditHistoryTip(element, e.originalEvent.offsetX, e.originalEvent.offsetY)
-                }
-            })
-
-            this.eventBus.on('element.out', function (e) {
-                const element = e.element
-                if (nodeTypeList.indexOf(element.type) != -1) {
-                    that.showNodeAuditHistoryTip = false
-                }
-            })
-        },
-        /**
-         * 显示审批历史
-         */
-        showAuditHistoryTip (element, offsetX, offsetY) {
-            if (element.type != 'bpmn:UserTask') {
-                return
-            }
-
-            if (this.originAuditHistoryList && this.originAuditHistoryList.length > 0) {
-                this.currentNodeHistoryList = this.originAuditHistoryList.filter(item => item.nodeKey == element.id)
-                if (this.currentNodeHistoryList && this.currentNodeHistoryList.length > 0) {
-                    this.offsetX = (offsetX + element.width) + 'px'
-                    this.offsetY = (offsetY - element.height * 2) + 'px'
-                    // 构造数据
-                    this.showNodeAuditHistoryTip = true
-                    console.log(this.offsetX, this.offsetY, element)
-                }
-            }
         },
         /**
          * 获取请求参数
@@ -166,47 +78,23 @@ export default {
             return null
         },
         /**
-         * 设置节点滚动
+         * 加载流程图
+         * @returns {Promise<void>}
          */
-        setScroll (runningNodeList) {
-            // 当前节点滚动闪烁
-            let djsShapeList = document.getElementsByClassName('djs-shape')
-            for(let djs of djsShapeList){
-                let nodeId = djs.getAttribute('data-element-id')
-                if (runningNodeList.indexOf(nodeId) != -1) {
-                    let children = djs.firstChild
-                    children.classList.add('node')
-                    children.firstChild.setAttribute('stroke-dasharray', '4,4')
+        async getProcessModel () { // 该方法模拟请求后台获取bpmn文件地址
+            if (!this.modelId) {
+                return
+            }
+
+            await loadProcessModel(this.modelId, this.headParams).then((res) => {
+                if (res.code == '0') {
+                    this.xml = res.xml
                 }
-            }
-        },
-        async getProcessHistory () { // 该方法模拟请求后台获取bpmn文件地址
-            if (this.instId || this.processInstanceModelId) {
-                await loadProcessHistory(
-                    this.instId,
-                    this.processInstanceModelId,
-                    this.headParams
-                ).then((res) => {
-                    if (res.code == '0') {
-                        this.xml = res.XML
-                        this.sequenceFlowIds = res.sequenceFlowIds
-                        this.originAuditHistoryList = res.data
-                    }
-                }).finally(() => {
-                })
-            } else if (this.modelId) {
-                await loadProcessModel(this.modelId, this.headParams).then((res) => {
-                    if (res.code == '0') {
-                        this.xml = res.xml
-                    }
-                }).finally(() => {
-                })
-            }
+            }).finally(() => {
+            })
         }
     },
     async created () {
-        this.instId = this.getParamter('instId')
-        this.processInstanceModelId = this.getParamter('processInstanceModelId')
         this.token = this.getParamter('messageId')
         this.modelId = this.getParamter('modelId')
 
@@ -216,7 +104,7 @@ export default {
             }
         }
 
-        await this.getProcessHistory()
+        await this.getProcessModel()
 
         this.modelerModules = moduleAndExtensions(this.getEditor)
         this.modeler = initModeler(this.$refs.designerRef, this.modelerModules, this)

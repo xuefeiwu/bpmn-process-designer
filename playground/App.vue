@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <!--<bpmn-toolbar v-if="getEditorConfig.toolbar" />-->
+    <bpmn-toolbar v-if="getEditorConfig.toolbar" />
     <div class="main-content">
       <bpmn-designer/>
-      <!--<bpmn-panel v-if="getEditorConfig.penalMode === 'custom'" />-->
-      <!--<div-->
-      <!--  v-else-->
-      <!--  class="camunda-panel"-->
-      <!--  id="camunda-panel"></div>-->
+      <bpmn-panel v-if="getEditorConfig.penalMode === 'custom'" />
+      <div
+        v-else
+        class="camunda-panel"
+        id="camunda-panel"></div>
     </div>
 
-    <!--<bpmn-settings />-->
-    <!--<bpmn-context-menu />-->
+    <bpmn-settings />
+    <bpmn-context-menu />
   </div>
 </template>
 
