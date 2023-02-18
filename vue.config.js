@@ -16,6 +16,7 @@ module.exports = defineConfig({
   devServer: {
     port: port,
     open: true,
+    host: 'localhost',
     // 代理配置
     proxy: {
       // 这里的api 表示如果我们的请求地址有/api的时候,就出触发代理机制
