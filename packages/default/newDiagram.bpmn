@@ -1,78 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:extA1="http://www.a1bpm.com/schema/1.0/A1" xmlns:A1Category="http://a1bpm.category/schema/bpmn/ExtCategory/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI">
-  <extA1:ExtProperties id="ExtProperties_1pzqvmq">
-    <extA1:PropertiesDef id="PropertiesDef_11sk2fc" subjectRule="${title}" description="" propNotifyType="" parameterUserAssign="prop_skipFirstNode" propSkipRules="" propDateType="" dateTypeDay="" dateTypeHour="0" dateTypeMinute="0" startMethod="start" />
-  </extA1:ExtProperties>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:extA1="http://www.a1bpm.com/schema/1.0/A1" id="Definitions_17m7czq" targetNamespace="http://bpmn.io/schema/bpmn">
+  <extA1:ExtProperties id="ExtProperties_1pzqvmq" />
   <extA1:Buttons id="Buttons_12pbb5b" />
-  <extA1:UserRules id="UserRules_1ei2q83">
-    <extA1:UserRule id="UserRule_1c0vv39" nodeId="UserTask_1slvo12" pluginType="users" pluginVal="" logicCal="" ruleId="currentUser" ruleVal="" ruleDisplayName="[当前登录用户]" specId="" />
-    <extA1:UserRule id="UserRule_0jhtrfi" nodeId="UserTask_1pzbvgu" pluginType="users" pluginVal="胡娇" logicCal="" ruleId="spec" ruleVal="胡娇" ruleDisplayName="[指定用户]胡娇" specId="1465868936627310593" />
-    <extA1:UserRule id="UserRule_02pq434" nodeId="UserTask_11fq3r6" pluginType="users" pluginVal="胡娇（采购员）" logicCal="" ruleId="spec" ruleVal="胡娇（采购员）" ruleDisplayName="[指定用户]胡娇（采购员）" specId="1481158486911029249" />
-    <extA1:UserRule id="UserRule_1v90np4" nodeId="UserTask_0zaj4yr" pluginType="users" pluginVal="" logicCal="" ruleId="currentUser" ruleVal="" ruleDisplayName="[当前登录用户]" specId="" />
-    <extA1:UserRule id="UserRule_0prfwbe" nodeId="UserTask_05ezvi0" pluginType="users" pluginVal="" logicCal="" ruleId="currentUser" ruleVal="" ruleDisplayName="[当前登录用户]" specId="" />
-    <extA1:UserRule id="UserRule_1r2ojrs" nodeId="UserTask_00lj3fc" pluginType="users" pluginVal="梁华权" logicCal="" ruleId="spec" ruleVal="梁华权" ruleDisplayName="[指定用户]梁华权" specId="1501405789159550977" />
-  </extA1:UserRules>
+  <extA1:UserRules id="UserRules_1ei2q83" />
   <extA1:UserPropertyes id="UserPropertyes_0mx5h1d" />
   <extA1:Globals id="Globals_1rkyzbr" />
   <extA1:VariableDefs id="VariableDefs_0ackb0k" />
-  <extA1:Conditions id="Conditions_1r12rhe">
-    <extA1:Condition id="Condition_0u60tbe" nodeId="SequenceFlow_066gqv4" />
-    <extA1:Condition id="Condition_0da85ze" nodeId="SequenceFlow_0vgagtp" />
-  </extA1:Conditions>
+  <extA1:Conditions id="Conditions_1r12rhe" />
   <extA1:CommonScripts id="CommonScripts_0f1qqdw" />
-  <extA1:SignNodes id="SignNodes_0f1qqdw" />
-  <extA1:GlobalForms id="GlobalForms_0f1qqdw" />
-  <extA1:ExtAttributes id="ExtAttributes_0f1qqd2" />
-  <bpmn:process id="resultEnquiry_bpmn_1623904316493012993" name="询价单结果审批" isExecutable="true">
-    <bpmn:documentation></bpmn:documentation>
-    <bpmn:startEvent id="StartEvent_1" name="开始" activiti:initiator="startUser">
-      <bpmn:outgoing>SequenceFlow_010avpb</bpmn:outgoing>
-    </bpmn:startEvent>
-    <bpmn:userTask id="UserTask_00lj3fc" name="提交人">
-      <bpmn:incoming>SequenceFlow_010avpb</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0cq1h1a</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_010avpb" sourceRef="StartEvent_1" targetRef="UserTask_00lj3fc" />
-    <bpmn:userTask id="UserTask_0zaj4yr" name="提交确认">
-      <bpmn:incoming>SequenceFlow_0cq1h1a</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_02sro99</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_0cq1h1a" sourceRef="UserTask_00lj3fc" targetRef="UserTask_0zaj4yr" />
-    <bpmn:sequenceFlow id="SequenceFlow_02sro99" sourceRef="UserTask_0zaj4yr" targetRef="EndEvent_16gebm6" />
-    <bpmn:endEvent id="EndEvent_16gebm6" name="结束1">
-      <bpmn:incoming>SequenceFlow_02sro99</bpmn:incoming>
-    </bpmn:endEvent>
+  <extA1:SignNodes id="SignNodes_0f1qqdw">
+  </extA1:SignNodes>
+  <extA1:GlobalForms id="GlobalForms_0f1qqdw">
+    </extA1:GlobalForms>
+   <extA1:ExtAttributes id="ExtAttributes_0f1qqd2"/>
+  <bpmn:process id="Process_02okg1u" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="开始" activiti:initiator="startUser" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="resultEnquiry_bpmn_1623904316493012993">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_02okg1u">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="159" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="186" y="195" width="22" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_00lj3fc_di" bpmnElement="UserTask_00lj3fc">
-        <dc:Bounds x="270" y="137" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_010avpb_di" bpmnElement="SequenceFlow_010avpb">
-        <di:waypoint x="215" y="177" />
-        <di:waypoint x="270" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_0zaj4yr_di" bpmnElement="UserTask_0zaj4yr">
-        <dc:Bounds x="430" y="137" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0cq1h1a_di" bpmnElement="SequenceFlow_0cq1h1a">
-        <di:waypoint x="370" y="177" />
-        <di:waypoint x="430" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_02sro99_di" bpmnElement="SequenceFlow_02sro99">
-        <di:waypoint x="530" y="177" />
-        <di:waypoint x="642" y="177" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="EndEvent_16gebm6_di" bpmnElement="EndEvent_16gebm6">
-        <dc:Bounds x="642" y="159" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="646" y="198" width="28" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
