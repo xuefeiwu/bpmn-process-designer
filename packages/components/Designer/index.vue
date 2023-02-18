@@ -12,7 +12,6 @@ import {createNewDiagram} from '@utils/xml'
 import moduleAndExtensions from './moduleAndExtensions'
 import initModeler from './initModeler'
 import {loadProcessModel} from '../../api/process'
-import diagramXML from '@packages/default/newDiagram.bpmn'
 
 export default {
     name: 'BpmnDesigner',
@@ -60,11 +59,7 @@ export default {
             })
         },
         async reloadProcess () {
-            if (!this.xml) {
-                this.xml = diagramXML
-            }
             await createNewDiagram(this.modeler, this.xml, this.getEditor)
-
         },
         /**
          * 获取请求参数
