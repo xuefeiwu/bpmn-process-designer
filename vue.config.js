@@ -33,7 +33,7 @@ module.exports = defineConfig({
   pages: {
     index: {
       entry: "playground/main.js",
-      template: "public/index.html"
+      template: "public/tab.html"
     }
   },
   transpileDependencies: false,
