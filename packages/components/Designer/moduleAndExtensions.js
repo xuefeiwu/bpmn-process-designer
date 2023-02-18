@@ -132,7 +132,7 @@ export default function (settings) {
 
         modules.push(ElementFactory)
         options['elementFactory'] = {
-            'bpmn:Task': { width: 120, height: 120 },
+            // 'bpmn:Task': { width: 120, height: 120 },
             'bpmn:SequenceFlow': { width: 100, height: 80 }
         }
     }
