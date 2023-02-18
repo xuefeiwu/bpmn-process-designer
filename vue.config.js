@@ -33,9 +33,9 @@ module.exports = defineConfig({
   pages: {
     index: {
       entry: "playground/main.js",
-      template: "public/tab.html",
+      template: "public/index.html",
       // 在 dist/index.html 的输出
-      filename: 'tab.html',
+      filename: 'index.html',
     }
   },
   transpileDependencies: false,
