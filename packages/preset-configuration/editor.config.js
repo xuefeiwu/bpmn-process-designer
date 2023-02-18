@@ -1,6 +1,6 @@
 export const defaultSettings = {
     processId: `Process_${new Date().getTime()}`,
-    processName: '业务流程',
+    processName: '初始化流程',
     processEngine: 'camunda',
     paletteMode: 'enhancement',
     penalMode: 'custom',
@@ -9,7 +9,7 @@ export const defaultSettings = {
     bg: 'grid-image',
     toolbar: true,
     useMinimap: true,
-    useLint: true,
+    useLint: false,
     useMock: true,
     contextmenu: true,
     customContextmenu: true,
