@@ -8,7 +8,7 @@ function resolve(dir) {
 const port = process.env.port || process.env.npm_config_port || 9528
 
 module.exports = defineConfig({
-  publicPath: '/',
+  publicPath: '',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: false,
@@ -33,7 +33,9 @@ module.exports = defineConfig({
   pages: {
     index: {
       entry: "playground/main.js",
-      template: "public/tab.html"
+      template: "public/tab.html",
+      // 在 dist/index.html 的输出
+      filename: 'tab.html',
     }
   },
   transpileDependencies: false,
