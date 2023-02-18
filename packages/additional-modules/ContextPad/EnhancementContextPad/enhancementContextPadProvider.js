@@ -1,10 +1,11 @@
 import ContextPadProvider from 'bpmn-js/lib/features/context-pad/ContextPadProvider'
 
 // 重写原型链上的
-ContextPadProvider.prototype.getContextPadEntries = function (element) {}
+ContextPadProvider.prototype.getContextPadEntries = function (element) {
+}
 
 export default class EnhancementContextPadProvider {
-    constructor ( contextPad, config, injector, translate, bpmnFactory, elementFactory, create, modeling, connect ) {
+    constructor (contextPad, config, injector, translate, bpmnFactory, elementFactory, create, modeling, connect) {
         this.create = create
         this.elementFactory = elementFactory
         this.translate = translate
@@ -13,7 +14,7 @@ export default class EnhancementContextPadProvider {
         this.connect = connect
         config = config || {}
         if (config.autoPlace !== false) {
-            this.autoPlace  = injector.get('autoPlace', false)
+            this.autoPlace = injector.get('autoPlace', false)
         }
 
         // 定义这是一个contextPad
@@ -32,10 +33,15 @@ export default class EnhancementContextPadProvider {
 
         const actions = {}
 
+        // 删除元素
+        const removeElement = (event) => {
+            modeling.removeElements([element])
+        }
+
         // 服务节点,追加节点
         const appendServiceTask = (event, element) => {
             if (autoPlace) {
-                const shape = elementFactory.createShape({ type: 'bpmn:ServiceTask' })
+                const shape = elementFactory.createShape({type: 'bpmn:ServiceTask'})
                 autoPlace.append(element, shape)
             } else {
                 appendServiceTaskStart(event, element)
@@ -43,7 +49,7 @@ export default class EnhancementContextPadProvider {
         }
 
         const appendServiceTaskStart = (event) => {
-            const shape = elementFactory.createShape({ type: 'bpmn:ServiceTask' })
+            const shape = elementFactory.createShape({type: 'bpmn:ServiceTask'})
             create.start(event, shape, element)
         }
 
@@ -51,7 +57,7 @@ export default class EnhancementContextPadProvider {
         // 用户节点
         const appendUserTask = (event, element) => {
             if (autoPlace) {
-                const shape = elementFactory.createShape({ type: 'bpmn:UserTask' })
+                const shape = elementFactory.createShape({type: 'bpmn:UserTask'})
                 autoPlace.append(element, shape)
             } else {
                 appendUserTaskStart(event, element)
@@ -59,8 +65,18 @@ export default class EnhancementContextPadProvider {
         }
 
         const appendUserTaskStart = (event) => {
-            const shape = elementFactory.createShape({ type: 'bpmn:ServiceTask' })
+            const shape = elementFactory.createShape({type: 'bpmn:ServiceTask'})
             create.start(event, shape, element)
+        }
+
+        // 删除按钮
+        const deleteElement = {
+            group: 'edit',
+            className: 'bpmn-icon-trash',
+            title: translate('移除'),
+            action: {
+                click: removeElement
+            }
         }
 
         // 添加服务节点
@@ -85,7 +101,22 @@ export default class EnhancementContextPadProvider {
             }
         }
 
-        return actions
+        actions['delete'] = deleteElement
+
+        let elementType = ['bpmn:EndEvent', 'label', 'bpmn:SequenceFlow', 'bpmn:Lane', 'bpmn:Participant', 'bpmn:TextAnnotation']
+        if (elementType.indexOf(element.type) == -1) {
+            return actions
+        }
+        return {
+            'delete': {
+                group: 'model',
+                className: 'bpmn-icon-trash',
+                title: translate('移除'),
+                action: {
+                    click: removeElement
+                }
+            }
+        }
     }
 }
 
