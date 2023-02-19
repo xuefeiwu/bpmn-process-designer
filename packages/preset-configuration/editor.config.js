@@ -5,6 +5,7 @@ export const defaultSettings = {
     paletteMode: 'enhancement',
     penalMode: 'custom',
     contextPadMode: 'enhancement',
+    replaceMenuMode: 'rewrite',
     rendererMode: 'rewrite',
     bg: 'grid-image',
     toolbar: true,

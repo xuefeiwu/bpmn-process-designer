@@ -77,9 +77,9 @@ Modeling.prototype.createShape = function (shape, position, target, parentIndex,
     var displayName = ''
     var prefix = (shape.type || '').replace(/^[^:]*:/g, '')
     if (prefix == 'StartEvent') {
-        displayName = '开始事件'
+        displayName = '开始'
     } else if (prefix == 'EndEvent') {
-        displayName = '结束事件'
+        displayName = '结束'
     } else if (prefix == 'ExclusiveGateway') {
         displayName = '排他网关'
     } else if (prefix == 'ParallelGateway') {

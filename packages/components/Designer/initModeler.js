@@ -44,7 +44,7 @@ export default function (designerDom, moduleAndExtensions, context) {
     })
 
     // 右键菜单不需要
-    // EnhancementContextmenu(modeler, context.getEditor)
+    EnhancementContextmenu(modeler, context.getEditor)
 
     // 功能测试部分，可删除
     // modeler.on('commandStack.elements.create.preExecute', (event) => {

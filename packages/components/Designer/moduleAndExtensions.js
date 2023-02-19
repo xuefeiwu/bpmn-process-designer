@@ -33,6 +33,7 @@ import userProperty from '@packages/moddle-extensions/customer/userProperty.json
 import EnhancementPalette from '@packages/additional-modules/Palette/EnhancementPalette'
 import RewritePalette from '@packages/additional-modules/Palette/RewritePalette'
 import EnhancementContextPad from '@packages/additional-modules/ContextPad/EnhancementContextPad'
+import RewritePopupMenu from '@packages/additional-modules/PopupMenu/RewritePopupMenu'
 import RewriteContextPad from '@packages/additional-modules/ContextPad/RewriteContextPad'
 import EnhancementRenderer from '@packages/additional-modules/Renderer/EnhancementRenderer'
 import RewriteRenderer from '@packages/additional-modules/Renderer/RewriteRenderer'
@@ -54,6 +55,9 @@ export default function (settings) {
     // 配置 contextPad (可覆盖 contextPadProvider 取消原生上下文菜单)
     settings.contextPadMode === 'enhancement' && modules.push(EnhancementContextPad)
     settings.contextPadMode === 'rewrite' && modules.push(RewriteContextPad)
+
+    // 配置 PopupMenu (可覆盖 replaceMenuProvider)
+    settings.replaceMenuMode === 'rewrite' && modules.push(RewritePopupMenu)
 
     // 配置 自定义渲染
     settings.rendererMode === 'enhancement' && modules.push(EnhancementRenderer)

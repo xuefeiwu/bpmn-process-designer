@@ -88,7 +88,7 @@ class RewritePaletteProvider extends PaletteProvider {
                 'bpmn:StartEvent',
                 'events',
                 'bpmn-icon-start-event-none',
-                '开始事件'
+                '开始'
             ),
             'create.end-event': createAction(
                 elementFactory,
@@ -96,7 +96,7 @@ class RewritePaletteProvider extends PaletteProvider {
                 'bpmn:EndEvent',
                 'events',
                 'bpmn-icon-end-event-none',
-                '结束事件'
+                '结束'
             ),
             'events-separator': {
                 group: 'events',
