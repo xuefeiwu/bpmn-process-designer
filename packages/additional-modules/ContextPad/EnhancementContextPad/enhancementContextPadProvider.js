@@ -1,4 +1,5 @@
 import ContextPadProvider from 'bpmn-js/lib/features/context-pad/ContextPadProvider'
+import {is} from 'bpmn-js/lib/util/ModelUtil'
 
 // 重写原型链上的
 ContextPadProvider.prototype.getContextPadEntries = function (element) {
@@ -103,20 +104,21 @@ export default class EnhancementContextPadProvider {
 
         actions['delete'] = deleteElement
 
-        let elementType = ['bpmn:EndEvent', 'label', 'bpmn:SequenceFlow', 'bpmn:Lane', 'bpmn:Participant', 'bpmn:TextAnnotation']
-        if (elementType.indexOf(element.type) == -1) {
-            return actions
-        }
-        return {
-            'delete': {
-                group: 'model',
-                className: 'bpmn-icon-trash',
-                title: translate('移除'),
-                action: {
-                    click: removeElement
+        if (is(element, 'bpmn:EndEvent') || is(element, 'bpmn:SequenceFlow')|| is(element, 'bpmn:Lane')|| is(element, 'bpmn:Participant')|| is(element, 'bpmn:TextAnnotation')) {
+            return {
+                'delete': {
+                    group: 'model',
+                    className: 'bpmn-icon-trash',
+                    title: translate('移除'),
+                    action: {
+                        click: removeElement
+                    }
                 }
             }
+        } else if (element.type=='label') {
+            return {}
         }
+        return actions
     }
 }
 
