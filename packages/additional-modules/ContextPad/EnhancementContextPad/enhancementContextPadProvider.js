@@ -65,7 +65,7 @@ export default class EnhancementContextPadProvider {
         }
 
         const appendUserTaskStart = (event) => {
-            const shape = elementFactory.createShape({type: 'bpmn:ServiceTask'})
+            const shape = elementFactory.createShape({type: 'bpmn:UserTask'})
             create.start(event, shape, element)
         }
 

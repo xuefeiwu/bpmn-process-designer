@@ -1,7 +1,7 @@
 export const defaultSettings = {
     processId: `Process_${new Date().getTime()}`,
     processName: '初始化流程',
-    processEngine: 'camunda',
+    processEngine: 'flowable',
     paletteMode: 'enhancement',
     penalMode: 'custom',
     contextPadMode: 'enhancement',
