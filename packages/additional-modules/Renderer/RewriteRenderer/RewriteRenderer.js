@@ -44,17 +44,18 @@ class RewriteRenderer extends BaseRenderer {
     constructor (config, eventBus, styles, pathMap, canvas, textRenderer, elementRegistry, interactionEvents, priority) {
         super(eventBus, priority)
         this._elementRegistry = elementRegistry
+        // 覆盖节点颜色
         const presetColor = {
-            defaultFillColor: '#ffffff',
-            defaultStartEventColor: '#61c071',
-            defaultEndEventColor: '#d03050',
-            defaultIntermediateEventColor: '#e9a28d',
-            defaultIntermediateThrowEventColor: '#e9a28d',
-            defaultIntermediateCatchEventColor: '#e9a28d',
-            defaultTaskColor: '#9cafcf',
-            defaultLabelColor: '#000000',
-            defaultGatewayColor: '#fb863c',
-            defaultSequenceColor: '#9cafcf'
+            // defaultFillColor: '#ffffff',
+            // defaultStartEventColor: '#61c071',
+            // defaultEndEventColor: '#d03050',
+            // defaultIntermediateEventColor: '#e9a28d',
+            // defaultIntermediateThrowEventColor: '#e9a28d',
+            // defaultIntermediateCatchEventColor: '#e9a28d',
+            // defaultTaskColor: '#9cafcf',
+            // defaultLabelColor: '#000000',
+            // defaultGatewayColor: '#fb863c',
+            // defaultSequenceColor: '#9cafcf'
         }
         const presetOpacity = {
             defaultStartEventOpacity: 0,

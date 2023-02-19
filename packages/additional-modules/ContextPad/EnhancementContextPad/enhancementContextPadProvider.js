@@ -22,20 +22,59 @@ export default class EnhancementContextPadProvider {
     }
 
     getContextPadEntries (element) {
+        if (element.type=='label') {
+            return {}
+        }
+
         const {
             autoPlace,
             create,
             elementFactory,
             translate,
             modeling,
+            connect,
             bpmnFactory
         } = this
 
         const actions = {}
-
         // 删除元素
         const removeElement = (event) => {
             modeling.removeElements([element])
+        }
+
+        // 连线
+        const startConnect = (event, element) => {
+            connect.start(event, element)
+        }
+
+        // 结束节点,追加节点
+        const appendEndEvent = (event, element) => {
+            if (autoPlace) {
+                const shape = elementFactory.createShape({type: 'bpmn:EndEvent'})
+                autoPlace.append(element, shape)
+            } else {
+                appendServiceTaskStart(event, element)
+            }
+        }
+
+        const appendEndEventStart = (event) => {
+            const shape = elementFactory.createShape({type: 'bpmn:EndEvent'})
+            create.start(event, shape, element)
+        }
+
+        // 添加排他网关
+        const appendGateway = (event, element) => {
+            if (autoPlace) {
+                const shape = elementFactory.createShape({type: 'bpmn:ExclusiveGateway'})
+                autoPlace.append(element, shape)
+            } else {
+                appendServiceTaskStart(event, element)
+            }
+        }
+
+        const appendGatewayStart = (event) => {
+            const shape = elementFactory.createShape({type: 'bpmn:ExclusiveGateway'})
+            create.start(event, shape, element)
         }
 
         // 服务节点,追加节点
@@ -73,9 +112,42 @@ export default class EnhancementContextPadProvider {
         const deleteElement = {
             group: 'edit',
             className: 'bpmn-icon-trash',
-            title: translate('移除'),
+            title: translate('Remove'),
             action: {
                 click: removeElement
+            }
+        }
+
+        // 连线
+        const connectElement = {
+            group: 'connect',
+            className: 'bpmn-icon-connection-multi',
+            title: translate('Connect using DataInputAssociation'),
+            action: {
+                dragstart: startConnect,
+                click: startConnect
+            }
+        }
+
+        // 结束节点
+        actions['append.end-event'] = {
+            group: 'model',
+            className: 'bpmn-icon-end-event-none',
+            title: translate('Append EndEvent'),
+            action: {
+                dragstart: appendEndEventStart,
+                click: appendEndEvent
+            }
+        }
+
+        // 排他网关
+        actions['append.gateway'] = {
+            group: 'model',
+            className: 'bpmn-icon-gateway-xor',
+            title: translate('Append Exclusive Gateway'),
+            action: {
+                dragstart: appendGatewayStart,
+                click: appendGateway
             }
         }
 
@@ -83,7 +155,7 @@ export default class EnhancementContextPadProvider {
         actions['append.service-task'] = {
             group: 'model',
             className: 'bpmn-icon-service-task',
-            title: translate('添加服务任务'),
+            title: translate('Append Service Task'),
             action: {
                 dragstart: appendServiceTaskStart,
                 click: appendServiceTask
@@ -94,7 +166,7 @@ export default class EnhancementContextPadProvider {
         actions['append.append-user-task'] = {
             group: 'model',
             className: 'bpmn-icon-user-task',
-            title: translate('添加用户任务'),
+            title: translate('Append User Task'),
             action: {
                 click: appendUserTask,
                 dragstart: appendUserTaskStart
@@ -102,20 +174,19 @@ export default class EnhancementContextPadProvider {
         }
 
         actions['delete'] = deleteElement
+        actions['connect'] = connectElement
 
         if (is(element, 'bpmn:EndEvent') || is(element, 'bpmn:SequenceFlow')|| is(element, 'bpmn:Lane')|| is(element, 'bpmn:Participant')|| is(element, 'bpmn:TextAnnotation')) {
             return {
                 'delete': {
                     group: 'model',
                     className: 'bpmn-icon-trash',
-                    title: translate('移除'),
+                    title: translate('Remove'),
                     action: {
                         click: removeElement
                     }
                 }
             }
-        } else if (element.type=='label') {
-            return {}
         }
         return actions
     }

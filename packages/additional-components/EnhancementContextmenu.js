@@ -8,7 +8,6 @@ export default function (modeler, editorConfig) {
     if (!editorConfig.contextmenu) return
     modeler.on('element.contextmenu', 2000, (event) => {
         const { element, originalEvent } = event
-
         // 自定义右键菜单
         if (editorConfig.customContextmenu) {
             return EventEmitter.emit('show-contextmenu', originalEvent, element)
