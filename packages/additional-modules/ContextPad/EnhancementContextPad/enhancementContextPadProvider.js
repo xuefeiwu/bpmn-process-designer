@@ -17,7 +17,6 @@ export default class EnhancementContextPadProvider {
         if (config.autoPlace !== false) {
             this.autoPlace = injector.get('autoPlace', false)
         }
-
         // 定义这是一个contextPad
         contextPad.registerProvider(this)
     }
