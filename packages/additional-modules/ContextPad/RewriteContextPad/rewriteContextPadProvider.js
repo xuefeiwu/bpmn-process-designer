@@ -1,4 +1,3 @@
-import ContextPadProvider from 'bpmn-js/lib/features/context-pad/ContextPadProvider'
 import EventEmitter from '@utils/EventEmitter'
 import {is} from 'bpmn-js/lib/util/ModelUtil'
 
@@ -6,19 +5,7 @@ import {is} from 'bpmn-js/lib/util/ModelUtil'
 // ContextPadProvider.prototype.getContextPadEntries = function (element) {
 // }
 
-RewriteContextPadProvider.$inject = [
-    'contextPad',
-    'config',
-    'injector',
-    'translate',
-    'bpmnFactory',
-    'elementFactory',
-    'create',
-    'modeling',
-    'connect'
-]
-
-class RewriteContextPadProvider {
+export default class RewriteContextPadProvider {
     constructor (contextPad, config, injector, translate, bpmnFactory, elementFactory, create, modeling, connect) {
         this.create = create
         this.elementFactory = elementFactory
@@ -216,4 +203,15 @@ class RewriteContextPadProvider {
     }
 }
 
-export default RewriteContextPadProvider
+
+RewriteContextPadProvider.$inject = [
+    'contextPad',
+    'config',
+    'injector',
+    'translate',
+    'bpmnFactory',
+    'elementFactory',
+    'create',
+    'modeling',
+    'connect'
+]
