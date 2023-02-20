@@ -1,5 +1,6 @@
 import ContextPadProvider from 'bpmn-js/lib/features/context-pad/ContextPadProvider'
 import {is} from 'bpmn-js/lib/util/ModelUtil'
+import EventEmitter from '@utils/EventEmitter'
 
 // 重写原型链上的
 ContextPadProvider.prototype.getContextPadEntries = function (element) {
@@ -124,13 +125,7 @@ export default class EnhancementContextPadProvider {
             title: translate('Change type'),
             action: {
                 click: function (event, element) {
-                    const replaceMenu = getModeler.get('replaceMenu')
-                    if (replaceMenu) {
-                        replaceMenu.open(element, {
-                            x: event.clientX + 10,
-                            y: event.clientY + 25
-                        })
-                    }
+                    return EventEmitter.emit('show-contextmenu', event, element)
                 }
             }
         }
