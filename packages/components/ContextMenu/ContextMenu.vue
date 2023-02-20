@@ -2,7 +2,7 @@
   <div
     class="bpmn-context-menu"
     v-if="showPopover"
-    @mousemove="closePopover"
+    @mouseleave="closePopover"
     :style="currentPosition">
     <div class="context-menu_header">{{ contextMenuTitle }}</div>
     <div class="context-menu_body">
@@ -21,7 +21,7 @@
 import { customTranslate } from '@packages/additional-modules/Translate'
 import contextMenuActions from '@packages/components/ContextMenu/contextMenuActions'
 import EventEmitter from '@utils/EventEmitter'
-import { isAppendAction } from '@packages/bpmn-utils/BpmnDesignerUtils'
+import {getModeler, isAppendAction} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import BpmnReplaceOptions from '@packages/bpmn-utils/BpmnReplaceOptions'
 import { catchError } from '@utils/printCatch'
 
@@ -61,7 +61,6 @@ export default {
         },
 
         async initEventCallback (event, element) {
-            console.log(event, this.$el.clientWidth)
             this._currentElement = element || null
             this.isAppend = isAppendAction(element)
             this.currentReplaceOptions = BpmnReplaceOptions(element)
@@ -85,8 +84,8 @@ export default {
             const { clientX, clientY } = event
 
             // 组件位置计算
-            let left = clientX - 10,
-                top = clientY -10
+            let left = clientX - 5,
+                top = clientY - 5
             if (modelWidth + padding + clientX >= pageWidth) {
                 left = clientX - modelWidth
             }
