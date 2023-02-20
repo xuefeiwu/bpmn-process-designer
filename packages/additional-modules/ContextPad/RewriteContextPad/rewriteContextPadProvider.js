@@ -1,9 +1,6 @@
 import EventEmitter from '@utils/EventEmitter'
 import {is} from 'bpmn-js/lib/util/ModelUtil'
-
-// // 重写原型链上的
-// ContextPadProvider.prototype.getContextPadEntries = function (element) {
-// }
+import ContextPadProvider from 'bpmn-js/lib/features/context-pad/ContextPadProvider'
 
 export default class RewriteContextPadProvider {
     constructor (contextPad, config, injector, translate, bpmnFactory, elementFactory, create, modeling, connect) {
@@ -215,3 +212,8 @@ RewriteContextPadProvider.$inject = [
     'modeling',
     'connect'
 ]
+
+
+// 重写原型链上的
+ContextPadProvider.prototype.getContextPadEntries = function (element) {
+}
