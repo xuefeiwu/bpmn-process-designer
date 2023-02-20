@@ -2,6 +2,7 @@
   <div
     class="bpmn-context-menu"
     v-if="showPopover"
+    @mousemove="closePopover"
     :style="currentPosition">
     <div class="context-menu_header">{{ contextMenuTitle }}</div>
     <div class="context-menu_body">
@@ -38,11 +39,9 @@ export default {
     },
     created () {
         EventEmitter.on('show-contextmenu', this.initEventCallback)
-        document.body.addEventListener('click', this.closePopover)
     },
     beforeDestroy () {
         EventEmitter.removeListener('show-contextmenu', this.initEventCallback)
-        document.body.removeEventListener('click', this.closePopover)
     },
     methods: {
         translateCh (text) {
@@ -86,8 +85,8 @@ export default {
             const { clientX, clientY } = event
 
             // 组件位置计算
-            let left = clientX,
-                top = clientY
+            let left = clientX - 10,
+                top = clientY -10
             if (modelWidth + padding + clientX >= pageWidth) {
                 left = clientX - modelWidth
             }
