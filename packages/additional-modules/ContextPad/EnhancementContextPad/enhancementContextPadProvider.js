@@ -118,6 +118,22 @@ export default class EnhancementContextPadProvider {
             }
         }
 
+        const changeTypeElement =  {
+            group: 'edit',
+            className: 'bpmn-icon-screw-wrench',
+            title: translate('Change type'),
+            action: {
+                click: function (event, element) {
+                    const replaceMenu = getModeler.get('replaceMenu')
+                    if (replaceMenu) {
+                        replaceMenu.open(element, {
+                            x: event.clientX + 10,
+                            y: event.clientY + 25
+                        })
+                    }
+                }
+            }
+        }
         // 连线
         const connectElement = {
             group: 'connect',
@@ -175,6 +191,7 @@ export default class EnhancementContextPadProvider {
 
         actions['delete'] = deleteElement
         actions['connect'] = connectElement
+        actions['replace'] = changeTypeElement
 
         if (is(element, 'bpmn:EndEvent') || is(element, 'bpmn:SequenceFlow')|| is(element, 'bpmn:Lane')|| is(element, 'bpmn:Participant')|| is(element, 'bpmn:TextAnnotation')) {
             return {
