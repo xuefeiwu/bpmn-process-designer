@@ -153,7 +153,7 @@ export default class RewriteContextPadProvider {
                 if (element.height >= 120) {
                     assign(actions, {
                         'lane-divide-two': {
-                            group: 'lane-divide',
+                            group: 'lane-insert-above',
                             className: 'bpmn-icon-lane-divide-two',
                             title: translate('Divide into two Lanes'),
                             action: {
@@ -166,7 +166,7 @@ export default class RewriteContextPadProvider {
                 if (element.height >= 180) {
                     assign(actions, {
                         'lane-divide-three': {
-                            group: 'lane-divide',
+                            group: 'lane-insert-above',
                             className: 'bpmn-icon-lane-divide-three',
                             title: translate('Divide into three Lanes'),
                             action: {
@@ -179,7 +179,7 @@ export default class RewriteContextPadProvider {
 
             assign(actions, {
                 'lane-insert-below': {
-                    group: 'lane-insert-below',
+                    group: 'lane-insert-above',
                     className: 'bpmn-icon-lane-insert-below',
                     title: translate('Add Lane below'),
                     action: {
@@ -255,12 +255,12 @@ export default class RewriteContextPadProvider {
                         'bpmn:UserTask',
                         'bpmn-icon-user-task',
                         translate('Append User Task')
-                    ),
-                    'append.intermediate-event': appendAction(
-                        'bpmn:IntermediateThrowEvent',
-                        'bpmn-icon-intermediate-event-none',
-                        translate('Append Intermediate/Boundary Event')
                     )
+                    // 'append.intermediate-event': appendAction(
+                    //     'bpmn:IntermediateThrowEvent',
+                    //     'bpmn-icon-intermediate-event-none',
+                    //     translate('Append Intermediate/Boundary Event')
+                    // )
                 })
             }
         }
