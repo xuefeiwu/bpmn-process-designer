@@ -3,13 +3,14 @@ import { assign } from 'min-dash'
 import { createAction } from '../utils'
 
 class RewritePaletteProvider extends PaletteProvider {
-    constructor (palette, create, elementFactory, spaceTool, lassoTool, handTool, globalConnect) {
-        super(palette, create, elementFactory, spaceTool, lassoTool, handTool, globalConnect, 2000)
+    constructor (palette, create, elementFactory, spaceTool, lassoTool, handTool, globalConnect, translate) {
+        super(palette, create, elementFactory, spaceTool, lassoTool, handTool, globalConnect, translate, 2000)
         this._create = create
         this._elementFactory = elementFactory
         this._lassoTool = lassoTool
         this._handTool = handTool
         this._globalConnect = globalConnect
+        this._translate = translate
     }
     getPaletteEntries () {
         const actions = {},
@@ -17,7 +18,8 @@ class RewritePaletteProvider extends PaletteProvider {
             elementFactory = this._elementFactory,
             lassoTool = this._lassoTool,
             handTool = this._handTool,
-            globalConnect = this._globalConnect
+            globalConnect = this._globalConnect,
+            translate = this._translate
 
         function createSqlTask (event) {
             const sqlTask = elementFactory.createShape({ type: 'miyue:SqlTask' })
@@ -51,7 +53,7 @@ class RewritePaletteProvider extends PaletteProvider {
             'hand-tool': {
                 group: 'tools',
                 className: 'bpmn-icon-hand-tool',
-                title: '手型工具',
+                title: translate('Activate the hand tool'),
                 action: {
                     click: function (event) {
                         handTool.activateHand(event)
@@ -61,7 +63,7 @@ class RewritePaletteProvider extends PaletteProvider {
             'lasso-tool': {
                 group: 'tools',
                 className: 'bpmn-icon-lasso-tool',
-                title: '套索工具',
+                title: translate('Activate the lasso tool'),
                 action: {
                     click: function (event) {
                         lassoTool.activateSelection(event)
@@ -71,7 +73,7 @@ class RewritePaletteProvider extends PaletteProvider {
             'global-connect-tool': {
                 group: 'tools',
                 className: 'bpmn-icon-connection-multi',
-                title: '全局连线',
+                title: translate('Activate the global connect tool'),
                 action: {
                     click: function (event) {
                         globalConnect.toggle(event)
@@ -88,7 +90,7 @@ class RewritePaletteProvider extends PaletteProvider {
                 'bpmn:StartEvent',
                 'events',
                 'bpmn-icon-start-event-none',
-                '开始'
+                translate('Create StartEvent')
             ),
             'create.end-event': createAction(
                 elementFactory,
@@ -96,7 +98,7 @@ class RewritePaletteProvider extends PaletteProvider {
                 'bpmn:EndEvent',
                 'events',
                 'bpmn-icon-end-event-none',
-                '结束'
+                translate('Create EndEvent')
             ),
             'events-separator': {
                 group: 'events',
@@ -107,8 +109,8 @@ class RewritePaletteProvider extends PaletteProvider {
                 create,
                 'bpmn:ExclusiveGateway',
                 'gateway',
-                'bpmn-icon-gateway-none',
-                '网关'
+                'bpmn-icon-gateway-xor',
+                translate('Create Exclusive Gateway')
             ),
             'create.parallel-gateway': createAction(
                 elementFactory,
@@ -116,16 +118,24 @@ class RewritePaletteProvider extends PaletteProvider {
                 'bpmn:ParallelGateway',
                 'gateway',
                 'bpmn-icon-gateway-parallel',
-                '并行网关'
+                translate('Create Parallel Gateway')
             ),
-            'create.event-base-gateway': createAction(
+            'create.inclusive-gateway': createAction(
                 elementFactory,
                 create,
-                'bpmn:EventBasedGateway',
+                'bpmn:InclusiveGateway',
                 'gateway',
-                'bpmn-icon-gateway-eventbased',
-                '事件网关'
+                'bpmn-icon-gateway-or',
+                translate('Create Inclusive Gateway')
             ),
+            // 'create.event-base-gateway': createAction(
+            //     elementFactory,
+            //     create,
+            //     'bpmn:EventBasedGateway',
+            //     'gateway',
+            //     'bpmn-icon-gateway-eventbased',
+            //     '事件网关'
+            // ),
             'gateway-separator': {
                 group: 'gateway',
                 separator: true
@@ -136,7 +146,7 @@ class RewritePaletteProvider extends PaletteProvider {
                 'bpmn:UserTask',
                 'activity',
                 'bpmn-icon-user-task',
-                '用户任务'
+                translate('Create User Task')
             ),
             'create.script-task': createAction(
                 elementFactory,
@@ -144,7 +154,7 @@ class RewritePaletteProvider extends PaletteProvider {
                 'bpmn:ScriptTask',
                 'activity',
                 'bpmn-icon-script-task',
-                '脚本任务'
+                translate('Create Script Task')
             ),
             'create.service-task': createAction(
                 elementFactory,
@@ -152,26 +162,42 @@ class RewritePaletteProvider extends PaletteProvider {
                 'bpmn:ServiceTask',
                 'activity',
                 'bpmn-icon-service-task',
-                '服务任务'
+                translate('Create Service Task')
             ),
-            'create.sql-task': {
-                group: 'activity',
-                className: 'miyue-sql-task',
-                title: '数据库任务',
-                action: {
-                    click: createSqlTask,
-                    dragstart: createSqlTask
-                }
+            // 'create.sql-task': {
+            //     group: 'activity',
+            //     className: 'miyue-sql-task',
+            //     title: '数据库任务',
+            //     action: {
+            //         click: createSqlTask,
+            //         dragstart: createSqlTask
+            //     }
+            // },
+            'process-separator': {
+                group: 'process',
+                separator: true
             },
             'create.subprocess-expanded': {
-                group: 'activity',
+                group: 'process',
                 className: 'bpmn-icon-subprocess-expanded',
-                title: '子流程',
+                title: translate('Create Sub Process'),
                 action: {
                     dragstart: createSubprocess,
                     click: createSubprocess
                 }
-            }
+            },
+            'collaboration-separator': {
+                group: 'collaboration',
+                separator: true
+            },
+            'create.expanded-pool': createAction(
+                elementFactory,
+                create,
+                'bpmn:Participant',
+                'collaboration',
+                'bpmn-icon-participant',
+                translate('Create Pool/Participant')
+            )
         })
 
         return actions
@@ -185,7 +211,8 @@ RewritePaletteProvider.$inject = [
     'spaceTool',
     'lassoTool',
     'handTool',
-    'globalConnect'
+    'globalConnect',
+    'translate'
 ]
 
 export default RewritePaletteProvider

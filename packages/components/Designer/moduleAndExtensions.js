@@ -85,7 +85,7 @@ export default function (settings) {
                 version: '0.0.1'
             }
             options['connectorsExtension'] = {
-                appendAnything: true
+                appendAnything: false
             }
         }
     }
