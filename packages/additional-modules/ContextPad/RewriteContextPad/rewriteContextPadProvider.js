@@ -302,7 +302,7 @@ export default class RewriteContextPadProvider {
             assign(actions, {
                 'append.text-annotation': appendAction('bpmn:TextAnnotation', 'bpmn-icon-text-annotation'),
                 'connect': {
-                    group: 'model',
+                    group: 'connect',
                     className: 'bpmn-icon-connection-multi',
                     title: translate('Connect using ' +
                         (businessObject.isForCompensation ? '' : 'Sequence/MessageFlow or ') +
@@ -318,7 +318,7 @@ export default class RewriteContextPadProvider {
         if (isAny(businessObject, ['bpmn:DataObjectReference', 'bpmn:DataStoreReference'])) {
             assign(actions, {
                 'connect': {
-                    group: 'model',
+                    group: 'connect',
                     className: 'bpmn-icon-connection-multi',
                     title: translate('Connect using DataInputAssociation'),
                     action: {
