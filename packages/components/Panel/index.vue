@@ -105,6 +105,7 @@ export default {
             this.currentElementId = activatedElement.id
             this.currentElementType = activatedElement.type.split(':')[1]
 
+            console.log('this.currentElementType===>', this.currentElementType)
             this.bpmnIconName = bpmnIcons[activatedElementTypeName]
             this.bpmnElementName = activatedElementTypeName
 
