@@ -105,9 +105,6 @@ export default {
         this.elementRegistry = this.modeler.get('elementRegistry')
         this.eventBus = this.modeler.get('eventBus')
 
-        this.modeler.on('shape.added', e=>{
-            var shape = e.element ? this.elementRegistry.get(e.element.id) : e.shape
-        })
         await this.reloadProcess()
     }
 }
