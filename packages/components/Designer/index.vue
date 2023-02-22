@@ -107,7 +107,6 @@ export default {
 
         this.modeler.on('shape.added', e=>{
             var shape = e.element ? this.elementRegistry.get(e.element.id) : e.shape
-            console.log('shape.added===>', shape)
         })
         await this.reloadProcess()
     }
