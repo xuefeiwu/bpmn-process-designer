@@ -114,7 +114,6 @@ export default class RewriteContextPadProvider {
                 create.start(event, shape, element)
             }
 
-            console.log(type)
             let append = autoPlace ? function (event, element) {
                 let shape = elementFactory.createShape(assign({type: type}, options))
                 autoPlace.append(element, shape)
