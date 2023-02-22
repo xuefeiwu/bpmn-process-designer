@@ -99,11 +99,15 @@ export default {
                     if (item.type == 'startEvent' || item.type == 'endEvent') {
                         this.setColor(_element, 'rgb(248, 152, 0)')
 
-                    } else if (item.type == 'userTask' || item.type == 'businessRuleTask' || item.type == 'serviceTask') {
+                    } else if (item.type == 'userTask' || item.type == 'businessRuleTask') {
                         if (!notEmpty(item.completeTime)) {
                             this.setColor( _element, 'rgb(255, 0, 0)')
                             runningNodeList.push(item.nodeKey)
                         } else {
+                            this.setColor(_element, '#3366ff')
+                        }
+                    } else {
+                        if (notEmpty(item.completeTime)) {
                             this.setColor(_element, '#3366ff')
                         }
                     }
