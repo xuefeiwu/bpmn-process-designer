@@ -7,7 +7,7 @@
       <p>{{ bpmnElementName }}</p>
       <p>{{ customTranslate(currentElementType || "Process") }}</p>
     </div>
-    <el-collapse>
+    <el-collapse v-model="activeNames">
       <component
         v-for="cp in this.renderComponents"
         :key="cp.name"
@@ -32,7 +32,6 @@ import { isAsynchronous } from '@packages/bo-utils/asynchronousContinuationsUtil
 import { isStartInitializable } from '@packages/bo-utils/initiatorUtil'
 import { getModeler } from '@packages/bpmn-utils/BpmnDesignerUtils'
 import ElementGenerations from '@packages/components/Panel/components/ElementGenerations'
-import ElementDocumentations from '@packages/components/Panel/components/ElementDocumentations'
 import ElementConditional from '@packages/components/Panel/components/ElementConditional'
 import ElementJobExecution from '@packages/components/Panel/components/ElementJobExecution'
 import ElementExtensionProperties from '@packages/components/Panel/components/ElementExtensionProperties'
@@ -45,7 +44,6 @@ export default {
     components: {
         BpmnIcon,
         ElementGenerations,
-        ElementDocumentations,
         ElementConditional,
         ElementJobExecution,
         ElementExtensionProperties,
@@ -60,7 +58,8 @@ export default {
             currentElementType: undefined,
             currentElementId: undefined,
             customTranslate,
-            renderComponents: []
+            renderComponents: [],
+            activeNames: 'base-info'
         }
     },
     created () {
@@ -105,7 +104,6 @@ export default {
             this.currentElementId = activatedElement.id
             this.currentElementType = activatedElement.type.split(':')[1]
 
-            console.log('this.currentElementType===>', this.currentElementType)
             this.bpmnIconName = bpmnIcons[activatedElementTypeName]
             this.bpmnElementName = activatedElementTypeName
 
@@ -120,7 +118,6 @@ export default {
             this.renderComponents.splice(0, this.renderComponents.length) // 清空
             // 重设
             this.renderComponents.push(ElementGenerations)
-            this.renderComponents.push(ElementDocumentations)
             isCanbeConditional(element) && this.renderComponents.push(ElementConditional)
             isJobExecutable(element) && this.renderComponents.push(ElementJobExecution)
             this.renderComponents.push(ElementExtensionProperties)

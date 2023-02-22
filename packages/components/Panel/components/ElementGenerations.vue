@@ -1,41 +1,34 @@
 <template>
   <el-collapse-item name="base-info">
     <template #title>
-      <collapse-title title="常规信息">
+      <collapse-title title="基本信息">
         <lucide-icon name="Info" />
       </collapse-title>
     </template>
 
-    <edit-item label="ID">
+    <edit-item :label="isProcess ? '流程Id' : '节点Id'">
       <el-input
         v-model="elementId"
+        disabled
         maxlength="32"
         @change="updateElementId" />
     </edit-item>
 
-    <edit-item label="Name">
+    <edit-item :label="isProcess ? '流程名称' : '节点名称'">
       <el-input
         v-model="elementName"
         maxlength="20"
+        :disabled="isProcess"
         @change="updateElementName" />
     </edit-item>
 
     <template v-if="isProcess">
       <edit-item
-        key="version"
-        label="Version">
+        label="流程描述">
         <el-input
-          v-model="elementVersion"
-          maxlength="20"
-          @change="updateElementVersion" />
-      </edit-item>
-
-      <edit-item
-        key="executable"
-        label="Executable">
-        <el-switch
-          v-model="elementExecutable"
-          @change="updateElementExecutable" />
+          v-model="elementDoc"
+          type="textarea"
+          @change="updateElementDoc" />
       </edit-item>
     </template>
   </el-collapse-item>
@@ -53,6 +46,7 @@ import {
 import { setIdValue } from '@packages/bo-utils/idUtil'
 import EventEmitter from '@utils/EventEmitter'
 import { getActive } from '@packages/bpmn-utils/BpmnDesignerUtils'
+import {getDocumentValue, setDocumentValue} from '@packages/bo-utils/documentationUtil'
 
 export default {
     name: 'ElementGenerations',
@@ -60,6 +54,7 @@ export default {
         return {
             elementId: '',
             elementName: '',
+            elementDoc: '',
             elementVersion: '',
             elementExecutable: true,
             isProcess: false
@@ -78,7 +73,11 @@ export default {
             if (this.isProcess) {
                 this.elementExecutable = getProcessExecutable(getActive())
                 this.elementVersion = getProcessVersionTag(getActive()) || ''
+                this.elementDoc = getDocumentValue(getActive()) || ''
             }
+        },
+        updateElementDoc (value) {
+            setDocumentValue(getActive(), value)
         },
         updateElementName (value) {
             setNameValue(getActive(), value)
