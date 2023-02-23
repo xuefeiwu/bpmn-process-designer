@@ -3,7 +3,16 @@ import { catchError, catchWarning } from './printCatch'
 export function emptyXML (key, name) {
     return `
 <?xml version="1.0" encoding="utf-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:extA1="http://www.a1bpm.com/schema/1.0/A1" xmlns:A1Category="http://a1bpm.category/schema/bpmn/ExtCategory/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_17m7czq" targetNamespace="" A1Category:categoryId="" A1Category:title="" A1Category:modelId="">
+<bpmn:definitions 
+    xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+    xmlns:activiti="http://activiti.org/bpmn" x
+    mlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+    xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:extA1="http://www.a1bpm.com/schema/1.0/A1" 
+    id="Definitions_17m7czq" 
+    targetNamespace="http://bpmn.io/schema/bpmn">
+    
   <bpmn:process id="${key}" name="${name}" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="开始"/>
   </bpmn:process>
