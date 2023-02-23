@@ -1,6 +1,6 @@
 import {getBusinessObject, is} from 'bpmn-js/lib/util/ModelUtil'
-import {createModdleElement} from '@packages/bpmn-utils/BpmnExtensionElements'
 import {getModeler} from '@packages/bpmn-utils/BpmnDesignerUtils'
+import {createFactoyElement} from '@packages/bpmn-utils/BpmnFactoryUtils'
 
 
 export function saveSkipFirstNode (activeElement, value) {
@@ -10,17 +10,22 @@ export function saveSkipFirstNode (activeElement, value) {
     const processElement = getProcessElement(elementRegistry)
     const bpmnDefinitionElement = processElement.businessObject.$parent
 
-    const rootBusinessObject = getRelevantBusinessObject(bpmnDefinitionElement)
     // 判断是否存在ExtProperties
-    let extPropertiesElement = getExtPropertiesElement('extA1:ExtProperties')
-    if (!extPropertiesElement) {
-        extPropertiesElement = createModdleElement('extA1:ExtProperties', {}, rootBusinessObject)
-        bpmnDefinitionElement.child = [...extPropertiesElement]
-
-        const childrenBusinessObject = getRelevantBusinessObject(extPropertiesElement)
-        const extPropertiesDefElement = createModdleElement('extA1:PropertiesDef', {parameterUserAssign: value}, childrenBusinessObject)
-        extPropertiesElement.child = [extPropertiesDefElement]
+    let extPropertiesElement = getExtPropertiesElement(bpmnDefinitionElement, 'extA1:ExtProperties')
+    let extPropertiesDefElement
+    debugger
+    if (extPropertiesElement) {
+        if ( extPropertiesElement.child) {
+            extPropertiesElement.child.splice(0, 1)
+        }
+        extPropertiesDefElement = createFactoyElement('extA1:PropertiesDef', {parameterUserAssign: value}, extPropertiesElement)
+    } else {
+        extPropertiesElement = createFactoyElement('extA1:ExtProperties', {}, bpmnDefinitionElement)
+        extPropertiesDefElement = createFactoyElement('extA1:PropertiesDef', {parameterUserAssign: value}, extPropertiesElement)
     }
+
+    extPropertiesElement.child = [extPropertiesDefElement]
+    console.log('extPropertiesElement', extPropertiesElement)
 }
 
 function getRelevantBusinessObject (element) {
@@ -42,7 +47,7 @@ function getExtPropertiesElement (bpmnDefinitionElement, type) {
     let extPropertiesElement
     for (let index in rootElementList) {
         let element = rootElementList[index]
-        if (element.$type == type) {
+        if (element && element.$type == type) {
             extPropertiesElement = element
             break
         }

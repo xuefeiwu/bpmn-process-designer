@@ -13,6 +13,18 @@ export function emptyXML (key, name) {
     id="Definitions_17m7czq" 
     targetNamespace="http://bpmn.io/schema/bpmn">
     
+  <extA1:ExtProperties id="ExtProperties_1pzqvmq" />
+  <extA1:Buttons id="Buttons_12pbb5b" />
+  <extA1:UserRules id="UserRules_1ei2q83" />
+  <extA1:UserPropertyes id="UserPropertyes_0mx5h1d" />
+  <extA1:Globals id="Globals_1rkyzbr" />
+  <extA1:VariableDefs id="VariableDefs_0ackb0k" />
+  <extA1:Conditions id="Conditions_1r12rhe" />
+  <extA1:CommonScripts id="CommonScripts_0f1qqdw" />
+  <extA1:SignNodes id="SignNodes_0f1qqdw"/>
+  <extA1:GlobalForms id="GlobalForms_0f1qqdw"/>
+  <extA1:ExtAttributes id="ExtAttributes_0f1qqd2"/>
+   
   <bpmn:process id="${key}" name="${name}" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="开始"/>
   </bpmn:process>

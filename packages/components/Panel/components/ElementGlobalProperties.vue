@@ -50,6 +50,9 @@ export default {
     },
     methods: {
         updateSkipFirstNode (value) {
+            if (value != 'prop_skipFirstNode') {
+                value = ''
+            }
             saveSkipFirstNode(getActive(), value)
         }
     }
