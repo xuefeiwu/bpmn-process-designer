@@ -3,7 +3,7 @@ import { catchError, catchWarning } from './printCatch'
 export function emptyXML (key, name) {
     return `
 <?xml version="1.0" encoding="utf-8"?>
-<bpmn:Definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_0001" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:extA1="http://www.a1bpm.com/schema/1.0/A1" xmlns:A1Category="http://a1bpm.category/schema/bpmn/ExtCategory/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_17m7czq" targetNamespace="" A1Category:categoryId="" A1Category:title="" A1Category:modelId="">
   <bpmn:process id="${key}" name="${name}" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="开始"/>
   </bpmn:process>
@@ -14,7 +14,7 @@ export function emptyXML (key, name) {
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</bpmn:Definitions>
+</bpmn:definitions>
 `
 }
 
@@ -25,6 +25,7 @@ export async function createNewDiagram (modeler, newXml, settings) {
         const newId = processId ? processId : `Process_${timestamp}`
         const newName = processName || `业务流程_${timestamp}`
         const xmlString = newXml || emptyXML(newId, newName)
+        console.log(xmlString)
         const { warnings } = await modeler.importXML(xmlString)
         if (warnings && warnings.length) {
             warnings.forEach(catchWarning)

@@ -38,6 +38,7 @@ import ElementExtensionProperties from '@packages/components/Panel/components/El
 import ElementExecutionListeners from '@packages/components/Panel/components/ElementExecutionListeners'
 import ElementAsyncContinuations from '@packages/components/Panel/components/ElementAsyncContinuations'
 import ElementStartInitiator from '@packages/components/Panel/components/ElementStartInitiator'
+import ElementGlobalProperties from '@packages/components/Panel/components/ElementGlobalProperties'
 
 export default {
     name: 'BpmnPanel',
@@ -118,6 +119,7 @@ export default {
             this.renderComponents.splice(0, this.renderComponents.length) // 清空
             // 重设
             this.renderComponents.push(ElementGenerations)
+            this.renderComponents.push(ElementGlobalProperties)
             isCanbeConditional(element) && this.renderComponents.push(ElementConditional)
             isJobExecutable(element) && this.renderComponents.push(ElementJobExecution)
             this.renderComponents.push(ElementExtensionProperties)
