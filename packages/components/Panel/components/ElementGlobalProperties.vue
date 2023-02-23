@@ -1,5 +1,6 @@
 <template>
-  <el-collapse-item name="global-info">
+  <el-collapse-item
+    name="global-info">
     <template #title>
       <collapse-title title="全局属性">
         <lucide-icon name="FolderEdit" />
@@ -11,7 +12,7 @@
       textAlign="center"
       :labelWidth="120">
       <el-switch
-        v-model="parameterUserAssign"
+        v-model="properties.parameterUserAssign"
         active-value="prop_skipFirstNode"
         @change="updateSkipFirstNode"
       >
@@ -38,14 +39,13 @@
 
 <script>
 import EditItem from '@packages/components/common/EditItem'
-import {saveExtProperties, saveSkipFirstNode} from '@packages/bo-utils/ExtPropertiesUtil'
+import {getExtProperties, saveExtProperties} from '@packages/bo-utils/ExtPropertiesUtil'
 import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
 export default {
     name: 'ElementGlobalProperties',
     components: {EditItem},
     data () {
         return {
-            parameterUserAssign: '',
             properties: {
                 parameterUserAssign: '',
                 subjectRule: '',
@@ -60,7 +60,41 @@ export default {
             }
         }
     },
+    created () {
+        this.init()
+    },
     methods: {
+        init (){
+            let xmlProperties = getExtProperties()
+            if (!xmlProperties) {
+                return
+            }
+
+            let {
+                parameterUserAssign,
+                subjectRule,
+                description,
+                propNotifyType,
+                propSkipRules,
+                propDateType,
+                dateTypeDay,
+                dateTypeHour,
+                dateTypeMinute,
+                startMethod
+            } = xmlProperties
+
+            this.properties.parameterUserAssign = parameterUserAssign
+            this.properties.subjectRule = subjectRule
+            this.properties.description = description
+            this.properties.propNotifyType = propNotifyType
+            this.properties.propSkipRules = propSkipRules
+            this.properties.propDateType = propDateType
+            this.properties.dateTypeDay = dateTypeDay
+            this.properties.dateTypeHour = dateTypeHour
+            this.properties.dateTypeMinute = dateTypeMinute
+            this.properties.startMethod = startMethod
+            console.log(this.properties)
+        },
         updateSkipFirstNode (value) {
             if (value != 'prop_skipFirstNode') {
                 value = ''

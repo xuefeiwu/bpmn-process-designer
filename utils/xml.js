@@ -11,8 +11,7 @@ export function emptyXML (definitionsId, processId, name) {
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xmlns:extA1="http://www.a1bpm.com/schema/1.0/A1" 
     id="${definitionsId}" 
-    targetNamespace="http://bpmn.io/schema/bpmn">
-   
+    targetNamespace="http://bpmn.io/schema/bpmn">  
   <bpmn:process id="${processId}" name="${name}" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="开始"/>
   </bpmn:process>

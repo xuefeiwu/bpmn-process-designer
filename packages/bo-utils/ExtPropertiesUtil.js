@@ -29,6 +29,27 @@ export function saveExtProperties (activeElement, properties) {
     }
 }
 
+export function getExtProperties () {
+    try {
+        const elementRegistry = getModeler().get('elementRegistry')
+        const processElement = getProcessElement(elementRegistry)
+        const bpmnDefinitionElement = processElement.businessObject.$parent
+        // 判断是否存在ExtProperties
+        let extPropertiesElement = getExtPropertiesElement(bpmnDefinitionElement, 'extA1:ExtProperties')
+        if (!extPropertiesElement) {
+            return
+        }
+
+        let extPropertiesDefElement = getExtPropertiesDefElement(extPropertiesElement)
+        if (!extPropertiesDefElement) {
+            return
+        } else {
+            return extPropertiesDefElement
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
 /**
  * 获取PropertiesDef
  * @param element
