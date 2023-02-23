@@ -38,14 +38,26 @@
 
 <script>
 import EditItem from '@packages/components/common/EditItem'
-import {saveSkipFirstNode} from '@packages/bo-utils/ExtPropertiesUtil'
+import {saveExtProperties, saveSkipFirstNode} from '@packages/bo-utils/ExtPropertiesUtil'
 import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
 export default {
     name: 'ElementGlobalProperties',
     components: {EditItem},
     data () {
         return {
-            parameterUserAssign: ''
+            parameterUserAssign: '',
+            properties: {
+                parameterUserAssign: '',
+                subjectRule: '',
+                description: '',
+                propNotifyType: '',
+                propSkipRules: '',
+                propDateType: '',
+                dateTypeDay: '',
+                dateTypeHour: '',
+                dateTypeMinute: '',
+                startMethod: ''
+            }
         }
     },
     methods: {
@@ -53,7 +65,8 @@ export default {
             if (value != 'prop_skipFirstNode') {
                 value = ''
             }
-            saveSkipFirstNode(getActive(), value)
+            this.properties.parameterUserAssign=value
+            saveExtProperties(getActive(), this.properties)
         }
     }
 }

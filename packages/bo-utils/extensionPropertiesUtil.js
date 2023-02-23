@@ -61,7 +61,7 @@ export function removeExtensionProperty (element, property) {
 }
 
 ///// helpers
-function getRelevantBusinessObject (element) {
+export function getRelevantBusinessObject (element) {
     const businessObject = getBusinessObject(element)
     if (is(element, 'bpmn:Participant')) {
         return businessObject.get('processRef')

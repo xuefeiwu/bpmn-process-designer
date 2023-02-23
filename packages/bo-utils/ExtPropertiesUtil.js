@@ -1,39 +1,45 @@
-import {getBusinessObject, is} from 'bpmn-js/lib/util/ModelUtil'
 import {getModeler} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import {createFactoyElement} from '@packages/bpmn-utils/BpmnFactoryUtils'
 
 
-export function saveSkipFirstNode (activeElement, value) {
-    const elementRegistry = getModeler().get('elementRegistry')
-    const modeling = getModeler.get('modeling')
-
-    const processElement = getProcessElement(elementRegistry)
-    const bpmnDefinitionElement = processElement.businessObject.$parent
-
-    // 判断是否存在ExtProperties
-    let extPropertiesElement = getExtPropertiesElement(bpmnDefinitionElement, 'extA1:ExtProperties')
-    let extPropertiesDefElement
-    debugger
-    if (extPropertiesElement) {
-        if ( extPropertiesElement.child) {
-            extPropertiesElement.child.splice(0, 1)
+export function saveExtProperties (activeElement, properties) {
+    try {
+        const elementRegistry = getModeler().get('elementRegistry')
+        const modeling = getModeler.getModeling()
+        const processElement = getProcessElement(elementRegistry)
+        const bpmnDefinitionElement = processElement.businessObject.$parent
+        // 判断是否存在ExtProperties
+        let extPropertiesElement = getExtPropertiesElement(bpmnDefinitionElement, 'extA1:ExtProperties')
+        if (!extPropertiesElement) {
+            extPropertiesElement = createFactoyElement('extA1:ExtProperties', {}, bpmnDefinitionElement)
+            /*在第0个元素上添加extA1:ExtProperties节点*/
+            bpmnDefinitionElement.rootElements.splice(0, 0, extPropertiesElement)
         }
-        extPropertiesDefElement = createFactoyElement('extA1:PropertiesDef', {parameterUserAssign: value}, extPropertiesElement)
-    } else {
-        extPropertiesElement = createFactoyElement('extA1:ExtProperties', {}, bpmnDefinitionElement)
-        extPropertiesDefElement = createFactoyElement('extA1:PropertiesDef', {parameterUserAssign: value}, extPropertiesElement)
-    }
 
-    extPropertiesElement.child = [extPropertiesDefElement]
-    console.log('extPropertiesElement', extPropertiesElement)
+        let extPropertiesDefElement = getExtPropertiesDefElement(extPropertiesElement)
+        if (!extPropertiesDefElement) {
+            extPropertiesDefElement = createFactoyElement('extA1:PropertiesDef', properties, extPropertiesElement)
+            extPropertiesDefElement.businessObject = extPropertiesDefElement
+            extPropertiesElement.child = [extPropertiesDefElement]
+        } else {
+            modeling.updateProperties(extPropertiesDefElement, properties)
+        }
+    } catch (e) {
+        console.log(e)
+    }
 }
 
-function getRelevantBusinessObject (element) {
-    const businessObject = getBusinessObject(element)
-    if (is(element, 'bpmn:Participant')) {
-        return businessObject.get('processRef')
+/**
+ * 获取PropertiesDef
+ * @param element
+ * @returns {*}
+ */
+function getExtPropertiesDefElement (element) {
+    if (!element.child) {
+        return
     }
-    return businessObject
+
+    return element.child[0]
 }
 
 /**
