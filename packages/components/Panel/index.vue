@@ -38,7 +38,7 @@ import ElementExtensionProperties from '@packages/components/Panel/components/El
 import ElementExecutionListeners from '@packages/components/Panel/components/ElementExecutionListeners'
 import ElementAsyncContinuations from '@packages/components/Panel/components/ElementAsyncContinuations'
 import ElementStartInitiator from '@packages/components/Panel/components/ElementStartInitiator'
-import ElementGlobalProperties from '@packages/components/Panel/components/ElementGlobalProperties'
+import ElementGlobalProperties from '@packages/components/Panel/components/ElementExtA1GlobalProperties'
 
 export default {
     name: 'BpmnPanel',

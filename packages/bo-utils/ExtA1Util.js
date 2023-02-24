@@ -21,12 +21,13 @@ export function saveExtA1Properties (properties) {
             bpmnDefinitionElement.rootElements.splice(0, 0, extPropertiesElement)
         }
 
-        let extPropertiesDefElement = getExtA1ChildElement(extPropertiesElement)
-        if (!extPropertiesDefElement) {
-            extPropertiesDefElement = createFactoyElement('extA1:PropertiesDef', properties, extPropertiesElement)
+        let extPropertiesDefElementList = getExtA1ChildElement(extPropertiesElement)
+        if (!extPropertiesDefElementList || extPropertiesDefElementList.length == 0) {
+            let extPropertiesDefElement = createFactoyElement('extA1:PropertiesDef', properties, extPropertiesElement)
             extPropertiesDefElement.businessObject = extPropertiesDefElement
             extPropertiesElement.child = [extPropertiesDefElement]
         } else {
+            let extPropertiesDefElement = extPropertiesDefElementList[0]
             if (!extPropertiesDefElement.businessObject) {
                 extPropertiesDefElement.businessObject = extPropertiesDefElement
                 extPropertiesElement.child = [extPropertiesDefElement]
@@ -54,7 +55,7 @@ export function getExtA1Properties () {
         if (!extPropertiesDefElement) {
             return
         } else {
-            return extPropertiesDefElement
+            return extPropertiesDefElement[0]
         }
     } catch (e) {
         console.log(e)

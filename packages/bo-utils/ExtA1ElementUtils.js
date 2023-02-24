@@ -34,7 +34,7 @@ export function getExtA1ChildElement (extA1RootElement, filter) {
     }
 
     if (!filter) {
-        return  extA1RootElement.child[0]
+        return  extA1RootElement.child
     }
 
     let result = extA1RootElement.child.filter((index, item, self)=>{
@@ -42,7 +42,7 @@ export function getExtA1ChildElement (extA1RootElement, filter) {
     })
 
     if (result) {
-        return result[0]
+        return result
     }
 }
 
