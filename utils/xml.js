@@ -5,8 +5,8 @@ export function emptyXML (definitionsId, processId, name) {
 <?xml version="1.0" encoding="utf-8"?>
 <bpmn:definitions 
     xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" 
-    xmlns:activiti="http://activiti.org/bpmn" x
-    mlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+    xmlns:activiti="http://activiti.org/bpmn" 
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
     xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xmlns:extA1="http://www.a1bpm.com/schema/1.0/A1" 
