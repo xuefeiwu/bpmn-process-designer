@@ -2,7 +2,7 @@
   <el-collapse-item
     name="global-info">
     <template #title>
-      <collapse-title title="基本属性配置">
+      <collapse-title title="属性配置">
         <lucide-icon name="FolderEdit"/>
       </collapse-title>
     </template>

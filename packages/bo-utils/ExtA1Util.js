@@ -30,7 +30,6 @@ export function saveExtA1Properties (properties) {
             let extPropertiesDefElement = extPropertiesDefElementList[0]
             if (!extPropertiesDefElement.businessObject) {
                 extPropertiesDefElement.businessObject = extPropertiesDefElement
-                extPropertiesElement.child = [extPropertiesDefElement]
             }
             modeling.updateProperties(extPropertiesDefElement, properties)
         }
@@ -62,4 +61,66 @@ export function getExtA1Properties () {
     }
 }
 
+/**
+ * extA1:ExtProperties
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function saveExtA1Globals (element, properties) {
+    try {
+        const modeling = getModeler.getModeling()
+        const bpmnDefinitionElement = getDefinitionElement()
+
+        // 判断是否存在ExtProperties
+        let extGlobalsElement = getExtA1RootElement('extA1:Globals')
+        if (!extGlobalsElement) {
+            extGlobalsElement = createFactoyElement('extA1:Globals', {}, bpmnDefinitionElement)
+            /*在第0个元素上添加extA1:ExtProperties节点*/
+            bpmnDefinitionElement.rootElements.splice(1, 0, extGlobalsElement)
+        }
+
+        let extGlobalElementList = getExtA1ChildElement(extGlobalsElement, (index, item)=>{
+            return properties.id && properties.id == item.id
+        })
+
+        if (!extGlobalElementList || extGlobalElementList.length == 0) {
+            let extGlobalElement = createFactoyElement('extA1:Global', properties, extGlobalsElement)
+            extGlobalElement.businessObject = extGlobalElement
+            if (!extGlobalsElement.child || extGlobalsElement.child.length == 0) {
+                extGlobalsElement.child = [extGlobalElement]
+            } else {
+                extGlobalsElement.child.push(extGlobalElement)
+            }
+        } else {
+            let extGlobalElement = extGlobalElementList[0]
+            if (!extGlobalElement.businessObject) {
+                extGlobalElement.businessObject = extGlobalElement
+            }
+            modeling.updateProperties(extGlobalElement, properties)
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+
+/**
+ * 获取所有用户节点
+ * @param bpmnModeler
+ * @returns {*[]}
+ */
+export function getAllUserTask () {
+    const elementRegistry = getModeler().get('elementRegistry')
+    const _elements = elementRegistry._elements
+    let result = new Array()
+    Object.keys(_elements).forEach((key, index) => {
+        var _element = elementRegistry.get(key)
+        var _type = _element.type
+        if (_type == 'bpmn:UserTask') {
+            result.push(_element.businessObject)
+        }
+    })
+    return result
+}
 
