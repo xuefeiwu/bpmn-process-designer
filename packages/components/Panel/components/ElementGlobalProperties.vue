@@ -39,7 +39,7 @@
 
 <script>
 import EditItem from '@packages/components/common/EditItem'
-import {getExtProperties, saveExtProperties} from '@packages/bo-utils/ExtPropertiesUtil'
+import {getExtA1Properties, saveExtA1Properties} from '@packages/bo-utils/ExtA1Util'
 import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
 export default {
     name: 'ElementGlobalProperties',
@@ -65,7 +65,7 @@ export default {
     },
     methods: {
         init (){
-            let xmlProperties = getExtProperties()
+            let xmlProperties = getExtA1Properties()
             if (!xmlProperties) {
                 return
             }
@@ -100,7 +100,7 @@ export default {
                 value = ''
             }
             this.properties.parameterUserAssign=value
-            saveExtProperties(getActive(), this.properties)
+            saveExtA1Properties(this.properties)
         }
     }
 }
