@@ -20,9 +20,9 @@
           align="center"
           width="50"/>
         <el-table-column
-          label="描述"
-          prop="desc"
-          width="100"
+          label="请求地址"
+          prop="url"
+          width="120"
           align="center"
           show-overflow-tooltip/>
         <el-table-column
@@ -41,9 +41,9 @@
         <el-table-column
           label="触发时机"
           prop="callTime"
-          width="340"
-          align="center"
-          show-overflow-tooltip>
+          width="180"
+          header-align="center"
+          align="left">
           <template slot-scope="{ row}">
             <template v-for="(item) in row.callTime.split(',')">
               <el-tag
@@ -58,9 +58,30 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="请求地址"
-          prop="url"
-          width="250"
+          label="触发节点"
+          prop="callNodes"
+          header-align="center"
+          width="180"
+          align="left">
+          <template slot-scope="{ row}">
+            <template v-if="allUserTaskList && allUserTaskList.length > 0">
+              <template v-for="(item) in row.callNodes.split(',')">
+                <template v-for="(userTask) in allUserTaskList">
+                  <el-tag
+                    v-if="userTask.id == item"
+                    size="small"
+                    style="margin-left: 2px;">
+                    {{ userTask.name }}
+                  </el-tag>
+                </template>
+              </template>
+            </template>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="描述"
+          prop="desc"
+          width="200"
           align="center"
           show-overflow-tooltip/>
         <el-table-column
@@ -69,8 +90,12 @@
           fixed="right"
           width="90">
           <template slot-scope="{ row, $index }">
-            <el-button type="text">编辑</el-button>
-            <el-button type="text">移除</el-button>
+            <el-button
+              type="text"
+              @click="openExtA1GlobalRequestModel($index,row)">编辑</el-button>
+            <el-button
+              type="text"
+              @click="removeExtA1GlobalRequest(row)">移除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -95,16 +120,22 @@
         class="need-filled"
         label-width="100px"
         aria-modal="true">
-        <el-form-item label="请求地址:">
+        <el-form-item
+          label="请求地址:"
+          prop="url">
           <el-input v-model="globalRequest.url"></el-input>
         </el-form-item>
-        <el-form-item label="执行方式:">
+        <el-form-item
+          label="执行方式:"
+          prop="invokeMode">
           <el-radio-group v-model="invokeMode">
             <el-radio-button :label="0">同步</el-radio-button>
             <el-radio-button :label="1">异步</el-radio-button>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="接口请求头:">
+        <el-form-item
+          label="接口请求头:"
+          prop="header">
           <el-input
             v-model="globalRequest.header"
             type="textarea"
@@ -116,9 +147,11 @@
             type="textarea"
             :rows="2"/>
         </el-form-item>
-        <el-form-item label="触发时机:">
+        <el-form-item
+          label="触发时机:"
+          prop="callTime">
           <el-checkbox-group
-            @input="changeSelectCallTimeList"
+            @input="showUserTaskList"
             v-model="selectCallTimeList">
             <el-checkbox-button
               v-for="callTimeType in callTimeListType"
@@ -128,8 +161,9 @@
         </el-form-item>
         <el-form-item
           label="触发节点:"
-          v-if="showSelectUserTaskList">
+          prop="callNodes">
           <el-checkbox-group
+            v-if="showSelectUserTaskList"
             v-model="selectUserTaskList">
             <el-checkbox-button
               v-for="userTask in allUserTaskList"
@@ -150,23 +184,43 @@
 </template>
 
 <script>
-import EventEmitter from '@utils/EventEmitter'
-import {getAllUserTask, saveExtA1Globals} from '@packages/bo-utils/ExtA1Util'
+import {getAllUserTask, getExtA1Globals, removeExtA1GlobalRequest, saveExtA1Globals} from '@packages/bo-utils/ExtA1Util'
 import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
 
 export default {
     name: 'ElementExtA1GlobalRequest',
     data () {
+        let checkCallTime = (rule, value, callback) => {
+            if (this.selectCallTimeList && this.selectCallTimeList.length > 0 ) {
+                return callback()
+            }
+            return callback(new Error('触发时机不能为空'))
+        }
+        let checkCallNodes = (rule, value, callback) => {
+            if (this.selectCallTimeList.indexOf('taskCreate') != -1 && this.selectCallTimeList.indexOf('taskCreate') != -1) {
+                if (this.selectUserTaskList && this.selectUserTaskList.length > 0) {
+                    return callback()
+                }
+                return callback(new Error('触发节点不能为空'))
+            }
+            return callback()
+        }
         return {
             modelVisible: false,
             showSelectUserTaskList: false,
-            globalRequestList: [
-                {url: 'http://localhost:8080', desc: 'test01', header: 'xxx', invokeMode: '1', callTime: 'startEvent,endEvent,taskCreate,taskComplete', callNodes: 'UserTask_0pmvmol,UserTask_1i7h057', scope: '1'},
-                {url: 'http://localhost:8080', desc: 'test02', header: 'xxx', invokeMode: '1', callTime: 'startEvent,endEvent', callNodes: 'UserTask_0pmvmol,UserTask_1i7h057', scope: '1'},
-                {url: 'http://localhost:8080', desc: 'test03', header: 'xxx', invokeMode: '1', callTime: 'startEvent,endEvent', callNodes: 'UserTask_0pmvmol,UserTask_1i7h057', scope: '1'}
-            ],
+            globalRequestList: [],
             invokeMode: '0',
-            globalRequest: {},
+            globalRequest: {
+                id: '',
+                url: '',
+                invokeMode: '',
+                desc: '',
+                header: '',
+                callTime: '',
+                callNodes: '',
+                scope: '',
+                nodeId: ''
+            },
             selectCallTimeList: [],
             selectUserTaskList: [],
             allUserTaskList: [],
@@ -177,19 +231,23 @@ export default {
                 {name: '任务完成时', value: 'taskComplete'}
             ],
             formRules: {
-                // event: {required: true, trigger: ['blur', 'change'], message: '事件类型不能为空'},
-                // type: {required: true, trigger: ['blur', 'change'], message: '监听器类型不能为空'}
+                url: {required: true, trigger: ['blur', 'change'], message: '请求地址不能为空'},
+                callTime: {required: true, trigger: ['blur', 'change'], validator: checkCallTime},
+                callNodes: {required: true, trigger: ['blur', 'change'], validator: checkCallNodes}
             }
         }
     },
-
     mounted () {
-        EventEmitter.on('element-update', function () {
-        })
+        this.reloadExtA1GlobalRequest()
     },
     methods: {
+        removeExtA1GlobalRequest (row) {
+            removeExtA1GlobalRequest(row)
+            this.reloadExtA1GlobalRequest()
+        },
         async saveExtA1GlobalRequest () {
             await this.$refs.formRef.validate()
+            // scope: 0-局部，1-全局
             this.globalRequest.scope = '1'
             // 请求执行方式
             this.globalRequest.invokeMode = this.invokeMode
@@ -205,12 +263,12 @@ export default {
             }
 
             saveExtA1Globals(getActive(), this.globalRequest)
-            this.modelVisible = false
-            this.globalRequest = {}
+            this.reloadExtA1GlobalRequest()
         },
         async openExtA1GlobalRequestModel (index, extA1GlobalRequestData) {
             this.activeIndex = index
-            extA1GlobalRequestData && (this.globalRequest = JSON.parse(JSON.stringify(extA1GlobalRequestData)))
+            this.globalRequest = {}
+            extA1GlobalRequestData && (this.globalRequest = extA1GlobalRequestData)
             this.allUserTaskList = getAllUserTask()
             // 初始化请求执行方式
             this.invokeMode = this.globalRequest.invokeMode
@@ -229,14 +287,36 @@ export default {
             }
 
             this.modelVisible = true
-            this.showSelectUserTaskList = false
+            this.showUserTaskList(this.selectCallTimeList)
             await this.$nextTick()
             this.$refs.formRef && this.$refs.formRef.clearValidate()
         },
-        changeSelectCallTimeList (value) {
+        showUserTaskList (value) {
             this.showSelectUserTaskList = (value.indexOf('taskCreate') != -1  || value.indexOf('taskComplete') != -1)
                 && this.allUserTaskList
                 && this.allUserTaskList.length > 0
+        },
+        reloadExtA1GlobalRequest () {
+            this.modelVisible = false
+            this.showSelectUserTaskList = false
+            this.globalRequestList = []
+            const globalRequestList = getExtA1Globals((index, item)=>item.scope == '1')
+            if (globalRequestList) {
+                this.globalRequestList = globalRequestList.map((item)=>({
+                    id: item.id,
+                    callNodes: item.callNodes,
+                    callTime: item.callTime,
+                    desc: item.desc,
+                    header: item.header,
+                    invokeMode: item.invokeMode,
+                    scope: item.scope,
+                    url: item.url,
+                    nodeId: item.nodeId
+                }))
+            }
+
+            console.log(this.globalRequestList)
+            this.allUserTaskList = getAllUserTask()
         }
     }
 }

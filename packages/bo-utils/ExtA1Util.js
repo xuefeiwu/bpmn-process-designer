@@ -1,6 +1,6 @@
 import {getModeler} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import {createFactoyElement} from '@packages/bpmn-utils/BpmnFactoryUtils'
-import {getExtA1RootElement, getDefinitionElement, getExtA1ChildElement} from '@packages/bo-utils/ExtA1ElementUtils'
+import {getExtA1RootElement, getDefinitionElement, getExtA1ChildElement, removeExtA1ChildElement} from '@packages/bo-utils/ExtA1ElementUtils'
 
 /**
  * extA1:ExtProperties
@@ -62,7 +62,7 @@ export function getExtA1Properties () {
 }
 
 /**
- * extA1:ExtProperties
+ * extA1:Globals
  * @param extA1RootElementType
  * @param extA1ChildElementType
  * @param properties
@@ -104,7 +104,28 @@ export function saveExtA1Globals (element, properties) {
     }
 }
 
+/**
+ * extA1:Globals
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function getExtA1Globals (filter) {
+    // 判断是否存在ExtProperties
+    let extGlobalsElement = getExtA1RootElement('extA1:Globals')
+    if (!extGlobalsElement) {
+        return
+    }
+    return getExtA1ChildElement(extGlobalsElement, (index, item)=> filter(index, item))
+}
 
+/**
+ * 移除全局事件节点
+ * @param element
+ */
+export function removeExtA1GlobalRequest (element) {
+    removeExtA1ChildElement('extA1:Globals', element)
+}
 /**
  * 获取所有用户节点
  * @param bpmnModeler

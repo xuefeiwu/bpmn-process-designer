@@ -46,6 +46,21 @@ export function getExtA1ChildElement (extA1RootElement, filter) {
     }
 }
 
+
+/**
+ * 获取ExtA1的子元素元素
+ * @param element
+ * @returns {*}
+ */
+export function removeExtA1ChildElement (elementType, removeElement) {
+    let extA1RootElement = getExtA1RootElement(elementType)
+    if (!extA1RootElement.child) {
+        return
+    }
+
+    extA1RootElement.child = extA1RootElement.child.filter((item, index, self)=> item.id != removeElement.id)
+}
+
 /**
  * 获取DefinitionElement节点
  * @param elementRegistry
