@@ -4,6 +4,7 @@ import { createModdleElement, getExtensionElementsList } from '@packages/bpmn-ut
 import { getServiceTaskLikeBusinessObject } from '@packages/bpmn-utils/BpmnImplementationType'
 import { getTimerEventDefinition } from '@packages/bpmn-utils/BpmnEventDefinition'
 import { isAsync } from '@packages/bpmn-utils/BpmnAsyncElement'
+import {isConditionalSource, isConditionEventDefinition} from '@packages/bo-utils/conditionUtil'
 
 //
 export function retryTimeCycleVisible (element) {
@@ -21,6 +22,9 @@ export function taskPriorityVisible (element) {
     !!isTimerEvent(element)
     )
 }
+
+
+
 export function isJobExecutable (element) {
     return retryTimeCycleVisible(element) || taskPriorityVisible(element)
 }

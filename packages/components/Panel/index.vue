@@ -10,27 +10,27 @@
     <el-collapse v-model="activeNames">
       <component
         v-for="cp in this.renderComponents"
-        :key="cp.name"
+        :key="cp.name + '_' + currentElementId"
         :is="cp" />
     </el-collapse>
   </div>
 </template>
 
 <script>
-import { debounce } from 'min-dash'
+import {debounce} from 'min-dash'
 import Logger from '@utils/Logger'
-import { catchError } from '@utils/printCatch'
+import {catchError} from '@utils/printCatch'
 import EventEmitter from '@utils/EventEmitter'
 import BpmnIcon from '@packages/components/common/BpmnIcon'
 import bpmnIcons from '@packages/bpmn-icons'
 import getBpmnIconType from '@packages/bpmn-icons/getIconType'
-import { customTranslate } from '@packages/additional-modules/Translate'
-import { isCanbeConditional } from '@packages/bo-utils/conditionUtil'
-import { isJobExecutable } from '@packages/bo-utils/jobExecutionUtil'
-import { isExecutable } from '@packages/bo-utils/executionListenersUtil'
-import { isAsynchronous } from '@packages/bo-utils/asynchronousContinuationsUtil'
-import { isStartInitializable } from '@packages/bo-utils/initiatorUtil'
-import { getModeler } from '@packages/bpmn-utils/BpmnDesignerUtils'
+import {customTranslate} from '@packages/additional-modules/Translate'
+import {isCanbeConditional} from '@packages/bo-utils/conditionUtil'
+import {isJobExecutable} from '@packages/bo-utils/jobExecutionUtil'
+import {isExecutable} from '@packages/bo-utils/executionListenersUtil'
+import {isAsynchronous} from '@packages/bo-utils/asynchronousContinuationsUtil'
+import {isStartInitializable} from '@packages/bo-utils/initiatorUtil'
+import {getModeler} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import ElementGenerations from '@packages/components/Panel/components/ElementGenerations'
 import ElementConditional from '@packages/components/Panel/components/ElementConditional'
 import ElementJobExecution from '@packages/components/Panel/components/ElementJobExecution'
@@ -40,6 +40,8 @@ import ElementAsyncContinuations from '@packages/components/Panel/components/Ele
 import ElementStartInitiator from '@packages/components/Panel/components/ElementStartInitiator'
 import ElementGlobalProperties from '@packages/components/Panel/components/ElementExtA1GlobalProperties'
 import ElementExtA1GlobalRequest from '@packages/components/Panel/components/ElementExtA1GlobalRequest'
+import ElementExtA1NodeRequest from '@packages/components/Panel/components/ElementExtA1NodeRequest'
+import {isUserTask} from '@packages/bo-utils/ExtA1Util'
 
 export default {
     name: 'BpmnPanel',
@@ -52,6 +54,7 @@ export default {
         ElementExtensionProperties,
         ElementExecutionListeners,
         ElementAsyncContinuations,
+        ElementExtA1NodeRequest,
         ElementStartInitiator
     },
     data () {
@@ -123,6 +126,7 @@ export default {
             this.renderComponents.push(ElementGenerations)
             this.renderComponents.push(ElementGlobalProperties)
             this.renderComponents.push(ElementExtA1GlobalRequest)
+            isUserTask(element) && this.renderComponents.push(ElementExtA1NodeRequest)
             isCanbeConditional(element) && this.renderComponents.push(ElementConditional)
             isJobExecutable(element) && this.renderComponents.push(ElementJobExecution)
             this.renderComponents.push(ElementExtensionProperties)

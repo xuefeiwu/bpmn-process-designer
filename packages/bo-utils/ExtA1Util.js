@@ -1,6 +1,7 @@
 import {getModeler} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import {createFactoyElement} from '@packages/bpmn-utils/BpmnFactoryUtils'
 import {getExtA1RootElement, getDefinitionElement, getExtA1ChildElement, removeExtA1ChildElement} from '@packages/bo-utils/ExtA1ElementUtils'
+import {is} from 'bpmn-js/lib/util/ModelUtil'
 
 /**
  * extA1:ExtProperties
@@ -119,6 +120,14 @@ export function getExtA1Globals (filter) {
     return getExtA1ChildElement(extGlobalsElement, (index, item)=> filter(index, item))
 }
 
+/**
+ * 是否为用户节点
+ * @param element
+ * @returns {boolean}
+ */
+export function isUserTask (element) {
+    return is(element, 'bpmn:UserTask')
+}
 /**
  * 移除全局事件节点
  * @param element
