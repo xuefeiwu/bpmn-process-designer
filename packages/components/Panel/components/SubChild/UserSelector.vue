@@ -39,6 +39,7 @@
           border
           :data="userList"
           @selection-change="changeSelection"
+          @click="selectOne"
           style="width: 100%">
           <el-table-column
             type="selection"
@@ -120,6 +121,10 @@ export default {
         updateShowName: {
             type: Function,
             default: null
+        },
+        selectionType: {
+            type: String,
+            default: 'Checkbox'
         }
     },
     data (){
@@ -243,8 +248,33 @@ export default {
                 this.$refs.userListTable.toggleRowSelection(row)
             })
         },
+        selectOne (row) {
+            if (this.selectionType == 'Checkbox') {
+                return
+            }
+            this.$refs.userListTable.clearSelection()
+            this.$refs.userListTable.toggleRowSelection(row, true)
+            this.selectUserList = []
+            this.selectUserList.push({
+                id: row.id,
+                userName: row.fullName
+            })
+        },
         changeSelection (rows) {
-            this.selectUserList = rows.map((item)=>{
+            let finalRow = rows
+            if (this.selectionType == 'Radio' && rows.length > 1) {
+                finalRow = rows.filter((it, index) => {
+                    if (index == rows.length - 1) {
+                        this.$refs.userListTable.toggleRowSelection(it, true)
+                        return true
+                    } else {
+                        this.$refs.userListTable.toggleRowSelection(it, false)
+                        return false
+                    }
+                })
+            }
+
+            this.selectUserList = finalRow.map((item)=>{
                 return {
                     id: item.id,
                     userName: item.fullName
