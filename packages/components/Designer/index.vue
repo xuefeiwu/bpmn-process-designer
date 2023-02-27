@@ -24,7 +24,13 @@ export default {
             xml: '',
             token: '',
             modelId: '',
-            headParams: {}
+            headParams: {},
+            processAdminList: [
+                {'userId': '1286142373594481852', 'userName': '管理员'},
+                {'userId': '1387731059465973761', 'userName': '陈梓宏'},
+                {'userId': '1387731059482750979', 'userName': '陈土强'},
+                {'userId': '1387731059503722498', 'userName': '李权力'}
+            ]
         }
     },
     computed: {
@@ -106,6 +112,10 @@ export default {
         this.eventBus = this.modeler.get('eventBus')
 
         await this.reloadProcess()
+
+        this.$store.commit('setProcessModel', {
+            processAdmin: JSON.stringify(this.processAdminList)
+        })
     }
 }
 </script>

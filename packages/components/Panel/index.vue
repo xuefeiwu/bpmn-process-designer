@@ -65,7 +65,7 @@ export default {
             currentElementId: undefined,
             customTranslate,
             renderComponents: [],
-            activeNames: 'base-info'
+            activeNames: 'global-info'
         }
     },
     created () {

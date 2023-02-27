@@ -7,6 +7,7 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
+        model: {},
         editor: { ...defaultSettings },
         bpmn: {}
     },
@@ -16,6 +17,11 @@ const store = new Vuex.Store({
         getProcessDef: (state) => ({
             processName: state.editor.processName,
             processId: state.editor.processId
+        }),
+        getProcessModel: (state) => ({
+            processName: state.model.processName,
+            processId: state.model.processId,
+            processAdmin: state.model.processAdmin
         }),
         getProcessEngine: (state) => state.editor.processEngine,
         getEditorConfig: (state) => {
@@ -33,7 +39,14 @@ const store = new Vuex.Store({
         getActive: (state) => state.bpmn.activeElement
     },
     mutations: {
-    // editor
+        // model
+        setProcessModel (state, model) {
+            state.model = {...state.model, ...model}
+        },
+        clearProcessModel (state) {
+            state.model = {}
+        },
+        // editor
         setConfiguration (state, conf) {
             state.editor = { ...state.editor, ...conf }
         },

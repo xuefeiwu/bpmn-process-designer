@@ -23,6 +23,18 @@ export function getModeler () {
         catchError(e)
     }
 }
+
+export function getProcessAdmin () {
+    try {
+        if (!store.getters.getProcessModel) {
+            return
+        }
+        return store.getters.getProcessModel.processAdmin
+    } catch (e) {
+        catchError(e)
+    }
+}
+
 getModeler.get = function (moduleName) {
     const modeler = getModeler()
     return modeler.get(moduleName)
