@@ -37,6 +37,8 @@
         <el-table
           ref="userListTable"
           border
+          stripe
+          highlight-current-row
           :data="userList"
           @selection-change="changeSelection"
           @click="selectOne"
@@ -96,6 +98,7 @@
           v-for="(item) in selectUserList"
           :key="item.id"
           closable
+          :disable-transitions="false"
           @close="closeSelection(item)"
           style="margin-left: 10px;margin-top: 10px">
           {{ item.userName }}
