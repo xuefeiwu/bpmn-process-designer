@@ -42,6 +42,7 @@ import ElementGlobalProperties from '@packages/components/Panel/components/Eleme
 import ElementExtA1GlobalRequest from '@packages/components/Panel/components/ElementExtA1GlobalRequest'
 import ElementExtA1NodeRequest from '@packages/components/Panel/components/ElementExtA1NodeRequest'
 import {isUserTask} from '@packages/bo-utils/ExtA1Util'
+import ElementNodeTransferAtaff from '@packages/components/Panel/components/ElementNodeTransferAtaff'
 
 export default {
     name: 'BpmnPanel',
@@ -49,6 +50,7 @@ export default {
         BpmnIcon,
         ElementGenerations,
         ElementExtA1GlobalRequest,
+        ElementNodeTransferAtaff,
         ElementConditional,
         ElementJobExecution,
         ElementExtensionProperties,
@@ -127,6 +129,7 @@ export default {
             this.renderComponents.push(ElementGlobalProperties)
             this.renderComponents.push(ElementExtA1GlobalRequest)
             isUserTask(element) && this.renderComponents.push(ElementExtA1NodeRequest)
+            isUserTask(element) && this.renderComponents.push(ElementNodeTransferAtaff)
             isCanbeConditional(element) && this.renderComponents.push(ElementConditional)
             isJobExecutable(element) && this.renderComponents.push(ElementJobExecution)
             this.renderComponents.push(ElementExtensionProperties)

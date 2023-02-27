@@ -69,14 +69,16 @@
       @opened="openProcessAdminModel"
       destroy-on-close>
       <user-selector
-        :show-process-admin-name.sync="showProcessAdminName"
+        :init="initProcessAdmin"
+        :update-show-name="updateShowProcessAdminName"
         ref="userSelector"
         :isProcessAdmin="true"/>
       <template #footer>
         <el-button @click="modelVisible = false">取 消</el-button>
         <el-button
           @click="saveProcessAdminModel"
-          type="primary">确 认</el-button>
+          type="primary">确 认
+        </el-button>
       </template>
     </el-dialog>
   </el-collapse-item>
@@ -120,7 +122,7 @@ export default {
     mounted () {
         let processAdmin = getProcessAdmin()
         if (processAdmin) {
-            this.showProcessAdminName = JSON.parse(processAdmin).map((item)=>item.userName).join(',')
+            this.showProcessAdminName = JSON.parse(processAdmin).map((item) => item.userName).join(',')
         }
     },
     methods: {
@@ -137,10 +139,16 @@ export default {
 
             this.properties.parameterUserAssign = parameterUserAssign
             this.properties.subjectRule = subjectRule
-            if (propSkipRules && propSkipRules!='') {
+            if (propSkipRules && propSkipRules != '') {
                 this.propSkipRulesValue = propSkipRules.split(',')
             }
-
+        },
+        initProcessAdmin () {
+            let processAdmin = getProcessAdmin()
+            console.log(processAdmin)
+            if (processAdmin) {
+                return JSON.parse(processAdmin)
+            }
         },
         updateSkipFirstNode (value) {
             if (value != 'prop_skipFirstNode') {
@@ -150,7 +158,7 @@ export default {
             saveExtA1Properties(this.properties)
         },
         updateSkipRules (value) {
-            let skipRules  = ''
+            let skipRules = ''
             if (value) {
                 skipRules = value.join(',')
             }
@@ -158,8 +166,8 @@ export default {
             saveExtA1Properties(this.properties)
         },
         updateSubjectRule (value) {
-            let subjectRule  = '${title}'
-            if (value && value!='') {
+            let subjectRule = '${title}'
+            if (value && value != '') {
                 subjectRule = value
             }
             this.properties.subjectRule = subjectRule
@@ -170,7 +178,13 @@ export default {
         },
         saveProcessAdminModel () {
             this.modelVisible = false
-            this.$refs.userSelector.saveProcessAdminModel()
+            this.updateShowProcessAdminName()
+            this.$store.commit('setProcessModel', {
+                processAdmin: JSON.stringify(this.$refs.userSelector.selectUserList)
+            })
+        },
+        updateShowProcessAdminName () {
+            this.showProcessAdminName = this.$refs.userSelector.selectUserList.map((item)=>item.userName).join(',')
         }
     }
 }

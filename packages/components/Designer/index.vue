@@ -12,6 +12,7 @@ import {createNewDiagram} from '@utils/xml'
 import moduleAndExtensions from './moduleAndExtensions'
 import initModeler from './initModeler'
 import {loadProcessModel} from '../../api/process'
+import {getParamter} from '@utils/request'
 
 export default {
     name: 'BpmnDesigner',
@@ -22,14 +23,12 @@ export default {
             elementRegistry: {},
             eventBus: {},
             xml: '',
-            token: '',
             modelId: '',
-            headParams: {},
             processAdminList: [
-                {'userId': '1286142373594481852', 'userName': '管理员'},
-                {'userId': '1387731059465973761', 'userName': '陈梓宏'},
-                {'userId': '1387731059482750979', 'userName': '陈土强'},
-                {'userId': '1387731059503722498', 'userName': '李权力'}
+                {'id': '1286142373594481852', 'userName': '管理员'},
+                {'id': '1387731059465973761', 'userName': '陈梓宏'},
+                {'id': '1387731059482750979', 'userName': '陈土强'},
+                {'id': '1387731059503722498', 'userName': '李权力'}
             ]
         }
     },
@@ -43,40 +42,8 @@ export default {
         }
     },
     methods: {
-        /**
-         * 获取元素节点
-         * @param
-         * @param nodeId
-         * @returns {*}
-         */
-        getElement (nodeId) {
-            return this.elementRegistry.filter(
-                (item) => item.id == nodeId
-            )
-        },
-        /**
-         * 设置节点颜色
-         * @param modeling
-         * @param color
-         */
-        setColor (element, color) {
-            this.getModeling.setColor(element, {
-                stroke: color
-            })
-        },
         async reloadProcess () {
             await createNewDiagram(this.modeler, this.xml, this.getEditor)
-        },
-        /**
-         * 获取请求参数
-         * @param name
-         * @returns {string|null}
-         */
-        getParamter (name) {
-            var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
-            var params = window.location.search.substr(1).match(reg)
-            if (params != null) return unescape(params[2])
-            return null
         },
         /**
          * 加载流程图
@@ -87,7 +54,7 @@ export default {
                 return
             }
 
-            await loadProcessModel(this.modelId, this.headParams).then((res) => {
+            await loadProcessModel(this.modelId).then((res) => {
                 if (res.code == '0') {
                     this.xml = res.xml
                 }
@@ -96,14 +63,10 @@ export default {
         }
     },
     async created () {
-        this.token = this.getParamter('messageId')
-        this.modelId = this.getParamter('modelId')
+        let token = getParamter('messageId')
+        this.$store.commit('setToken', token)
 
-        this.headParams = {
-            headers: {
-                'x-access-token': this.token
-            }
-        }
+        this.modelId = getParamter('modelId')
 
         await this.getProcessModel()
         this.modelerModules = moduleAndExtensions(this.getEditor)
@@ -112,6 +75,7 @@ export default {
         this.eventBus = this.modeler.get('eventBus')
 
         await this.reloadProcess()
+
 
         this.$store.commit('setProcessModel', {
             processAdmin: JSON.stringify(this.processAdminList)

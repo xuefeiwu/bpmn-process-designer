@@ -35,9 +35,9 @@
     <el-row :gutter="20">
       <el-col :span="21">
         <el-table
-          ref="adminUserListTable"
+          ref="userListTable"
           border
-          :data="adminUserList"
+          :data="userList"
           @selection-change="changeSelection"
           style="width: 100%">
           <el-table-column
@@ -92,8 +92,8 @@
       </el-col>
       <el-col :span="3">
         <el-tag
-          v-for="(item) in processAdminList"
-          :key="item.userId"
+          v-for="(item) in selectUserList"
+          :key="item.id"
           closable
           @close="closeSelection(item)"
           style="margin-left: 10px;margin-top: 10px">
@@ -105,22 +105,26 @@
 </template>
 
 <script>
-import {getProcessAdmin} from '@packages/bpmn-utils/BpmnDesignerUtils'
 
 export default {
     name: 'UserSelector',
     props: {
-        showProcessAdminName: {
-            type: String
-        },
         isProcessAdmin: {
             type: Boolean,
             default: false
+        },
+        init: {
+            type: Function,
+            default: null
+        },
+        updateShowName: {
+            type: Function,
+            default: null
         }
     },
     data (){
         return{
-            adminUserList: [
+            userList: [
                 {
                     'id': '1286142373594481852',
                     'fullName': '管理员',
@@ -212,7 +216,7 @@ export default {
                     'tenantId': '307000'
                 }
             ],
-            processAdminList: [],
+            selectUserList: [],
             filterCondition: {},
             currentPage: 1,
             pageSize: 10,
@@ -220,53 +224,39 @@ export default {
         }
     },
     mounted () {
-        this.init()
+        this.selectUserList = this.init()
+        this.updateShowName()
     },
     methods: {
-        init () {
-            let processAdmin = getProcessAdmin()
-            console.log(processAdmin)
-            if (processAdmin) {
-                this.processAdminList = JSON.parse(processAdmin)
-                this.updateShowProcessAdminName()
-            }
-        },
-        updateShowProcessAdminName () {
-            let showProcessAdminName = this.processAdminList.map((item)=>item.userName).join(',')
-            this.$emit('update:showProcessAdminName', showProcessAdminName)
-        },
         resetSelectRow () {
-            let selectionUserIdList = this.processAdminList.map((item)=>item.userId)
+            if (!this.selectUserList || this.selectUserList.length == 0) {
+                return
+            }
 
+            let selectionUserIdList = this.selectUserList.map((item)=>item.id)
             // 过滤出选中行
-            this.$refs.adminUserListTable.clearSelection()
-            let selectionRow  = this.adminUserList.filter((value)=> selectionUserIdList.indexOf(value.id) != -1)
+            this.$refs.userListTable.clearSelection()
+            let selectionRow  = this.userList.filter((value)=> selectionUserIdList.indexOf(value.id) != -1)
 
             selectionRow.forEach((row)=>{
                 // 表格选中
-                this.$refs.adminUserListTable.toggleRowSelection(row)
+                this.$refs.userListTable.toggleRowSelection(row)
             })
         },
         changeSelection (rows) {
-            this.processAdminList = rows.map((item)=>{
+            this.selectUserList = rows.map((item)=>{
                 return {
-                    userId: item.id,
+                    id: item.id,
                     userName: item.fullName
                 }
             })
         },
         closeSelection (item) {
-            this.processAdminList = this.processAdminList.filter((value)=>value.userId != item.userId)
+            this.selectUserList = this.selectUserList.filter((value)=>value.id != item.id)
             this.resetSelectRow()
         },
-        openProcessAdminModel () {
+        openUserModel () {
             this.resetSelectRow()
-        },
-        saveProcessAdminModel () {
-            this.updateShowProcessAdminName()
-            this.$store.commit('setProcessModel', {
-                processAdmin: JSON.stringify(this.processAdminList)
-            })
         },
         searchForm (){
             console.log(this.filterCondition)

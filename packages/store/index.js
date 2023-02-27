@@ -8,12 +8,14 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
         model: {},
+        token: undefined,
         editor: { ...defaultSettings },
         bpmn: {}
     },
     getters: {
     //  editor
         getEditor: (state) => state.editor,
+        getToken: (state) => state.token,
         getProcessDef: (state) => ({
             processName: state.editor.processName,
             processId: state.editor.processId
@@ -39,6 +41,12 @@ const store = new Vuex.Store({
         getActive: (state) => state.bpmn.activeElement
     },
     mutations: {
+        setToken (state, token) {
+            state.token = token
+        },
+        clearToken (state) {
+            state.token = undefined
+        },
         // model
         setProcessModel (state, model) {
             state.model = {...state.model, ...model}
