@@ -4,6 +4,9 @@
       <collapse-title title="节点转办">
         <lucide-icon name="Activity"/>
       </collapse-title>
+      <number-tag
+        :value="nodeTransferAtaffList.length"
+        margin-left="12px"/>
     </template>
     <div class="element_node_transfer_ataff">
       <edit-item
@@ -12,7 +15,7 @@
         :labelWidth="120">
         <el-input
           v-model="showNodeTransferAtaff"
-          disabled
+          readonly
         >
           <el-button
             slot="append"
@@ -34,6 +37,7 @@
         :show-name.sync="showNodeTransferAtaff"
         :init="initTransferAtaff"
         :update-show-name="updateShowTransferAtaffName"
+        selection-type="Radio"
         ref="userSelector"
         :isProcessAdmin="false"/>
       <template #footer>

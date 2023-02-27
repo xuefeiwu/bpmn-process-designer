@@ -51,7 +51,7 @@
       :labelWidth="120">
       <el-input
         v-model="showProcessAdminName"
-        disabled
+        readonly
       >
         <el-button
           slot="append"
