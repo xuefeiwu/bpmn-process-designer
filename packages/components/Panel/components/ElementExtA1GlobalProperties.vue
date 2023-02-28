@@ -7,59 +7,62 @@
       </collapse-title>
     </template>
 
-    <edit-item
-      label="跳过第一个任务"
-      textAlign="center"
-      :labelWidth="120">
-      <el-switch
-        v-model="properties.parameterUserAssign"
-        active-value="prop_skipFirstNode"
-        @change="updateSkipFirstNode"
-      >
-      </el-switch>
-    </edit-item>
-    <edit-item
-      label="任务跳过策略"
-      textAlign="center"
-      :labelWidth="120">
-      <el-select
-        v-model="propSkipRulesValue"
-        multiple
-        placeholder="请选择"
-        @change="updateSkipRules"
-      >
-        <el-option
-          v-for="item in propSkipRulesOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
-    </edit-item>
-    <edit-item
-      label="流程标题"
-      textAlign="center"
-      :labelWidth="120">
-      <el-input
-        v-model="properties.subjectRule"
-        @change="updateSubjectRule"
-      />
-    </edit-item>
-    <edit-item
-      label="流程管理员"
-      textAlign="center"
-      :labelWidth="120">
-      <el-input
-        v-model="showProcessAdminName"
-        readonly
-      >
-        <el-button
-          slot="append"
-          type="primary"
-          icon="el-icon-edit"
-          @click="modelVisible = true"/>
-      </el-input>
-    </edit-item>
+    <div class="global-info">
+      <edit-item
+        label="跳过第一个任务"
+        textAlign="center"
+        :labelWidth="120">
+        <el-switch
+          v-model="properties.parameterUserAssign"
+          active-value="prop_skipFirstNode"
+          @change="updateSkipFirstNode"
+        >
+        </el-switch>
+      </edit-item>
+      <edit-item
+        label="任务跳过策略"
+        textAlign="center"
+        :labelWidth="120">
+        <el-select
+          v-model="propSkipRulesValue"
+          multiple
+          placeholder="请选择"
+          @change="updateSkipRules"
+        >
+          <el-option
+            v-for="item in propSkipRulesOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </edit-item>
+      <edit-item
+        label="流程标题"
+        textAlign="center"
+        :labelWidth="120">
+        <el-input
+          v-model="properties.subjectRule"
+          @change="updateSubjectRule"
+        />
+      </edit-item>
+      <edit-item
+        label="流程管理员"
+        textAlign="center"
+        :labelWidth="120">
+        <el-input
+          v-model="showProcessAdminName"
+          readonly
+        >
+          <el-button
+            slot="append"
+            type="primary"
+            icon="el-icon-edit"
+            @click="modelVisible = true"/>
+        </el-input>
+      </edit-item>
+    </div>
+
 
     <el-dialog
       :visible.sync="modelVisible"

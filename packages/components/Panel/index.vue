@@ -44,6 +44,7 @@ import ElementExtA1NodeRequest from '@packages/components/Panel/components/Eleme
 import {isUserTask} from '@packages/bo-utils/ExtA1Util'
 import ElementNodeTransferAtaff from '@packages/components/Panel/components/ElementNodeTransferAtaff'
 import ElementExtA1Attributes from '@packages/components/Panel/components/ElementExtA1Attributes'
+import ElementExtA1UserProperty from '@packages/components/Panel/components/ElementExtA1UserProperty'
 
 export default {
     name: 'BpmnPanel',
@@ -57,6 +58,7 @@ export default {
         ElementJobExecution,
         ElementExtensionProperties,
         ElementExecutionListeners,
+        ElementExtA1UserProperty,
         ElementAsyncContinuations,
         ElementExtA1NodeRequest,
         ElementStartInitiator
@@ -128,11 +130,15 @@ export default {
             this.renderComponents.splice(0, this.renderComponents.length) // 清空
             // 重设
             this.renderComponents.push(ElementGenerations)
+
+            // 添加自定义配置
             this.renderComponents.push(ElementGlobalProperties)
             this.renderComponents.push(ElementExtA1GlobalRequest)
             isUserTask(element) && this.renderComponents.push(ElementExtA1NodeRequest)
             isUserTask(element) && this.renderComponents.push(ElementNodeTransferAtaff)
             isUserTask(element) && this.renderComponents.push(ElementExtA1Attributes)
+            isUserTask(element) && this.renderComponents.push(ElementExtA1UserProperty)
+
             isCanbeConditional(element) && this.renderComponents.push(ElementConditional)
             isJobExecutable(element) && this.renderComponents.push(ElementJobExecution)
             // this.renderComponents.push(ElementExtensionProperties)

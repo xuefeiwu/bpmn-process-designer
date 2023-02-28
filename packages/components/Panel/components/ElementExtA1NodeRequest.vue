@@ -2,7 +2,7 @@
   <el-collapse-item name="element-ext-a1-node-request">
     <template #title>
       <collapse-title title="节点事件">
-        <lucide-icon name="Crown"/>
+        <lucide-icon name="Link"/>
       </collapse-title>
       <number-tag
         :value="globalRequestList.length"

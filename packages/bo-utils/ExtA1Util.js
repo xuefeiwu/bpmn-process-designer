@@ -143,7 +143,6 @@ export function getExtA1Attributes (filter) {
  */
 export function saveExtAttributes (element, properties) {
     try {
-        const modeling = getModeler.getModeling()
         const bpmnDefinitionElement = getDefinitionElement()
 
         // 判断是否存在ExtAttributes
@@ -172,6 +171,60 @@ export function saveExtAttributes (element, properties) {
     } catch (e) {
         console.log(e)
     }
+}
+
+/**
+ * extA1:UserPropertyes
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function saveExtA1UserProperties (element, properties) {
+    try {
+        const modeling = getModeler.getModeling()
+        const bpmnDefinitionElement = getDefinitionElement()
+
+        // 判断是否存在ExtAttributes
+        let extGlobalsElement = getExtA1RootElement('extA1:UserPropertyes')
+        if (!extGlobalsElement) {
+            extGlobalsElement = createFactoyElement('extA1:UserPropertyes', {}, bpmnDefinitionElement)
+            /*在第0个元素上添加extA1:ExtAttributes节点*/
+            bpmnDefinitionElement.rootElements.splice(0, 0, extGlobalsElement)
+        }
+
+        let extGlobalElementList = getExtA1ChildElement(extGlobalsElement, (index, item)=>{
+            return properties.id && properties.id == item.id
+        })
+
+        if (extGlobalElementList && extGlobalElementList.length > 0) {
+            removeExtA1ChildElement('extA1:UserPropertyes', extGlobalElementList[0])
+        }
+
+        let extGlobalElement = createFactoyElement('extA1:UserProperty', properties, extGlobalsElement)
+        extGlobalElement.businessObject = extGlobalElement
+        if (!extGlobalsElement.child || extGlobalsElement.child.length == 0) {
+            extGlobalsElement.child = [extGlobalElement]
+        } else {
+            extGlobalsElement.child.push(extGlobalElement)
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+/**
+ * extA1:UserPropertyes
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function getExtA1UserProperties (filter) {
+    // 判断是否存在ExtProperties
+    let extGlobalsElement = getExtA1RootElement('extA1:UserPropertyes')
+    if (!extGlobalsElement) {
+        return
+    }
+    return getExtA1ChildElement(extGlobalsElement, (index, item)=> filter(index, item))
 }
 
 /**
