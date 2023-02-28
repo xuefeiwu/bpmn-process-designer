@@ -226,7 +226,7 @@ export default {
         async openExtA1GlobalRequestModel (index, extA1GlobalRequestData) {
             this.activeIndex = index
             this.globalRequest = {}
-            extA1GlobalRequestData && (this.globalRequest = extA1GlobalRequestData)
+            extA1GlobalRequestData && (this.globalRequest = JSON.parse(JSON.stringify(extA1GlobalRequestData)))
             this.allUserTaskList = getAllUserTask()
             // 初始化请求执行方式
             this.invokeMode = this.globalRequest.invokeMode
@@ -267,8 +267,6 @@ export default {
                     nodeId: item.nodeId
                 }))
             }
-
-            console.log(this.globalRequestList)
         }
     }
 }
