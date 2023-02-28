@@ -15,20 +15,20 @@
         style="width: 100%"
         height="200px">
         <el-table-column
-          label="No"
+          label="序号"
           type="index"
           width="50" />
         <el-table-column
-          label="EventType"
+          label="事件类型"
           prop="event"
           show-overflow-tooltip />
         <el-table-column
-          label="ListenerType"
+          label="监听器类型"
           prop="type"
           show-overflow-tooltip />
         <el-table-column
           label="操作"
-          width="140">
+          width="90">
           <template slot-scope="{ row, $index }">
             <el-button
               type="text"

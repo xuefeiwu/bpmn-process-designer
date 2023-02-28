@@ -43,6 +43,7 @@ import ElementExtA1GlobalRequest from '@packages/components/Panel/components/Ele
 import ElementExtA1NodeRequest from '@packages/components/Panel/components/ElementExtA1NodeRequest'
 import {isUserTask} from '@packages/bo-utils/ExtA1Util'
 import ElementNodeTransferAtaff from '@packages/components/Panel/components/ElementNodeTransferAtaff'
+import ElementExtA1Attributes from '@packages/components/Panel/components/ElementExtA1Attributes'
 
 export default {
     name: 'BpmnPanel',
@@ -51,6 +52,7 @@ export default {
         ElementGenerations,
         ElementExtA1GlobalRequest,
         ElementNodeTransferAtaff,
+        ElementExtA1Attributes,
         ElementConditional,
         ElementJobExecution,
         ElementExtensionProperties,
@@ -130,9 +132,10 @@ export default {
             this.renderComponents.push(ElementExtA1GlobalRequest)
             isUserTask(element) && this.renderComponents.push(ElementExtA1NodeRequest)
             isUserTask(element) && this.renderComponents.push(ElementNodeTransferAtaff)
+            isUserTask(element) && this.renderComponents.push(ElementExtA1Attributes)
             isCanbeConditional(element) && this.renderComponents.push(ElementConditional)
             isJobExecutable(element) && this.renderComponents.push(ElementJobExecution)
-            this.renderComponents.push(ElementExtensionProperties)
+            // this.renderComponents.push(ElementExtensionProperties)
             isExecutable(element) && this.renderComponents.push(ElementExecutionListeners)
             isAsynchronous(element) && this.renderComponents.push(ElementAsyncContinuations)
             isStartInitializable(element) && this.renderComponents.push(ElementStartInitiator)

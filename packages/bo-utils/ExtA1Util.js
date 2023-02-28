@@ -78,7 +78,7 @@ export function saveExtA1Globals (element, properties) {
         if (!extGlobalsElement) {
             extGlobalsElement = createFactoyElement('extA1:Globals', {}, bpmnDefinitionElement)
             /*在第0个元素上添加extA1:ExtProperties节点*/
-            bpmnDefinitionElement.rootElements.splice(1, 0, extGlobalsElement)
+            bpmnDefinitionElement.rootElements.splice(0, 0, extGlobalsElement)
         }
 
         let extGlobalElementList = getExtA1ChildElement(extGlobalsElement, (index, item)=>{
@@ -118,6 +118,68 @@ export function getExtA1Globals (filter) {
         return
     }
     return getExtA1ChildElement(extGlobalsElement, (index, item)=> filter(index, item))
+}
+
+/**
+ * extA1:Globals
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function getExtA1Attributes (filter) {
+    // 判断是否存在ExtProperties
+    let extGlobalsElement = getExtA1RootElement('extA1:ExtAttributes')
+    if (!extGlobalsElement) {
+        return
+    }
+    return getExtA1ChildElement(extGlobalsElement, (index, item)=> filter(index, item))
+}
+
+/**
+ * extA1:ExtAttributes
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function saveExtAttributes (element, properties) {
+    try {
+        const modeling = getModeler.getModeling()
+        const bpmnDefinitionElement = getDefinitionElement()
+
+        // 判断是否存在ExtAttributes
+        let extGlobalsElement = getExtA1RootElement('extA1:ExtAttributes')
+        if (!extGlobalsElement) {
+            extGlobalsElement = createFactoyElement('extA1:ExtAttributes', {}, bpmnDefinitionElement)
+            /*在第0个元素上添加extA1:ExtAttributes节点*/
+            bpmnDefinitionElement.rootElements.splice(0, 0, extGlobalsElement)
+        }
+
+        let extGlobalElementList = getExtA1ChildElement(extGlobalsElement, (index, item)=>{
+            return properties.id && properties.id == item.id
+        })
+
+        if (extGlobalElementList && extGlobalElementList.length > 0) {
+            removeExtA1Attribute(extGlobalElementList[0])
+        }
+
+        let extGlobalElement = createFactoyElement('extA1:ExtAttribute', properties, extGlobalsElement)
+        extGlobalElement.businessObject = extGlobalElement
+        if (!extGlobalsElement.child || extGlobalsElement.child.length == 0) {
+            extGlobalsElement.child = [extGlobalElement]
+        } else {
+            extGlobalsElement.child.push(extGlobalElement)
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+/**
+ * 移除extA1:ExtAttribute
+ * @param element
+ */
+export function removeExtA1Attribute (element) {
+    removeExtA1ChildElement('extA1:ExtAttributes', element)
 }
 
 /**
