@@ -142,12 +142,12 @@ export default {
             isUserTask(element) && this.renderComponents.push(ElementExtA1UserProperty)
             isUserTask(element) && this.renderComponents.push(ElementExtA1SignNodes)
 
-            isCanbeConditional(element) && this.renderComponents.push(ElementConditional)
-            isJobExecutable(element) && this.renderComponents.push(ElementJobExecution)
+            // isCanbeConditional(element) && this.renderComponents.push(ElementConditional)
+            // isJobExecutable(element) && this.renderComponents.push(ElementJobExecution)
             // this.renderComponents.push(ElementExtensionProperties)
             isExecutable(element) && this.renderComponents.push(ElementExecutionListeners)
-            isAsynchronous(element) && this.renderComponents.push(ElementAsyncContinuations)
-            isStartInitializable(element) && this.renderComponents.push(ElementStartInitiator)
+            // isAsynchronous(element) && this.renderComponents.push(ElementAsyncContinuations)
+            // isStartInitializable(element) && this.renderComponents.push(ElementStartInitiator)
         }
     }
 }

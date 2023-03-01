@@ -32,9 +32,14 @@
         :label-width="120">
         <el-select
           v-model="conditionData.conditionType"
-          :options="conditionTypeOptions"
           @change="setElementConditionType"
-        />
+        >
+          <el-option
+            v-for="{ label, value } in conditionTypeOptions"
+            :label="label"
+            :value="value"
+            :key="value" />
+        </el-select>
       </edit-item>
       <edit-item
         v-if="conditionData.conditionType && conditionData.conditionType === 'expression'"
@@ -115,16 +120,15 @@ export default {
     },
 
     mounted () {
-        this.getElementVariables()
-        this.getElementConditionType()
-        this.conditionTypeOptions = CU.getConditionTypeOptions(getActive())
-        EventEmitter.on('element-update', () => {
-            this.conditionTypeOptions = CU.getConditionTypeOptions(getActive())
-            this.getElementVariables()
-            this.getElementConditionType()
-        })
+        this.reloadConditional()
+        EventEmitter.on('element-update', this.reloadConditional)
     },
     methods: {
+        reloadConditional () {
+            this.getElementVariables()
+            this.getElementConditionType()
+            this.conditionTypeOptions = CU.getConditionTypeOptions(getActive())
+        },
         getElementVariables () {
             this.varVisible = CU.isConditionEventDefinition(getActive())
             this.variableName = CU.getVariableNameValue(getActive())
@@ -135,7 +139,7 @@ export default {
         },
         getElementConditionType () {
             this.conditionData.conditionType = CU.getConditionTypeValue(getActive())
-            this.conditionData.conditionType === 'expression' && this.getConditionExpression()
+            this.conditionData.conditionType === 'expression' && CU.getConditionExpression(getActive())
             this.conditionData.conditionType === 'script' && this.getConditionScript()
         },
         getConditionScript () {
@@ -147,27 +151,35 @@ export default {
 
         setElementVariableName (value) {
             CU.setVariableNameValue(getActive(), value)
+            this.reloadConditional()
         },
         setElementVariableEvents (value) {
             CU.setVariableEventsValue(getActive(), value)
+            this.reloadConditional()
         },
         setElementConditionType (value) {
             CU.setConditionTypeValue(getActive(), value)
+            this.reloadConditional()
         },
         setConditionExpression (value) {
             CU.setConditionExpressionValue(getActive(), value)
+            this.reloadConditional()
         },
         setConditionScriptLanguage (value) {
             CU.setConditionScriptLanguageValue(getActive(), value)
+            this.reloadConditional()
         },
         setElementConditionScriptType (value) {
             CU.setConditionScriptTypeValue(getActive(), value)
+            this.reloadConditional()
         },
         setConditionScriptBody (value) {
             CU.setConditionScriptBodyValue(getActive(), value)
+            this.reloadConditional()
         },
         setConditionScriptResource (value) {
             CU.setConditionScriptResourceValue(getActive(), value)
+            this.reloadConditional()
         }
     }
 }

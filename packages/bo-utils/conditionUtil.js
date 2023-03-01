@@ -163,7 +163,7 @@ function getConditionalEventDefinition (element) {
     return getEventDefinition(element, 'bpmn:ConditionalEventDefinition')
 }
 //获取给定元素的条件表达式的值
-function getConditionExpression (element) {
+export function getConditionExpression (element) {
     const businessObject = getBusinessObject(element)
     if (is(businessObject, 'bpmn:SequenceFlow')) {
         return businessObject.get('conditionExpression')
