@@ -41,7 +41,6 @@ module.exports = defineConfig({
   },
   transpileDependencies: false,
   runtimeCompiler: true,
-  sequential: true,
   productionSourceMap: false,
   configureWebpack: {
     resolve: {
