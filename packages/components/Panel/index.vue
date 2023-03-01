@@ -3,7 +3,7 @@
     class="bpmn-panel"
     ref="panel">
     <div class="panel-header">
-      <bpmn-icon :name="bpmnIconName" />
+      <bpmn-icon :name="bpmnIconName"/>
       <p>{{ bpmnElementName }}</p>
       <p>{{ customTranslate(currentElementType || "Process") }}</p>
     </div>
@@ -11,7 +11,7 @@
       <component
         v-for="cp in this.renderComponents"
         :key="cp.name"
-        :is="cp" />
+        :is="cp"/>
     </el-collapse>
   </div>
 </template>
@@ -46,6 +46,7 @@ import ElementNodeTransferAtaff from '@packages/components/Panel/components/Elem
 import ElementExtA1Attributes from '@packages/components/Panel/components/ElementExtA1Attributes'
 import ElementExtA1UserProperty from '@packages/components/Panel/components/ElementExtA1UserProperty'
 import ElementExtA1SignNodes from '@packages/components/Panel/components/ElementExtA1SignNodes'
+import ElementExtA1Condition from '@packages/components/Panel/components/ElementExtA1Condition'
 
 export default {
     name: 'BpmnPanel',
@@ -55,6 +56,7 @@ export default {
         ElementExtA1GlobalRequest,
         ElementNodeTransferAtaff,
         ElementExtA1Attributes,
+        ElementExtA1Condition,
         ElementConditional,
         ElementJobExecution,
         ElementExtensionProperties,
@@ -83,10 +85,10 @@ export default {
                 this.setCurrentElement(null)
             })
             // 监听选择事件，修改当前激活的元素以及表单
-            modeler.on('selection.changed', ({ newSelection }) => {
+            modeler.on('selection.changed', ({newSelection}) => {
                 this.setCurrentElement(newSelection[0] || null)
             })
-            modeler.on('element.changed', ({ element }) => {
+            modeler.on('element.changed', ({element}) => {
                 // 保证 修改 "默认流转路径" 等类似需要修改多个元素的事件发生的时候，更新表单的元素与原选中元素不一致。
                 if (element && element.id === this.currentElementId) {
                     this.setCurrentElement(element)
@@ -98,15 +100,15 @@ export default {
         !this.currentElementId && this.setCurrentElement()
     },
     methods: {
-    //
+        //
         setCurrentElement: debounce(function (element) {
             let activatedElement = element,
                 activatedElementTypeName = ''
             if (!activatedElement) {
                 const modeler = getModeler()
                 activatedElement =
-          modeler.get('elementRegistry')?.find((el) => el.type === 'bpmn:Process') ||
-          modeler.get('elementRegistry')?.find((el) => el.type === 'bpmn:Collaboration')
+                    modeler.get('elementRegistry')?.find((el) => el.type === 'bpmn:Process') ||
+                    modeler.get('elementRegistry')?.find((el) => el.type === 'bpmn:Collaboration')
 
                 if (!activatedElement) {
                     return catchError('No Element found!')
@@ -114,7 +116,7 @@ export default {
             }
             activatedElementTypeName = getBpmnIconType(activatedElement)
 
-            this.$store.commit('setElement', { element: activatedElement, id: activatedElement.id })
+            this.$store.commit('setElement', {element: activatedElement, id: activatedElement.id})
             this.currentElementId = activatedElement.id
             this.currentElementType = activatedElement.type.split(':')[1]
 
@@ -141,6 +143,9 @@ export default {
             isUserTask(element) && this.renderComponents.push(ElementExtA1Attributes)
             isUserTask(element) && this.renderComponents.push(ElementExtA1UserProperty)
             isUserTask(element) && this.renderComponents.push(ElementExtA1SignNodes)
+            if (isUserTask(element) || isCanbeConditional(element)) {
+                this.renderComponents.push(ElementExtA1Condition)
+            }
 
             // isCanbeConditional(element) && this.renderComponents.push(ElementConditional)
             // isJobExecutable(element) && this.renderComponents.push(ElementJobExecution)
