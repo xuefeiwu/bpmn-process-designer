@@ -322,3 +322,11 @@ export function saveExtA1SignNodes (element, properties) {
         console.log(e)
     }
 }
+
+/**
+ * 移除全局事件节点
+ * @param element
+ */
+export function removeExtA1SignNodes (element) {
+    removeExtA1ChildElement('extA1:SignNodes', element)
+}

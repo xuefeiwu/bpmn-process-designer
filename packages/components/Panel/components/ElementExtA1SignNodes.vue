@@ -55,7 +55,7 @@
 <script>
 import {updateMultiInstanceLoopCharacteristics} from '@packages/bo-utils/userTaskUtil'
 import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
-import {getExtA1SignNodes, saveExtA1SignNodes} from '@packages/bo-utils/extA1Util'
+import {getExtA1SignNodes, removeExtA1SignNodes, saveExtA1SignNodes} from '@packages/bo-utils/extA1Util'
 import EventEmitter from '@utils/EventEmitter'
 
 export default {
@@ -126,6 +126,9 @@ export default {
             }
 
             updateMultiInstanceLoopCharacteristics(getActive(), this.sequential)
+            if (this.sequential == '') {
+                removeExtA1SignNodes(this.signNode)
+            }
             this.reloadSignNodes()
         },
         changeSignType (value) {
