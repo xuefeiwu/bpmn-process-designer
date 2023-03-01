@@ -1,6 +1,6 @@
 import {getModeler} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import {createFactoyElement} from '@packages/bpmn-utils/BpmnFactoryUtils'
-import {getExtA1RootElement, getDefinitionElement, getExtA1ChildElement, removeExtA1ChildElement} from '@packages/bo-utils/ExtA1ElementUtils'
+import {getExtA1RootElement, getDefinitionElement, getExtA1ChildElement, removeExtA1ChildElement} from '@packages/bo-utils/extA1ElementUtils'
 import {is} from 'bpmn-js/lib/util/ModelUtil'
 
 /**
@@ -269,3 +269,56 @@ export function getAllUserTask () {
     return result
 }
 
+
+/**
+ * extA1:SignNodes
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function getExtA1SignNodes (filter) {
+    // 判断是否存在ExtProperties
+    let extGlobalsElement = getExtA1RootElement('extA1:SignNodes')
+    if (!extGlobalsElement) {
+        return
+    }
+    return getExtA1ChildElement(extGlobalsElement, (index, item)=> filter(index, item))
+}
+
+/**
+ * extA1:SignNodes
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function saveExtA1SignNodes (element, properties) {
+    try {
+        const bpmnDefinitionElement = getDefinitionElement()
+
+        // 判断是否存在ExtAttributes
+        let extGlobalsElement = getExtA1RootElement('extA1:SignNodes')
+        if (!extGlobalsElement) {
+            extGlobalsElement = createFactoyElement('extA1:SignNodes', {}, bpmnDefinitionElement)
+            /*在第0个元素上添加extA1:ExtAttributes节点*/
+            bpmnDefinitionElement.rootElements.splice(0, 0, extGlobalsElement)
+        }
+
+        let extGlobalElementList = getExtA1ChildElement(extGlobalsElement, (index, item)=>{
+            return properties.id && properties.id == item.id
+        })
+
+        if (extGlobalElementList && extGlobalElementList.length > 0) {
+            removeExtA1ChildElement('extA1:SignNodes', extGlobalElementList[0])
+        }
+
+        let extGlobalElement = createFactoyElement('extA1:SignNode', properties, extGlobalsElement)
+        extGlobalElement.businessObject = extGlobalElement
+        if (!extGlobalsElement.child || extGlobalsElement.child.length == 0) {
+            extGlobalsElement.child = [extGlobalElement]
+        } else {
+            extGlobalsElement.child.push(extGlobalElement)
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}

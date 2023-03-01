@@ -92,8 +92,9 @@
 </template>
 
 <script>
-import {getAllUserTask, getExtA1Attributes, getExtA1Globals, removeExtA1Attribute, removeExtA1GlobalRequest, saveExtA1Globals, saveExtAttributes} from '@packages/bo-utils/ExtA1Util'
+import {getAllUserTask, getExtA1Attributes, getExtA1Globals, removeExtA1Attribute, removeExtA1GlobalRequest, saveExtA1Globals, saveExtAttributes} from '@packages/bo-utils/extA1Util'
 import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
+import EventEmitter from '@utils/EventEmitter'
 
 export default {
     name: 'ElementExtA1Attributes',
@@ -117,6 +118,7 @@ export default {
     },
     mounted () {
         this.reloadExtA1Attribute()
+        EventEmitter.on('element-update', this.reloadExtA1Attribute)
     },
     methods: {
         removeExtA1AttributeModel (row) {

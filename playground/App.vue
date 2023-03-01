@@ -10,7 +10,7 @@
         id="camunda-panel"></div>
     </div>
 
-    <bpmn-settings />
+    <!--<bpmn-settings />-->
     <bpmn-context-menu />
   </div>
 </template>

@@ -184,8 +184,9 @@
 </template>
 
 <script>
-import {getAllUserTask, getExtA1Globals, removeExtA1GlobalRequest, saveExtA1Globals} from '@packages/bo-utils/ExtA1Util'
+import {getAllUserTask, getExtA1Globals, removeExtA1GlobalRequest, saveExtA1Globals} from '@packages/bo-utils/extA1Util'
 import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
+import EventEmitter from '@utils/EventEmitter'
 
 export default {
     name: 'ElementExtA1GlobalRequest',
@@ -239,6 +240,7 @@ export default {
     },
     mounted () {
         this.reloadExtA1GlobalRequest()
+        EventEmitter.on('element-update', this.reloadExtA1GlobalRequest)
     },
     methods: {
         removeExtA1GlobalRequest (row) {
@@ -315,7 +317,6 @@ export default {
                 }))
             }
 
-            console.log(this.globalRequestList)
             this.allUserTaskList = getAllUserTask()
         }
     }

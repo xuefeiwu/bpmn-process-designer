@@ -89,9 +89,10 @@
 
 <script>
 import EditItem from '@packages/components/common/EditItem'
-import {getExtA1Properties, saveExtA1Properties} from '@packages/bo-utils/ExtA1Util'
+import {getExtA1Properties, saveExtA1Properties} from '@packages/bo-utils/extA1Util'
 import UserSelector from '@packages/components/Panel/components/SubChild/UserSelector'
 import {getProcessAdmin} from '@packages/bpmn-utils/BpmnDesignerUtils'
+import EventEmitter from '@utils/EventEmitter'
 
 export default {
     name: 'ElementGlobalProperties',
@@ -119,14 +120,9 @@ export default {
             }
         }
     },
-    created () {
-        this.init()
-    },
     mounted () {
-        let processAdmin = getProcessAdmin()
-        if (processAdmin) {
-            this.showProcessAdminName = JSON.parse(processAdmin).map((item) => item.userName).join(',')
-        }
+        this.init()
+        EventEmitter.on('element-update', this.init)
     },
     methods: {
         init () {
@@ -144,6 +140,11 @@ export default {
             this.properties.subjectRule = subjectRule
             if (propSkipRules && propSkipRules != '') {
                 this.propSkipRulesValue = propSkipRules.split(',')
+            }
+
+            let processAdmin = getProcessAdmin()
+            if (processAdmin) {
+                this.showProcessAdminName = JSON.parse(processAdmin).map((item) => item.userName).join(',')
             }
         },
         initProcessAdmin () {

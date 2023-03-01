@@ -10,7 +10,7 @@
     <el-collapse v-model="activeNames">
       <component
         v-for="cp in this.renderComponents"
-        :key="cp.name + '_' + currentElementId"
+        :key="cp.name"
         :is="cp" />
     </el-collapse>
   </div>
@@ -41,10 +41,11 @@ import ElementStartInitiator from '@packages/components/Panel/components/Element
 import ElementGlobalProperties from '@packages/components/Panel/components/ElementExtA1GlobalProperties'
 import ElementExtA1GlobalRequest from '@packages/components/Panel/components/ElementExtA1GlobalRequest'
 import ElementExtA1NodeRequest from '@packages/components/Panel/components/ElementExtA1NodeRequest'
-import {isUserTask} from '@packages/bo-utils/ExtA1Util'
+import {isUserTask} from '@packages/bo-utils/extA1Util'
 import ElementNodeTransferAtaff from '@packages/components/Panel/components/ElementNodeTransferAtaff'
 import ElementExtA1Attributes from '@packages/components/Panel/components/ElementExtA1Attributes'
 import ElementExtA1UserProperty from '@packages/components/Panel/components/ElementExtA1UserProperty'
+import ElementExtA1SignNodes from '@packages/components/Panel/components/ElementExtA1SignNodes'
 
 export default {
     name: 'BpmnPanel',
@@ -59,6 +60,7 @@ export default {
         ElementExtensionProperties,
         ElementExecutionListeners,
         ElementExtA1UserProperty,
+        ElementExtA1SignNodes,
         ElementAsyncContinuations,
         ElementExtA1NodeRequest,
         ElementStartInitiator
@@ -138,6 +140,7 @@ export default {
             isUserTask(element) && this.renderComponents.push(ElementNodeTransferAtaff)
             isUserTask(element) && this.renderComponents.push(ElementExtA1Attributes)
             isUserTask(element) && this.renderComponents.push(ElementExtA1UserProperty)
+            isUserTask(element) && this.renderComponents.push(ElementExtA1SignNodes)
 
             isCanbeConditional(element) && this.renderComponents.push(ElementConditional)
             isJobExecutable(element) && this.renderComponents.push(ElementJobExecution)

@@ -130,8 +130,9 @@
 </template>
 
 <script>
-import {getAllUserTask, getExtA1UserProperties, saveExtA1UserProperties} from '@packages/bo-utils/ExtA1Util'
+import {getAllUserTask, getExtA1UserProperties, saveExtA1UserProperties} from '@packages/bo-utils/extA1Util'
 import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
+import EventEmitter from '@utils/EventEmitter'
 
 export default {
     name: 'ElementExtA1UserProperty',
@@ -182,6 +183,7 @@ export default {
     },
     mounted () {
         this.reloadExtA1UserProperty()
+        EventEmitter.on('element-update', this.reloadExtA1UserProperty)
     },
     methods: {
         reloadExtA1UserProperty (){
@@ -243,15 +245,15 @@ export default {
             if (!/^[0-9]*$/.test(value)) {
                 event.target.value = ''
                 this.$message.error('只能输入大于0的数字！')
+                return
             }
 
             if (type == 'day') {
                 if (value < 0 || value >= 1000) {
-                    this.$message.error('天数只能输入大于0~23的数字！')
+                    this.$message.error('天数只能输入大于0~1000的数字！')
                     event.target.value = ''
                     return
                 }
-                this.userProperty.nodePropertiesDay = value
             }
             if (type == 'hour') {
                 if(value < 0 || value >= 24) {
@@ -259,7 +261,6 @@ export default {
                     event.target.value = ''
                     return
                 }
-                this.userProperty.nodePropertiesHour = value
             }
             if (type == 'minute') {
                 if(value < 0 || value >= 60) {
@@ -267,9 +268,7 @@ export default {
                     event.target.value = ''
                     return
                 }
-                this.userProperty.nodePropertiesMinute = value
             }
-
 
             this.saveExtA1UserProperty()
         }

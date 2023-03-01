@@ -50,15 +50,24 @@ module.exports = {
         "beforeColon": false,
         "afterColon": true
       }],
+    "vue/max-attributes-per-line": ["error", {
+      "singleline": {
+        "max": 150
+      },
+      "multiline": {
+        "max": 1
+      }
+    }],
+    'vue/singleline-html-element-content-newline': 'off', // 单行html元素内容在新的一行
+    'vue/multiline-html-element-content-newline': 'off', // 多行html元素内容在新的一行
+    'vue/html-closing-bracket-newline': 'off', // html右括号在新的一行
     "vue/require-default-prop": 0,
     "vue/require-prop-types": 0,
     "vue/attribute-hyphenation": 0,
     "vue/html-self-closing": 0,
     "vue/component-name-in-template-casing": 0,
     "vue/html-closing-bracket-spacing": 0,
-    "vue/singleline-html-element-content-newline": 0,
     "vue/no-unused-components": 0,
-    "vue/multiline-html-element-content-newline": 0,
     "vue/no-use-v-if-with-v-for": 0,
     "vue/html-closing-bracket-newline": 0,
     "vue/no-parsing-error": 0,
