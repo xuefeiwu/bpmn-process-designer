@@ -85,3 +85,11 @@ export function getDefinitionElement () {
 }
 
 
+/**
+ * 通过id获取节点
+ * @param id
+ */
+export function getElementById (id) {
+    const elementRegistry = getModeler().get('elementRegistry')
+    return elementRegistry.get(id)
+}

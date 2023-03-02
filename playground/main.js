@@ -9,6 +9,7 @@ import ElementUI from 'element-ui'
 Vue.use(ElementUI, { size: 'small' })
 import '../packages/theme/element-variables.scss'
 
+// 导入highlight
 import { vuePlugin } from '../packages/highlight'
 import 'highlight.js/styles/atom-one-dark-reasonable.css'
 Vue.use(vuePlugin)

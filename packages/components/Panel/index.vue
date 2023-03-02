@@ -25,7 +25,7 @@ import BpmnIcon from '@packages/components/common/BpmnIcon'
 import bpmnIcons from '@packages/bpmn-icons'
 import getBpmnIconType from '@packages/bpmn-icons/getIconType'
 import {customTranslate} from '@packages/additional-modules/Translate'
-import {isCanbeConditional} from '@packages/bo-utils/conditionUtil'
+import {isCanbeConditional, isConditionalSource} from '@packages/bo-utils/conditionUtil'
 import {isJobExecutable} from '@packages/bo-utils/jobExecutionUtil'
 import {isExecutable} from '@packages/bo-utils/executionListenersUtil'
 import {isAsynchronous} from '@packages/bo-utils/asynchronousContinuationsUtil'
@@ -143,7 +143,7 @@ export default {
             isUserTask(element) && this.renderComponents.push(ElementExtA1Attributes)
             isUserTask(element) && this.renderComponents.push(ElementExtA1UserProperty)
             isUserTask(element) && this.renderComponents.push(ElementExtA1SignNodes)
-            if (isUserTask(element) || isCanbeConditional(element)) {
+            if (isUserTask(element) || isConditionalSource(element)) {
                 this.renderComponents.push(ElementExtA1Condition)
             }
 
