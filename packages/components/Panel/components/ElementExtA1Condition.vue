@@ -4,6 +4,9 @@
       <collapse-title title="分支条件">
         <lucide-icon name="FolderEdit"/>
       </collapse-title>
+      <number-tag
+        :value="outgoingList.length"
+        margin-left="12px"/>
     </template>
 
     <div class="element_ext_a1_condition">
