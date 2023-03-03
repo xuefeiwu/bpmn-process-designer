@@ -64,11 +64,13 @@ import 'codemirror/mode/markdown/markdown'
 import 'codemirror/mode/vue/vue'
 //下面这几个引入的主要是验证提示类的,配置里的lint需要设置true,gutters: ['CodeMirror-lint-markers']
 import 'codemirror/addon/hint/show-hint.js'
+import 'codemirror/mode/clike/clike.js'
 import 'codemirror/addon/hint/show-hint.css'
 import 'codemirror/addon/hint/javascript-hint.js'
 import 'codemirror/addon/hint/xml-hint.js'
 import 'codemirror/addon/lint/json-lint.js'
 import '@packages/components/common/mod/ProcessInnerProps.js'
+import '@packages/components/common/help/groovy-hint.js'
 
 //及时自动更新，配置里面也需要设置autoRefresh为true
 import 'codemirror/addon/display/autorefresh'

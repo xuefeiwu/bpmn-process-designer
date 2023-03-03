@@ -9,7 +9,7 @@
         // eslint-disable-next-line no-undef
         mod(CodeMirror)
 })(function (CodeMirror) {
-    'use strict'
+    'use strict';
 
     CodeMirror.defineMode('processInner', function (config, parserConfig) {
         var jsonldMode = parserConfig.jsonld
