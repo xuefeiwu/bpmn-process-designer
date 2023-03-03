@@ -48,12 +48,14 @@ import ElementExtA1UserProperty from '@packages/components/Panel/components/Elem
 import ElementExtA1SignNodes from '@packages/components/Panel/components/ElementExtA1SignNodes'
 import ElementExtA1Condition from '@packages/components/Panel/components/ElementExtA1Condition'
 import ElementExtA1EventScript from '@packages/components/Panel/components/ElementExtA1EventScript'
+import ElementExtA1Button from '@packages/components/Panel/components/ElementExtA1Button'
 
 export default {
     name: 'BpmnPanel',
     components: {
         BpmnIcon,
         ElementGenerations,
+        ElementExtA1Button,
         ElementExtA1GlobalRequest,
         ElementNodeTransferAtaff,
         ElementExtA1Attributes,
@@ -77,7 +79,7 @@ export default {
             currentElementId: undefined,
             customTranslate,
             renderComponents: [],
-            activeNames: ['element_ext_a1_event_script']
+            activeNames: ['element_ext_a1_button']
         }
     },
     created () {
@@ -140,6 +142,7 @@ export default {
             // 添加自定义配置
             this.renderComponents.push(ElementGlobalProperties)
             this.renderComponents.push(ElementExtA1GlobalRequest)
+            this.renderComponents.push(ElementExtA1Button)
             isUserTask(element) && this.renderComponents.push(ElementExtA1NodeRequest)
             isUserTask(element) && this.renderComponents.push(ElementNodeTransferAtaff)
             isUserTask(element) && this.renderComponents.push(ElementExtA1Attributes)

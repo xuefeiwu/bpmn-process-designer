@@ -384,10 +384,86 @@ export function getExtA1CommonScripts (filter) {
     return getExtA1ChildElement(extGlobalsElement, (index, item)=> filter(index, item))
 }
 
+
 /**
  * 移除CommonScripts
  * @param element
  */
 export function removeExtA1CommonScripts (element) {
     removeExtA1ChildElement('extA1:CommonScripts', element)
+}
+
+/**
+ * extA1:Buttons
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function saveExtA1Buttons (element, properties) {
+    try {
+        const bpmnDefinitionElement = getDefinitionElement()
+
+        // 判断是否存在ExtAttributes
+        let extGlobalsElement = getExtA1RootElement('extA1:Buttons')
+        if (!extGlobalsElement) {
+            extGlobalsElement = createFactoyElement('extA1:Buttons', {}, bpmnDefinitionElement)
+            /*在第0个元素上添加extA1:ExtAttributes节点*/
+            bpmnDefinitionElement.rootElements.splice(0, 0, extGlobalsElement)
+        }
+
+        let extGlobalElement = createFactoyElement('extA1:Button', properties, extGlobalsElement)
+        extGlobalElement.businessObject = extGlobalElement
+        if (!extGlobalsElement.child || extGlobalsElement.child.length == 0) {
+            extGlobalsElement.child = [extGlobalElement]
+        } else {
+            extGlobalsElement.child.push(extGlobalElement)
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+/**
+ * extA1:Buttons
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function getExtA1Buttons (filter) {
+    // 判断是否存在ExtProperties
+    let extGlobalsElement = getExtA1RootElement('extA1:Buttons')
+    if (!extGlobalsElement) {
+        return
+    }
+    return getExtA1ChildElement(extGlobalsElement, (index, item)=> filter(index, item))
+}
+
+/**
+ * 移除Buttons
+ * @param element
+ */
+export function removeExtA1Buttons (element) {
+    removeExtA1ChildElement('extA1:Buttons', element)
+}
+
+/**
+ * 移除Buttons
+ * @param element
+ */
+export function removeExtA1ButtonByNode (element) {
+    // 判断是否存在ExtAttributes
+    let extGlobalsElement = getExtA1RootElement('extA1:Buttons')
+    if (!extGlobalsElement) {
+        return
+    }
+
+    let extGlobalElementList = getExtA1ChildElement(extGlobalsElement, (index, item)=>{
+        return element.id && element.id == item.nodeId
+    })
+
+    if (extGlobalElementList && extGlobalElementList.length > 0) {
+        extGlobalElementList.forEach((item)=>{
+            removeExtA1Buttons(item)
+        })
+    }
 }

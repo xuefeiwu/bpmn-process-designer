@@ -238,14 +238,14 @@ export default {
     methods: {
         resetSelectRow () {
             if (!this.selectUserList || this.selectUserList.length == 0) {
+                this.$refs.userListTable.clearSelection()
                 return
             }
 
             let selectionUserIdList = this.selectUserList.map((item)=>item.id)
+            let selectionRow  = this.userList.filter((value)=> selectionUserIdList.indexOf(value.id) != -1)
             // 过滤出选中行
             this.$refs.userListTable.clearSelection()
-            let selectionRow  = this.userList.filter((value)=> selectionUserIdList.indexOf(value.id) != -1)
-
             selectionRow.forEach((row)=>{
                 // 表格选中
                 this.$refs.userListTable.toggleRowSelection(row)
