@@ -330,3 +330,64 @@ export function saveExtA1SignNodes (element, properties) {
 export function removeExtA1SignNodes (element) {
     removeExtA1ChildElement('extA1:SignNodes', element)
 }
+
+/**
+ * extA1:CommonScripts
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function saveExtA1CommonScripts (element, properties) {
+    try {
+        const bpmnDefinitionElement = getDefinitionElement()
+
+        // 判断是否存在ExtAttributes
+        let extGlobalsElement = getExtA1RootElement('extA1:CommonScripts')
+        if (!extGlobalsElement) {
+            extGlobalsElement = createFactoyElement('extA1:CommonScripts', {}, bpmnDefinitionElement)
+            /*在第0个元素上添加extA1:ExtAttributes节点*/
+            bpmnDefinitionElement.rootElements.splice(0, 0, extGlobalsElement)
+        }
+
+        let extGlobalElementList = getExtA1ChildElement(extGlobalsElement, (index, item)=>{
+            return properties.id && properties.id == item.id
+        })
+
+        if (extGlobalElementList && extGlobalElementList.length > 0) {
+            removeExtA1CommonScripts(extGlobalElementList[0])
+        }
+
+        let extGlobalElement = createFactoyElement('extA1:CommonScript', properties, extGlobalsElement)
+        extGlobalElement.businessObject = extGlobalElement
+        if (!extGlobalsElement.child || extGlobalsElement.child.length == 0) {
+            extGlobalsElement.child = [extGlobalElement]
+        } else {
+            extGlobalsElement.child.push(extGlobalElement)
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+/**
+ * extA1:CommonScripts
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function getExtA1CommonScripts (filter) {
+    // 判断是否存在ExtProperties
+    let extGlobalsElement = getExtA1RootElement('extA1:CommonScripts')
+    if (!extGlobalsElement) {
+        return
+    }
+    return getExtA1ChildElement(extGlobalsElement, (index, item)=> filter(index, item))
+}
+
+/**
+ * 移除CommonScripts
+ * @param element
+ */
+export function removeExtA1CommonScripts (element) {
+    removeExtA1ChildElement('extA1:CommonScripts', element)
+}

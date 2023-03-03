@@ -47,6 +47,7 @@ import ElementExtA1Attributes from '@packages/components/Panel/components/Elemen
 import ElementExtA1UserProperty from '@packages/components/Panel/components/ElementExtA1UserProperty'
 import ElementExtA1SignNodes from '@packages/components/Panel/components/ElementExtA1SignNodes'
 import ElementExtA1Condition from '@packages/components/Panel/components/ElementExtA1Condition'
+import ElementExtA1EventScript from '@packages/components/Panel/components/ElementExtA1EventScript'
 
 export default {
     name: 'BpmnPanel',
@@ -62,6 +63,7 @@ export default {
         ElementExtensionProperties,
         ElementExecutionListeners,
         ElementExtA1UserProperty,
+        ElementExtA1EventScript,
         ElementExtA1SignNodes,
         ElementAsyncContinuations,
         ElementExtA1NodeRequest,
@@ -75,7 +77,7 @@ export default {
             currentElementId: undefined,
             customTranslate,
             renderComponents: [],
-            activeNames: 'global-info'
+            activeNames: ['element_ext_a1_event_script']
         }
     },
     created () {
@@ -143,6 +145,7 @@ export default {
             isUserTask(element) && this.renderComponents.push(ElementExtA1Attributes)
             isUserTask(element) && this.renderComponents.push(ElementExtA1UserProperty)
             isUserTask(element) && this.renderComponents.push(ElementExtA1SignNodes)
+            isUserTask(element) && this.renderComponents.push(ElementExtA1EventScript)
             if (isUserTask(element) || isConditionalSource(element)) {
                 this.renderComponents.push(ElementExtA1Condition)
             }
