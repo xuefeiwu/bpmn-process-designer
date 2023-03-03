@@ -17,7 +17,14 @@
       width="60vw"
       append-to-body
       destroy-on-close
+      class="code-dialog"
       :before-close="handlerCancel">
+      <div class="code-div" v-if="showPropsButton">
+        <template v-for="(item) in innerProps">
+          <el-button class="code-button" size="mini" type="primary" :icon="item.icon" @click="insertProps(item.value)">{{ item.label }}</el-button>
+        </template>
+      </div>
+
       <codemirror
         v-if="editorModalFlag"
         ref="codeMirror"
@@ -29,9 +36,7 @@
 
       <template #footer v-if="!readOnly">
         <el-button @click="handlerCancel">取 消</el-button>
-        <el-button
-          @click="handleSureClick"
-          type="primary">确 认</el-button>
+        <el-button @click="handleSureClick" type="primary">确 认 </el-button>
       </template>
     </el-dialog>
   </div>
@@ -63,6 +68,7 @@ import 'codemirror/addon/hint/show-hint.css'
 import 'codemirror/addon/hint/javascript-hint.js'
 import 'codemirror/addon/hint/xml-hint.js'
 import 'codemirror/addon/lint/json-lint.js'
+import '@packages/components/common/mod/ProcessInnerProps.js'
 
 //及时自动更新，配置里面也需要设置autoRefresh为true
 import 'codemirror/addon/display/autorefresh'
@@ -118,6 +124,10 @@ export default {
             type: Boolean,
             default: false
         },
+        showPropsButton: {
+            type: Boolean,
+            default: false
+        },
         readOnly: {
             type: Boolean,
             default: false
@@ -148,15 +158,23 @@ export default {
         return {
             showCode: '',
             code: '',
-            editorModalFlag: false
+            editorModalFlag: false,
+            customerMode: {
+                'processInner': 'text/x-processInner'
+            },
+            innerProps: [
+                {label: '流程标题', value: '${title}', icon: 'el-icon-folder-add'},
+                {label: '流程发起时间', value: '${startDate}', icon: 'el-icon-folder-tickets'},
+                {label: '流程发起人', value: '${startUserName}', icon: 'el-icon-folder-date'}
+            ]
         }
     },
     computed: {
         editorOption () {
             const meta = mirror.findModeByName(this.codeLanguage ? this.codeLanguage : 'javascript')
-            console.log(meta)
+            let mode = meta? meta.mode : this.customerMode[this.codeLanguage]
             let opt = {
-                mode: meta.mode,
+                mode: mode,
                 theme: 'monokai',
                 indentUnit: 4,
                 lint: true,
@@ -197,17 +215,45 @@ export default {
         },
         handlerCancel () {
             this.editorModalFlag = false
+            // 关闭清空值
+            this.showCode = this.codeString
+            this.code = this.codeString
             this.$emit('handlerCancel', this.code)
         },
         handleSureClick () {
             this.editorModalFlag = false
             // 有传入的回写值
             this.$emit('handleSureClick', this.code)
+        },
+        insertProps (props) {
+            let pos1 = this.$refs.codeMirror.codemirror.getCursor()
+            let pos2 = {}
+            pos2.line = pos1.line
+            pos2.ch = pos1.ch
+            this.$refs.codeMirror.codemirror.replaceRange(' '+props+' ', pos2)
         }
     }
 }
 </script>
 <style lang="less" scoped>
+.code-dialog /deep/ .el-dialog__body {
+    padding: 16px;
+    padding-top: 2px;
+    max-height: 80vh;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.code-div{
+    background-color: #f5f5f5;
+    border-color: #ddd;
+}
+.code-button {
+    width: 100px;
+    height: 30px;
+    margin-top: 2px;
+    margin-bottom: 4px;
+}
 .code-editor-textarea {
     position: relative;
 }
@@ -229,7 +275,6 @@ export default {
     font-size: 22px;
 }
 </style>
-
 <style lang="less">
 .CodeMirror-hints {
     z-index: 90000;

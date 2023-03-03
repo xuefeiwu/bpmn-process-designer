@@ -41,9 +41,17 @@
         label="流程标题"
         textAlign="center"
         :labelWidth="120">
-        <el-input
-          v-model="properties.subjectRule"
-          @change="updateSubjectRule"
+        <!--<el-input-->
+        <!--  v-model="properties.subjectRule"-->
+        <!--  @change="updateSubjectRule"-->
+        <!--/>-->
+        <code-editor-model
+          title="流程标题设置"
+          :code-string="properties.subjectRule"
+          code-language="processInner"
+          :readOnly="false"
+          :show-props-button="true"
+          @handleSureClick="updateSubjectRule($event,properties.subjectRule)"
         />
       </edit-item>
       <edit-item
@@ -93,10 +101,11 @@ import {getExtA1Properties, saveExtA1Properties} from '@packages/bo-utils/extA1U
 import UserSelector from '@packages/components/Panel/components/SubChild/UserSelector'
 import {getProcessAdmin} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import EventEmitter from '@utils/EventEmitter'
+import CodeEditorModel from '@packages/components/common/CodeEditorModel'
 
 export default {
     name: 'ElementGlobalProperties',
-    components: {UserSelector, EditItem},
+    components: {UserSelector, EditItem, CodeEditorModel},
     data () {
         return {
             modelVisible: false,
@@ -170,6 +179,7 @@ export default {
             saveExtA1Properties(this.properties)
         },
         updateSubjectRule (value) {
+            console.log(value)
             let subjectRule = '${title}'
             if (value && value != '') {
                 subjectRule = value
