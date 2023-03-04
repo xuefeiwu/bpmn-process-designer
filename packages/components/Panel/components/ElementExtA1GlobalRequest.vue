@@ -46,14 +46,16 @@
           align="left">
           <template slot-scope="{ row}">
             <template v-for="(item) in row.callTime.split(',')">
-              <el-tag
-                size="small"
-                style="margin-left: 2px;">
-                <span v-if="item == 'startEvent'">流程启动时</span>
-                <span v-if="item == 'endEvent'">流程结束时</span>
-                <span v-if="item == 'taskCreate'">任务创建时</span>
-                <span v-if="item == 'taskComplete'">任务完成时</span>
-              </el-tag>
+              <template v-if="item && item != ''">
+                <el-tag
+                  size="small"
+                  style="margin-left: 2px;">
+                  <span v-if="item == 'startEvent'">流程启动时</span>
+                  <span v-if="item == 'endEvent'">流程结束时</span>
+                  <span v-if="item == 'taskCreate'">任务创建时</span>
+                  <span v-if="item == 'taskComplete'">任务完成时</span>
+                </el-tag>
+              </template>
             </template>
           </template>
         </el-table-column>
