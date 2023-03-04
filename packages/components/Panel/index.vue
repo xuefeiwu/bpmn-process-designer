@@ -49,6 +49,7 @@ import ElementExtA1SignNodes from '@packages/components/Panel/components/Element
 import ElementExtA1Condition from '@packages/components/Panel/components/ElementExtA1Condition'
 import ElementExtA1EventScript from '@packages/components/Panel/components/ElementExtA1EventScript'
 import ElementExtA1Button from '@packages/components/Panel/components/ElementExtA1Button'
+import ElementExtA1UserRule from '@packages/components/Panel/components/ElementExtA1UserRule'
 
 export default {
     name: 'BpmnPanel',
@@ -59,6 +60,7 @@ export default {
         ElementExtA1GlobalRequest,
         ElementNodeTransferAtaff,
         ElementExtA1Attributes,
+        ElementExtA1UserRule,
         ElementExtA1Condition,
         ElementConditional,
         ElementJobExecution,
@@ -79,7 +81,7 @@ export default {
             currentElementId: undefined,
             customTranslate,
             renderComponents: [],
-            activeNames: ['element_ext_a1_button']
+            activeNames: ['element_ext_a1_user_rule']
         }
     },
     created () {
@@ -143,6 +145,7 @@ export default {
             this.renderComponents.push(ElementGlobalProperties)
             this.renderComponents.push(ElementExtA1GlobalRequest)
             this.renderComponents.push(ElementExtA1Button)
+            isUserTask(element) && this.renderComponents.push(ElementExtA1UserRule)
             isUserTask(element) && this.renderComponents.push(ElementExtA1NodeRequest)
             isUserTask(element) && this.renderComponents.push(ElementNodeTransferAtaff)
             isUserTask(element) && this.renderComponents.push(ElementExtA1Attributes)

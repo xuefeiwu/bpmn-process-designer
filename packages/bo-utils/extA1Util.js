@@ -467,3 +467,29 @@ export function removeExtA1ButtonByNode (element) {
         })
     }
 }
+
+/**
+ * extA1:UserRules
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function getExtA1UserRules (filter) {
+    // 判断是否存在ExtProperties
+    let extGlobalsElement = getExtA1RootElement('extA1:UserRules')
+    if (!extGlobalsElement) {
+        return
+    }
+    return getExtA1ChildElement(extGlobalsElement, (index, item)=> filter(index, item))
+}
+
+
+/**
+ * extA1:UserRules
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
+export function removeExtA1UserRules (element) {
+    removeExtA1ChildElement('extA1:UserRules', element)
+}
