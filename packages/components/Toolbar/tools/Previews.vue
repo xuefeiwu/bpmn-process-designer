@@ -20,7 +20,7 @@
 
     <code-editor-model
       v-if="codeModelVisible"
-      title="预览"
+      :title="modelTitle"
       :code-string="codeString"
       :code-language="codeLanguage"
       :show-code-editor.sync="codeModelVisible"
