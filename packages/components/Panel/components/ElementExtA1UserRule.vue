@@ -139,6 +139,18 @@
                 </el-option>
               </el-select>
             </template>
+            <template v-else-if="showSelect == 2">
+              <span>{{ userRule.ruleDisplayName }}</span>
+            </template>
+            <template v-else-if="showSelect == 3">
+              <code-editor-model
+                title="删除事件脚本设置"
+                code-language="groovy"
+                :code-string="userRule.pluginVal"
+                :readOnly="false"
+                @handleSureClick="saveScript($event)"
+              />
+            </template>
           </el-form-item>
         </template>
         <template v-if="showLogicCal && userRule.logicCal != ''">
@@ -169,9 +181,11 @@ import {getAllUserTask, getExtA1UserRules, removeExtA1UserRules} from '@packages
 import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import EventEmitter from '@utils/EventEmitter'
 import * as userRuleVars from '@packages/api/UserRuleVars.js'
+import CodeEditorModel from '@packages/components/common/CodeEditorModel'
 
 export default {
     name: 'ElementExtA1UserRule',
+    components: {CodeEditorModel},
     data () {
         return {
             pluginTypeList: [],
@@ -188,7 +202,7 @@ export default {
             modelVisible: false,
             showLogicCal: false,
             showPluginVal: true,
-            // 显示节点人员选择：0-显示选择按钮，1-显示相同节点选择，2-只显示内容
+            // 显示节点人员选择：0-显示选择按钮，1-显示相同节点选择，2-代码编辑器
             showSelect: 0,
             selectPluginVal: '',
             userRule: {
@@ -263,8 +277,14 @@ export default {
                     this.showSelect = 1
                 } else if (['depHead', 'lastAduitUserHead', 'lastAduitDepartmentHead'].indexOf(this.userRule.pluginType) != -1) {
                     this.showSelect = 2
+                } else if (this.userRule.pluginType == 'script') {
+                    this.showSelect = 3
                 }
             }
+        },
+        saveScript (code) {
+            this.userRule.pluginVal = code
+            console.log(this.userRule.pluginVal)
         },
         async openExtA1UserRuleModel (index, row) {
             this.activeIndex = index
