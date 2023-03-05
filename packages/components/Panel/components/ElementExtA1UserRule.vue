@@ -99,31 +99,48 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item
-          label="节点人员:"
-          prop="pluginVal">
-          <template v-if="showSelect == 0">
-            <el-tooltip :content="selectPluginVal" class="item" effect="dark" :disabled="selectPluginVal == ''">
-              <el-input v-model="selectPluginVal" readonly>
-                <el-button
-                  slot="prepend"
-                  style="color: #fff;
-                background-color: #409eff;
-                border-color: #409eff;">请选择</el-button>
-              </el-input>
-            </el-tooltip>
-          </template>
-          <template v-else-if="showSelect == 1">
-            <el-select v-model="selectPluginVal" placeholder="请选择">
+        <template v-if="userRule.pluginType == 'users'">
+          <el-form-item
+            label="用户规则:"
+            prop="ruleId">
+            <el-select v-model="userRule.ruleId" placeholder="请选择" @change="changeRuleId">
               <el-option
-                v-for="item in notActiveNodeUserTaskList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id">
+                v-for="item in userTypeList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
               </el-option>
             </el-select>
-          </template>
-        </el-form-item>
+          </el-form-item>
+        </template>
+
+        <template v-if="showPluginVal">
+          <el-form-item
+            label="节点人员:"
+            prop="pluginVal">
+            <template v-if="showSelect == 0">
+              <el-tooltip :content="selectPluginVal" class="item" effect="dark" :disabled="selectPluginVal == ''">
+                <el-input v-model="selectPluginVal" readonly>
+                  <el-button
+                    slot="prepend"
+                    style="color: #fff;
+                background-color: #409eff;
+                border-color: #409eff;">请选择</el-button>
+                </el-input>
+              </el-tooltip>
+            </template>
+            <template v-else-if="showSelect == 1">
+              <el-select v-model="selectPluginVal" placeholder="请选择">
+                <el-option
+                  v-for="item in notActiveNodeUserTaskList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+            </template>
+          </el-form-item>
+        </template>
         <template v-if="showLogicCal && userRule.logicCal != ''">
           <el-form-item
             label="运算类型:"
@@ -162,20 +179,34 @@ export default {
             allUserTaskList: [],
             notActiveNodeUserTaskList: [],
             userRuleList: [],
+            userTypeList: [
+                {label: '当前登录用户', value: 'currentUser'},
+                {label: '发起人', value: 'start'},
+                {label: '上一步执行人', value: 'prev'},
+                {label: '指定用户', value: 'spec'}
+            ],
             modelVisible: false,
             showLogicCal: false,
+            showPluginVal: true,
             // 显示节点人员选择：0-显示选择按钮，1-显示相同节点选择，2-只显示内容
             showSelect: 0,
             selectPluginVal: '',
             userRule: {
                 id: '',
                 nodeId: '',
+                // 用户节点策略
                 pluginType: '',
+                // 策略为sameNode时，保存节点id ,
+                // 策略为script时，保存脚本变量
                 pluginVal: '',
+                // 逻辑运算符
                 logicCal: '',
+                // 当节点策略为user时，指定currentUser，start，prev，spec
                 ruleId: '',
                 ruleVal: '',
+                // 前端展示的值
                 ruleDisplayName: '',
+                // 保存用户、角色等相关id
                 specId: ''
             }
         }
@@ -215,6 +246,16 @@ export default {
             this.selectPluginVal = ''
             this.showUserSelect()
         },
+        changeRuleId (val) {
+            this.showPluginValSelect()
+        },
+        showPluginValSelect () {
+            this.showPluginVal = true
+            if (this.userRule.pluginType == 'users') {
+                this.showPluginVal = this.userRule.ruleId == 'spec'
+            }
+
+        },
         showUserSelect () {
             this.showSelect = 0
             if (this.userRule) {
@@ -235,6 +276,7 @@ export default {
             this.showLogicCal = this.userRuleList && this.userRuleList.length > 0
             this.selectPluginVal = this.userRule.ruleDisplayName
             this.showUserSelect()
+            this.showPluginValSelect()
             this.modelVisible = true
             await this.$nextTick()
             this.$refs.formRef && this.$refs.formRef.clearValidate()
