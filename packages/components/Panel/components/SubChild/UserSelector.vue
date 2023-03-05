@@ -233,7 +233,7 @@ export default {
     },
     mounted () {
         this.selectUserList = this.init()
-        this.updateShowName()
+        this.updateShowName && this.updateShowName()
     },
     methods: {
         resetSelectRow () {

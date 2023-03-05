@@ -113,23 +113,24 @@
             </el-select>
           </el-form-item>
         </template>
-
         <template v-if="showPluginVal">
           <el-form-item
             label="节点人员:"
             prop="pluginVal">
-            <template v-if="showSelect == 0">
+            <template v-if="showSelect < 2">
               <el-tooltip :content="selectPluginVal" class="item" effect="dark" :disabled="selectPluginVal == ''">
                 <el-input v-model="selectPluginVal" readonly>
                   <el-button
+                    v-if="showSelect == 0"
                     slot="prepend"
                     style="color: #fff;
                 background-color: #409eff;
-                border-color: #409eff;">请选择</el-button>
+                border-color: #409eff;"
+                    @click="openSelectModel">请选择</el-button>
                 </el-input>
               </el-tooltip>
             </template>
-            <template v-else-if="showSelect == 1">
+            <template v-else-if="showSelect == 2">
               <el-select v-model="userRule.pluginVal" placeholder="请选择">
                 <el-option
                   v-for="item in notActiveNodeUserTaskList"
@@ -138,9 +139,6 @@
                   :value="item.id">
                 </el-option>
               </el-select>
-            </template>
-            <template v-else-if="showSelect == 2">
-              <span>{{ userRule.ruleDisplayName }}</span>
             </template>
             <template v-else-if="showSelect == 3">
               <code-editor-model
@@ -173,19 +171,41 @@
         <el-button type="primary" @click="saveExtA1UserRules">确 认</el-button>
       </template>
     </el-dialog>
+
+    <!--人员选择器-->
+    <el-dialog
+      :visible.sync="showUserSelectDialog"
+      title="选择节点人员"
+      width="900px"
+      append-to-body
+      @opened="openUserSelectModel"
+      destroy-on-close>
+      <user-selector
+        v-if="showUserSelectDialog"
+        :init="initUserSelect"
+        ref="userSelector"
+        :isProcessAdmin="false"/>
+      <template #footer>
+        <el-button @click="showUserSelectDialog = false">取 消</el-button>
+        <el-button
+          @click="saveShowUserSelectModel"
+          type="primary">确 认</el-button>
+      </template>
+    </el-dialog>
   </el-collapse-item>
 </template>
 
 <script>
-import {getAllUserTask, getExtA1UserRules, removeExtA1UserRules, saveExtA1Globals, saveExtA1UserRules} from '@packages/bo-utils/extA1Util'
-import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
+import {getAllUserTask, getExtA1UserRules, removeExtA1UserRules, saveExtA1UserRules} from '@packages/bo-utils/extA1Util'
+import {getActive, getProcessAdmin} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import EventEmitter from '@utils/EventEmitter'
 import * as userRuleVars from '@packages/api/UserRuleVars.js'
 import CodeEditorModel from '@packages/components/common/CodeEditorModel'
+import UserSelector from '@packages/components/Panel/components/SubChild/UserSelector'
 
 export default {
     name: 'ElementExtA1UserRule',
-    components: {CodeEditorModel},
+    components: {CodeEditorModel, UserSelector},
     data () {
         return {
             pluginTypeList: [],
@@ -199,10 +219,11 @@ export default {
                 {label: '上一步执行人', value: 'prev'},
                 {label: '指定用户', value: 'spec'}
             ],
+            showUserSelectDialog: false,
             modelVisible: false,
             showLogicCal: false,
             showPluginVal: true,
-            // 显示节点人员选择：0-显示选择按钮，1-显示相同节点选择，2-代码编辑器
+            // 显示节点人员选择：0-显示选择按钮，1-不显示选择按钮，2-显示相同节点选择，3-代码编辑器
             showSelect: 0,
             selectPluginVal: '',
             // 特殊处理的类型
@@ -232,6 +253,34 @@ export default {
         EventEmitter.on('element-update', this.reloadUserRules)
     },
     methods: {
+        openSelectModel () {
+            if (this.userRule.pluginType == 'users') {
+                this.showUserSelectDialog = true
+            }
+        },
+        initUserSelect () {
+            return this.userRule.specId.split(',').map((item)=>{
+                return {
+                    id: item
+                }
+            })
+        },
+        openUserSelectModel () {
+            this.$refs.userSelector.resetSelectRow()
+        },
+        saveShowUserSelectModel () {
+            this.showUserSelectDialog = false
+            let selectUserList = this.$refs.userSelector.selectUserList
+            if (selectUserList && selectUserList.length > 0) {
+                this.userRule.specId = selectUserList.map((item)=>item.id).join(',')
+                this.setPluginVal(selectUserList.map((item)=>item.userName).join(','))
+            }
+        },
+        setPluginVal (newVal) {
+            this.userRule.ruleDisplayName = newVal
+            // 设置回显
+            this.selectPluginVal = this.userRule.ruleDisplayName
+        },
         async saveExtA1UserRules () {
             await this.$refs.formRef.validate()
             this.userRule.nodeId = getActive().id
@@ -272,7 +321,7 @@ export default {
             this.showUserSelect()
             if (this.specPluginType.indexOf(val) != -1) {
                 let selectPluginType =  this.pluginTypeList.filter((item)=>item.value == val)[0]
-                this.userRule.ruleDisplayName = selectPluginType.tooltip
+                this.setPluginVal(selectPluginType.tooltip)
             }
         },
         changeRuleId (val) {
@@ -292,9 +341,9 @@ export default {
             this.showSelect = 0
             if (this.userRule) {
                 if (this.userRule.pluginType == 'sameNode') {
-                    this.showSelect = 1
-                } else if (this.specPluginType.indexOf(this.userRule.pluginType) != -1) {
                     this.showSelect = 2
+                } else if (this.specPluginType.indexOf(this.userRule.pluginType) != -1) {
+                    this.showSelect = 1
                 } else if (this.userRule.pluginType == 'script') {
                     this.showSelect = 3
                 }
@@ -302,9 +351,7 @@ export default {
         },
         saveScript (code) {
             this.userRule.pluginVal = code
-            this.userRule.ruleDisplayName = code
-            this.selectPluginVal = code
-            console.log(this.userRule)
+            this.setPluginVal(code)
         },
         async openExtA1UserRuleModel (index, row) {
             this.activeIndex = index
