@@ -174,21 +174,21 @@
 
     <!--人员选择器-->
     <el-dialog
-      :visible.sync="showUserSelectDialog"
+      :visible.sync="showSelectDialog"
       title="选择节点人员"
       width="900px"
       append-to-body
-      @opened="openUserSelectModel"
+      @opened="openSelectorModel"
       destroy-on-close>
       <user-selector
-        v-if="showUserSelectDialog"
+        v-if="showSelectDialog && userRule.pluginType == 'users'"
         :init="initUserSelect"
         ref="userSelector"
         :isProcessAdmin="false"/>
       <template #footer>
-        <el-button @click="showUserSelectDialog = false">取 消</el-button>
+        <el-button @click="showSelectDialog = false">取 消</el-button>
         <el-button
-          @click="saveShowUserSelectModel"
+          @click="saveShowSelectModel"
           type="primary">确 认</el-button>
       </template>
     </el-dialog>
@@ -197,7 +197,7 @@
 
 <script>
 import {getAllUserTask, getExtA1UserRules, removeExtA1UserRules, saveExtA1UserRules} from '@packages/bo-utils/extA1Util'
-import {getActive, getProcessAdmin} from '@packages/bpmn-utils/BpmnDesignerUtils'
+import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import EventEmitter from '@utils/EventEmitter'
 import * as userRuleVars from '@packages/api/UserRuleVars.js'
 import CodeEditorModel from '@packages/components/common/CodeEditorModel'
@@ -219,7 +219,8 @@ export default {
                 {label: '上一步执行人', value: 'prev'},
                 {label: '指定用户', value: 'spec'}
             ],
-            showUserSelectDialog: false,
+            showSelectDialog: false,
+            showSelectDialogType: '',
             modelVisible: false,
             showLogicCal: false,
             showPluginVal: true,
@@ -254,26 +255,34 @@ export default {
     },
     methods: {
         openSelectModel () {
-            if (this.userRule.pluginType == 'users') {
-                this.showUserSelectDialog = true
-            }
+            this.showSelectDialog = true
+            this.showSelectDialogType = this.userRule.pluginType
         },
         initUserSelect () {
-            return this.userRule.specId.split(',').map((item)=>{
-                return {
-                    id: item
+            if (this.userRule.pluginType == 'users') {
+                return this.userRule.specId.split(',').map((item)=>{
+                    return {
+                        id: item
+                    }
+                })
+            }
+
+        },
+        openSelectorModel () {
+            if (this.userRule.pluginType == 'users') {
+                this.$refs.userSelector.resetSelectRow()
+            }
+        },
+        saveShowSelectModel () {
+            this.showSelectDialog = false
+            this.showSelectDialogType = ''
+
+            if (this.userRule.pluginType == 'users') {
+                let selectUserList = this.$refs.userSelector.selectUserList
+                if (selectUserList && selectUserList.length > 0) {
+                    this.userRule.specId = selectUserList.map((item) => item.id).join(',')
+                    this.setPluginVal(selectUserList.map((item) => item.userName).join(','))
                 }
-            })
-        },
-        openUserSelectModel () {
-            this.$refs.userSelector.resetSelectRow()
-        },
-        saveShowUserSelectModel () {
-            this.showUserSelectDialog = false
-            let selectUserList = this.$refs.userSelector.selectUserList
-            if (selectUserList && selectUserList.length > 0) {
-                this.userRule.specId = selectUserList.map((item)=>item.id).join(',')
-                this.setPluginVal(selectUserList.map((item)=>item.userName).join(','))
             }
         },
         setPluginVal (newVal) {
@@ -284,7 +293,6 @@ export default {
         async saveExtA1UserRules () {
             await this.$refs.formRef.validate()
             this.userRule.nodeId = getActive().id
-            console.log(this.userRule)
             saveExtA1UserRules(getActive(), this.userRule)
             this.reloadUserRules()
         },

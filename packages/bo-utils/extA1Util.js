@@ -476,6 +476,7 @@ export function removeExtA1ButtonByNode (element) {
  */
 export function saveExtA1UserRules (element, properties) {
     try {
+        const modeling = getModeler.getModeling()
         const bpmnDefinitionElement = getDefinitionElement()
 
         // 判断是否存在ExtAttributes
@@ -490,16 +491,20 @@ export function saveExtA1UserRules (element, properties) {
             return properties.id && properties.id == item.id
         })
 
-        if (extGlobalElementList && extGlobalElementList.length > 0) {
-            removeExtA1UserRules(extGlobalElementList[0])
-        }
-
-        let extGlobalElement = createFactoyElement('extA1:UserRule', properties, extGlobalsElement)
-        extGlobalElement.businessObject = extGlobalElement
-        if (!extGlobalsElement.child || extGlobalsElement.child.length == 0) {
-            extGlobalsElement.child = [extGlobalElement]
+        if (!extGlobalElementList || extGlobalElementList.length == 0) {
+            let extGlobalElement = createFactoyElement('extA1:UserRule', properties, extGlobalsElement)
+            extGlobalElement.businessObject = extGlobalElement
+            if (!extGlobalsElement.child || extGlobalsElement.child.length == 0) {
+                extGlobalsElement.child = [extGlobalElement]
+            } else {
+                extGlobalsElement.child.push(extGlobalElement)
+            }
         } else {
-            extGlobalsElement.child.push(extGlobalElement)
+            let extGlobalElement = extGlobalElementList[0]
+            if (!extGlobalElement.businessObject) {
+                extGlobalElement.businessObject = extGlobalElement
+            }
+            modeling.updateProperties(extGlobalElement, properties)
         }
     } catch (e) {
         console.log(e)
