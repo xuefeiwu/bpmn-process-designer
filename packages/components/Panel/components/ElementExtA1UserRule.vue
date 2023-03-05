@@ -65,7 +65,7 @@
           fixed="right"
           width="90">
           <template slot-scope="{ row, $index }">
-            <el-button type="text" @click="openExtA1UserRuleModel($index,row)" >编辑</el-button>
+            <el-button type="text" @click="openExtA1UserRuleModel($index,row)">编辑</el-button>
             <el-button type="text" @click="removeUserRules(row)">移除</el-button>
           </template>
         </el-table-column>
@@ -80,30 +80,30 @@
       width="600px"
       append-to-body
       destroy-on-close>
-      <el-form
-        v-if="modelVisible"
-        ref="formRef"
-        :model="userRule"
-        class="need-filled"
-        label-width="100px"
-        aria-modal="true">
-        <el-form-item
-          label="处理人类型:"
-          prop="pluginType">
-          <el-select v-model="userRule.pluginType" placeholder="请选择" @change="changePluginType">
-            <el-option
-              v-for="item in pluginTypeList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <template v-if="userRule.pluginType == 'users'">
+      <div style="height: 200px;">
+        <el-form
+          v-if="modelVisible"
+          ref="formRef"
+          :model="userRule"
+          class="need-filled"
+          label-width="100px"
+          aria-modal="true">
+          <el-form-item
+            label="处理人类型:"
+            prop="pluginType">
+            <el-select v-model="userRule.pluginType" placeholder="请选择" @change="changePluginType">
+              <el-option
+                v-for="item in pluginTypeList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item
             label="用户规则:"
             prop="ruleId">
-            <el-select v-model="userRule.ruleId" placeholder="请选择" @change="changeRuleId">
+            <el-select v-model="userRule.ruleId" placeholder="请选择" @change="changeRuleId" :disabled="userRule.pluginType != 'users'">
               <el-option
                 v-for="item in userTypeList"
                 :key="item.value"
@@ -112,26 +112,24 @@
               </el-option>
             </el-select>
           </el-form-item>
-        </template>
-        <template v-if="showPluginVal">
           <el-form-item
             label="节点人员:"
             prop="pluginVal">
             <template v-if="showSelect < 2">
               <el-tooltip :content="selectPluginVal" class="item" effect="dark" :disabled="selectPluginVal == ''">
-                <el-input v-model="selectPluginVal" readonly>
+                <el-input v-model="selectPluginVal" :disabled="!showPluginVal" readonly>
                   <el-button
                     v-if="showSelect == 0"
-                    slot="prepend"
-                    style="color: #fff;
-                background-color: #409eff;
-                border-color: #409eff;"
-                    @click="openSelectModel">请选择</el-button>
+                    slot="append"
+                    icon="el-icon-edit"
+                    :disabled="!showPluginVal"
+                    @click="openSelectModel">
+                  </el-button>
                 </el-input>
               </el-tooltip>
             </template>
             <template v-else-if="showSelect == 2">
-              <el-select v-model="userRule.pluginVal" placeholder="请选择">
+              <el-select v-model="userRule.pluginVal" placeholder="请选择" :disabled="!showPluginVal">
                 <el-option
                   v-for="item in notActiveNodeUserTaskList"
                   :key="item.id"
@@ -145,17 +143,16 @@
                 title="脚本设置"
                 code-language="groovy"
                 :code-string="selectPluginVal"
+                :disable-btn="!showPluginVal"
                 :readOnly="false"
                 @handleSureClick="saveScript($event)"
               />
             </template>
           </el-form-item>
-        </template>
-        <template v-if="showLogicCal">
           <el-form-item
             label="运算类型:"
             prop="logicCal">
-            <el-select v-model="userRule.logicCal" placeholder="请选择">
+            <el-select v-model="userRule.logicCal" placeholder="请选择" :disabled="!showLogicCal">
               <el-option
                 v-for="item in logicCalTypeList"
                 :key="item.value"
@@ -164,8 +161,8 @@
               </el-option>
             </el-select>
           </el-form-item>
-        </template>
-      </el-form>
+        </el-form>
+      </div>
       <template #footer>
         <el-button @click="modelVisible = false">取 消</el-button>
         <el-button type="primary" @click="saveExtA1UserRules">确 认</el-button>
@@ -175,21 +172,39 @@
     <!--人员选择器-->
     <el-dialog
       :visible.sync="showSelectDialog"
-      title="选择节点人员"
-      width="900px"
+      :title="selectDialogTitle"
+      width="1000px"
       append-to-body
       @opened="openSelectorModel"
       destroy-on-close>
       <user-selector
         v-if="showSelectDialog && userRule.pluginType == 'users'"
-        :init="initUserSelect"
+        :init="initSelect"
         ref="userSelector"
         :isProcessAdmin="false"/>
+      <role-selector
+        v-if="showSelectDialog && userRule.pluginType == 'role'"
+        :init="initSelect"
+        ref="roleSelector"
+      />
+      <org-selector
+        v-if="showSelectDialog && userRule.pluginType == 'org'"
+        :init="initSelect"
+        ref="orgSelector"
+      />
+
+      <script-selector
+        v-if="showSelectDialog && userRule.pluginType == 'userScript'"
+        :init="initSelect"
+        selection-type="Radio"
+        ref="scriptSelector"
+      />
       <template #footer>
         <el-button @click="showSelectDialog = false">取 消</el-button>
         <el-button
           @click="saveShowSelectModel"
-          type="primary">确 认</el-button>
+          type="primary">确 认
+        </el-button>
       </template>
     </el-dialog>
   </el-collapse-item>
@@ -202,10 +217,13 @@ import EventEmitter from '@utils/EventEmitter'
 import * as userRuleVars from '@packages/api/UserRuleVars.js'
 import CodeEditorModel from '@packages/components/common/CodeEditorModel'
 import UserSelector from '@packages/components/Panel/components/SubChild/UserSelector'
+import RoleSelector from '@packages/components/Panel/components/SubChild/RoleSelector'
+import OrgSelector from '@packages/components/Panel/components/SubChild/OrgSelector'
+import ScriptSelector from '@packages/components/Panel/components/SubChild/ScriptSelector'
 
 export default {
     name: 'ElementExtA1UserRule',
-    components: {CodeEditorModel, UserSelector},
+    components: {CodeEditorModel, UserSelector, RoleSelector, OrgSelector, ScriptSelector},
     data () {
         return {
             pluginTypeList: [],
@@ -223,10 +241,11 @@ export default {
             showSelectDialogType: '',
             modelVisible: false,
             showLogicCal: false,
-            showPluginVal: true,
+            showPluginVal: false,
             // 显示节点人员选择：0-显示选择按钮，1-不显示选择按钮，2-显示相同节点选择，3-代码编辑器
             showSelect: 0,
             selectPluginVal: '',
+            selectDialogTitle: '',
             // 特殊处理的类型
             specPluginType: ['depHead', 'lastAduitUserHead', 'lastAduitDepartmentHead'],
             userRule: {
@@ -258,9 +277,9 @@ export default {
             this.showSelectDialog = true
             this.showSelectDialogType = this.userRule.pluginType
         },
-        initUserSelect () {
-            if (this.userRule.pluginType == 'users') {
-                return this.userRule.specId.split(',').map((item)=>{
+        initSelect () {
+            if (this.userRule.specId) {
+                return this.userRule.specId.split(',').map((item) => {
                     return {
                         id: item
                     }
@@ -269,8 +288,19 @@ export default {
 
         },
         openSelectorModel () {
+            let element = getActive().businessObject
             if (this.userRule.pluginType == 'users') {
+                this.selectDialogTitle = `${element.name}（${element.id}）人员选择`
                 this.$refs.userSelector.resetSelectRow()
+            } else if (this.userRule.pluginType == 'role') {
+                this.selectDialogTitle = `${element.name}（${element.id}）角色选择`
+                this.$refs.roleSelector.resetSelectRow()
+            } else if (this.userRule.pluginType == 'org') {
+                this.selectDialogTitle = `${element.name}（${element.id}）部门选择`
+                this.$refs.orgSelector.resetSelectRow()
+            } else if (this.userRule.pluginType == 'userScript') {
+                this.selectDialogTitle = `${element.name}（${element.id}）人员脚本选择`
+                this.$refs.scriptSelector.resetSelectRow()
             }
         },
         saveShowSelectModel () {
@@ -282,6 +312,24 @@ export default {
                 if (selectUserList && selectUserList.length > 0) {
                     this.userRule.specId = selectUserList.map((item) => item.id).join(',')
                     this.setPluginVal(selectUserList.map((item) => item.userName).join(','))
+                }
+            } else if (this.userRule.pluginType == 'role') {
+                let selectRoleList = this.$refs.roleSelector.selectRoleList
+                if (selectRoleList && selectRoleList.length > 0) {
+                    this.userRule.specId = selectRoleList.map((item) => item.id).join(',')
+                    this.setPluginVal(selectRoleList.map((item) => item.name).join(','))
+                }
+            } else if (this.userRule.pluginType == 'org') {
+                let selectOrgList = this.$refs.orgSelector.selectOrgList
+                if (selectOrgList && selectOrgList.length > 0) {
+                    this.userRule.specId = selectOrgList.map((item) => item.id).join(',')
+                    this.setPluginVal(selectOrgList.map((item) => item.deptName).join(','))
+                }
+            } else if (this.userRule.pluginType == 'userScript') {
+                let selectScriptList = this.$refs.scriptSelector.selectScriptList
+                if (selectScriptList && selectScriptList.length > 0) {
+                    this.userRule.specId = selectScriptList.map((item) => item.id).join(',')
+                    this.setPluginVal(selectScriptList.map((item) => item.scriptName).join(','))
                 }
             }
         },
@@ -327,19 +375,20 @@ export default {
         changePluginType (val) {
             this.selectPluginVal = ''
             this.showUserSelect()
+            this.showPluginValSelect()
             if (this.specPluginType.indexOf(val) != -1) {
-                let selectPluginType =  this.pluginTypeList.filter((item)=>item.value == val)[0]
+                let selectPluginType = this.pluginTypeList.filter((item) => item.value == val)[0]
                 this.setPluginVal(selectPluginType.tooltip)
             }
         },
         changeRuleId (val) {
             if (this.userRule.ruleId != 'spec') {
-                this.userRule.ruleDisplayName = this.userTypeList.filter((item)=>item.value == val)[0].label
+                this.userRule.ruleDisplayName = this.userTypeList.filter((item) => item.value == val)[0].label
             }
             this.showPluginValSelect()
         },
         showPluginValSelect () {
-            this.showPluginVal = true
+            this.showPluginVal = this.userRule.pluginType && this.userRule.pluginType != ''
             if (this.userRule.pluginType == 'users') {
                 this.showPluginVal = this.userRule.ruleId == 'spec'
             }
@@ -363,24 +412,7 @@ export default {
         },
         async openExtA1UserRuleModel (index, row) {
             this.activeIndex = index
-            this.userRule = {
-                id: '',
-                nodeId: '',
-                // 用户节点策略
-                pluginType: '',
-                // 策略为sameNode时，保存节点id ,
-                // 策略为script时，保存脚本变量
-                pluginVal: '',
-                // 逻辑运算符
-                logicCal: '',
-                // 当节点策略为user时，指定currentUser，start，prev，spec
-                ruleId: '',
-                ruleVal: '',
-                // 前端展示的值
-                ruleDisplayName: '',
-                // 保存用户、角色等相关id
-                specId: ''
-            }
+            this.userRule = {}
             row && (this.userRule = JSON.parse(JSON.stringify(row)))
 
             this.notActiveNodeUserTaskList = this.allUserTaskList.filter((item) => item.id != getActive().id)

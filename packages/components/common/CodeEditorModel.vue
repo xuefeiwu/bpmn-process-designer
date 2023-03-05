@@ -6,7 +6,7 @@
         <el-input
           v-model="showCode"
           readonly>
-          <el-button slot="append" icon="el-icon-edit" @click="editorModalFlag= true"></el-button>
+          <el-button slot="append" icon="el-icon-edit" @click="editorModalFlag= true" :disabled="disableBtn"></el-button>
         </el-input>
       </el-tooltip>
     </template>
@@ -121,6 +121,10 @@ export default {
         disableInput: {
             type: Boolean,
             default: true
+        },
+        disableBtn: {
+            type: Boolean,
+            default: false
         },
         showCodeEditor: {
             type: Boolean,

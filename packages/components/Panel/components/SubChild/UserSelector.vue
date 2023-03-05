@@ -38,11 +38,12 @@
           ref="userListTable"
           border
           stripe
+          :height="445"
           highlight-current-row
           :data="userList"
           @selection-change="changeSelection"
           @click="selectOne"
-          style="width: 100%">
+          style="width: 100%;">
           <el-table-column
             type="selection"
             width="55">
@@ -57,15 +58,13 @@
             prop="fullName"
             label="姓名"
             align="center"
-            show-overflow-tooltip
-            width="120">
+            show-overflow-tooltip>
           </el-table-column>
           <el-table-column
             prop="userNo"
             label="账号"
             align="center"
-            show-overflow-tooltip
-            width="120">
+            show-overflow-tooltip>
           </el-table-column>
           <el-table-column
             prop="email"
@@ -94,15 +93,17 @@
         </el-pagination>
       </el-col>
       <el-col :span="3">
-        <el-tag
-          v-for="(item) in selectUserList"
-          :key="item.id"
-          closable
-          :disable-transitions="false"
-          @close="closeSelection(item)"
-          style="margin-left: 10px;margin-top: 10px">
-          {{ item.userName }}
-        </el-tag>
+        <template v-for="(item) in selectUserList">
+          <el-tag
+            v-if="item.userName && item.userName != ''"
+            :key="item.id"
+            closable
+            :disable-transitions="false"
+            @close="closeSelection(item)"
+            style="margin-left: 10px;margin-top: 10px">
+            {{ item.userName }}
+          </el-tag>
+        </template>
       </el-col>
     </el-row>
   </div>
