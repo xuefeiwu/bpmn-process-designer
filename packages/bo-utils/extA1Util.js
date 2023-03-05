@@ -474,6 +474,44 @@ export function removeExtA1ButtonByNode (element) {
  * @param extA1ChildElementType
  * @param properties
  */
+export function saveExtA1UserRules (element, properties) {
+    try {
+        const bpmnDefinitionElement = getDefinitionElement()
+
+        // 判断是否存在ExtAttributes
+        let extGlobalsElement = getExtA1RootElement('extA1:UserRules')
+        if (!extGlobalsElement) {
+            extGlobalsElement = createFactoyElement('extA1:UserRules', {}, bpmnDefinitionElement)
+            /*在第0个元素上添加extA1:ExtAttributes节点*/
+            bpmnDefinitionElement.rootElements.splice(0, 0, extGlobalsElement)
+        }
+
+        let extGlobalElementList = getExtA1ChildElement(extGlobalsElement, (index, item)=>{
+            return properties.id && properties.id == item.id
+        })
+
+        if (extGlobalElementList && extGlobalElementList.length > 0) {
+            removeExtA1UserRules(extGlobalElementList[0])
+        }
+
+        let extGlobalElement = createFactoyElement('extA1:UserRule', properties, extGlobalsElement)
+        extGlobalElement.businessObject = extGlobalElement
+        if (!extGlobalsElement.child || extGlobalsElement.child.length == 0) {
+            extGlobalsElement.child = [extGlobalElement]
+        } else {
+            extGlobalsElement.child.push(extGlobalElement)
+        }
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+/**
+ * extA1:UserRules
+ * @param extA1RootElementType
+ * @param extA1ChildElementType
+ * @param properties
+ */
 export function getExtA1UserRules (filter) {
     // 判断是否存在ExtProperties
     let extGlobalsElement = getExtA1RootElement('extA1:UserRules')

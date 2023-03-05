@@ -33,17 +33,6 @@ export function emptyXML (definitionsId, processId, name) {
     <extA1:Button id="Button_15ul6dq" alias="transactionUrge" btnName="特事特办" cssName="" nodeId="UserTask_0pmvmol" />
     <extA1:Button id="Button_1fra6oa" alias="unPass" btnName="拒绝" cssName="" nodeId="UserTask_0pmvmol" />
   </extA1:Buttons>
- <extA1:UserRules id="UserRules_1ei2q83">
-    <extA1:UserRule id="UserRule_187lo6e" nodeId="UserTask_1i7h057" pluginType="users" pluginVal="" logicCal="" ruleId="currentUser" ruleVal="" ruleDisplayName="[当前登录用户]" specId="" />
-    <extA1:UserRule id="UserRule_1l3yxg3" nodeId="UserTask_0pmvmol" pluginType="users" pluginVal="黄,黄" logicCal="" ruleId="spec" ruleVal="黄,黄" ruleDisplayName="[指定用户]黄,黄" specId="1610163470797332482,1610165825345380354" />
-    <extA1:UserRule id="UserRule_0vyujai" nodeId="UserTask_0pmvmol" pluginType="org" pluginVal="广州聚才南沙工厂" logicCal="or" ruleId="" ruleVal="" ruleDisplayName="广州聚才南沙工厂" specId="1438046022571786241" />
-    <extA1:UserRule id="UserRule_1em8a2r" nodeId="UserTask_0pmvmol" pluginType="role" pluginVal="总经理" logicCal="and" ruleId="" ruleVal="" ruleDisplayName="总经理" specId="1372068204459687938" />
-    <extA1:UserRule id="UserRule_15bf3ic" nodeId="UserTask_0pmvmol" pluginType="sameNode" pluginVal="UserTask_1i7h057" logicCal="or" ruleId="" ruleVal="" ruleDisplayName="" />
-    <extA1:UserRule id="UserRule_0l8w5p9" nodeId="UserTask_0pmvmol" pluginType="depHead" logicCal="exclude" ruleId="" ruleVal="" ruleDisplayName="前置节点处理人的上级部门负责人" />
-    <extA1:UserRule id="UserRule_0cw9fkd" nodeId="UserTask_0pmvmol" pluginType="lastAduitUserHead" logicCal="or" ruleId="" ruleVal="" ruleDisplayName="前置节点处理人的直接上级" />
-    <extA1:UserRule id="UserRule_1mkn3t3" nodeId="UserTask_0pmvmol" pluginType="lastAduitDepartmentHead" logicCal="or" ruleId="" ruleVal="" ruleDisplayName="前置节点处理人所在部门的上级部门的负责人" />
-    <extA1:UserRule id="UserRule_1scjnir" nodeId="UserTask_0pmvmol" pluginType="userScript" pluginVal="【角色】企业管理员用户" logicCal="and" ruleId="" ruleVal="" ruleDisplayName="针对同一个角色，存在不同组织下用户都属于这个角色，若上一节点是A组织下的用户，则下一节点角色策略会取A组织下的该角色用户" specId="1552595548031279106" />
-  </extA1:UserRules>
   <extA1:UserPropertyes id="UserPropertyes_0mx5h1d">
     <extA1:UserProperty id="UserProperty_0j2lz6p" nodeId="UserTask_0pmvmol" backNode="-1" backUserMode="history" dateType="worktime" jumpType="jumpType_common" nodePropertiesDay="-1" notifyType="-1" postHandler="-1" prevHand="-1" nodePropertiesHour="-1" nodePropertiesMinute="1" window="1" executor="none" choose="0" parallelFlag="false" openExpireFlag="0" expireHandlerModel="taskExpireAutoTransfer" />
     <extA1:UserProperty id="UserProperty_0r3d7v9" nodeId="UserTask_1i7h057" backNode="-1" backUserMode="none" dateType="worktime" jumpType="jumpType_common" nodePropertiesDay="-1" notifyType="-1" postHandler="-1" prevHand="-1" nodePropertiesHour="-1" nodePropertiesMinute="1" window="1" executor="skipExecutorEmpty" choose="0" parallelFlag="false" openExpireFlag="1" expireHandlerModel="taskExpireAutoTransfer" />

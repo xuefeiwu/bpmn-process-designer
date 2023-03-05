@@ -130,7 +130,7 @@
               </el-tooltip>
             </template>
             <template v-else-if="showSelect == 1">
-              <el-select v-model="selectPluginVal" placeholder="请选择">
+              <el-select v-model="userRule.pluginVal" placeholder="请选择">
                 <el-option
                   v-for="item in notActiveNodeUserTaskList"
                   :key="item.id"
@@ -144,16 +144,16 @@
             </template>
             <template v-else-if="showSelect == 3">
               <code-editor-model
-                title="删除事件脚本设置"
+                title="脚本设置"
                 code-language="groovy"
-                :code-string="userRule.pluginVal"
+                :code-string="selectPluginVal"
                 :readOnly="false"
                 @handleSureClick="saveScript($event)"
               />
             </template>
           </el-form-item>
         </template>
-        <template v-if="showLogicCal && userRule.logicCal != ''">
+        <template v-if="showLogicCal">
           <el-form-item
             label="运算类型:"
             prop="logicCal">
@@ -170,14 +170,14 @@
       </el-form>
       <template #footer>
         <el-button @click="modelVisible = false">取 消</el-button>
-        <el-button type="primary">确 认</el-button>
+        <el-button type="primary" @click="saveExtA1UserRules">确 认</el-button>
       </template>
     </el-dialog>
   </el-collapse-item>
 </template>
 
 <script>
-import {getAllUserTask, getExtA1UserRules, removeExtA1UserRules} from '@packages/bo-utils/extA1Util'
+import {getAllUserTask, getExtA1UserRules, removeExtA1UserRules, saveExtA1Globals, saveExtA1UserRules} from '@packages/bo-utils/extA1Util'
 import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import EventEmitter from '@utils/EventEmitter'
 import * as userRuleVars from '@packages/api/UserRuleVars.js'
@@ -205,6 +205,8 @@ export default {
             // 显示节点人员选择：0-显示选择按钮，1-显示相同节点选择，2-代码编辑器
             showSelect: 0,
             selectPluginVal: '',
+            // 特殊处理的类型
+            specPluginType: ['depHead', 'lastAduitUserHead', 'lastAduitDepartmentHead'],
             userRule: {
                 id: '',
                 nodeId: '',
@@ -230,7 +232,16 @@ export default {
         EventEmitter.on('element-update', this.reloadUserRules)
     },
     methods: {
+        async saveExtA1UserRules () {
+            await this.$refs.formRef.validate()
+            this.userRule.nodeId = getActive().id
+            console.log(this.userRule)
+            saveExtA1UserRules(getActive(), this.userRule)
+            this.reloadUserRules()
+        },
         reloadUserRules () {
+            this.modelVisible = false
+
             this.pluginTypeList = userRuleVars.pluginTypeList
             this.logicCalTypeList = userRuleVars.logicCalTypeList
             this.allUserTaskList = getAllUserTask()
@@ -259,8 +270,15 @@ export default {
         changePluginType (val) {
             this.selectPluginVal = ''
             this.showUserSelect()
+            if (this.specPluginType.indexOf(val) != -1) {
+                let selectPluginType =  this.pluginTypeList.filter((item)=>item.value == val)[0]
+                this.userRule.ruleDisplayName = selectPluginType.tooltip
+            }
         },
         changeRuleId (val) {
+            if (this.userRule.ruleId != 'spec') {
+                this.userRule.ruleDisplayName = this.userTypeList.filter((item)=>item.value == val)[0].label
+            }
             this.showPluginValSelect()
         },
         showPluginValSelect () {
@@ -275,7 +293,7 @@ export default {
             if (this.userRule) {
                 if (this.userRule.pluginType == 'sameNode') {
                     this.showSelect = 1
-                } else if (['depHead', 'lastAduitUserHead', 'lastAduitDepartmentHead'].indexOf(this.userRule.pluginType) != -1) {
+                } else if (this.specPluginType.indexOf(this.userRule.pluginType) != -1) {
                     this.showSelect = 2
                 } else if (this.userRule.pluginType == 'script') {
                     this.showSelect = 3
@@ -284,17 +302,40 @@ export default {
         },
         saveScript (code) {
             this.userRule.pluginVal = code
-            console.log(this.userRule.pluginVal)
+            this.userRule.ruleDisplayName = code
+            this.selectPluginVal = code
+            console.log(this.userRule)
         },
         async openExtA1UserRuleModel (index, row) {
             this.activeIndex = index
-            this.userRule = {}
-            console.log(row)
+            this.userRule = {
+                id: '',
+                nodeId: '',
+                // 用户节点策略
+                pluginType: '',
+                // 策略为sameNode时，保存节点id ,
+                // 策略为script时，保存脚本变量
+                pluginVal: '',
+                // 逻辑运算符
+                logicCal: '',
+                // 当节点策略为user时，指定currentUser，start，prev，spec
+                ruleId: '',
+                ruleVal: '',
+                // 前端展示的值
+                ruleDisplayName: '',
+                // 保存用户、角色等相关id
+                specId: ''
+            }
             row && (this.userRule = JSON.parse(JSON.stringify(row)))
 
             this.notActiveNodeUserTaskList = this.allUserTaskList.filter((item) => item.id != getActive().id)
-            this.showLogicCal = this.userRuleList && this.userRuleList.length > 0
-            this.selectPluginVal = this.userRule.ruleDisplayName
+            if (index == -1) {
+                this.showLogicCal = this.userRuleList && this.userRuleList.length > 0
+            } else {
+                this.showLogicCal = this.userRule.logicCal && this.userRule.logicCal != ''
+            }
+
+            this.selectPluginVal = this.userRule.ruleDisplayName ? this.userRule.ruleDisplayName : ''
             this.showUserSelect()
             this.showPluginValSelect()
             this.modelVisible = true
