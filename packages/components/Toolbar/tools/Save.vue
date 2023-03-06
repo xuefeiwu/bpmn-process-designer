@@ -44,6 +44,11 @@ export default {
                 description: desc,
                 modelId: getProcessModel().modeId,
                 adminInfo: getProcessAdmin()
+                // thumbnail: '',
+                // admin_ids: '',
+                // admin_names: '',
+                // nodeTransferAtaffSetting: '',
+                // formJson: ''
             }
 
             saveProcessModel(body)
