@@ -42,7 +42,8 @@
           :height="445"
           :data="roleList"
           @selection-change="changeSelection"
-          @click="selectOne"
+          @select-all="handleSelectionChange"
+          @select="handleSelectionChange"
           style="width: 100%;">
           <el-table-column
             type="selection"
@@ -69,7 +70,7 @@
         </el-table>
         <el-pagination
           background
-          :total="500"
+          :total="pageTotal"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
@@ -97,6 +98,8 @@
 
 <script>
 
+import {getRoleListPage} from '@packages/api/process'
+
 export default {
     name: 'RoleSelector',
     props: {
@@ -113,69 +116,34 @@ export default {
             default: 'Checkbox'
         }
     },
+    // 计算属性
+    computed: {
+        // 根据当前的multipleSelection得到对应选中的id
+        curSelectedRowIds () {
+            let result = []
+            if (this.multipleSelection && this.multipleSelection.length > 0) {
+                result = this.multipleSelection.map((user) => user.id)
+            }
+            return result
+        }
+    },
     data (){
         return{
-            roleList: [
-                {
-                    'id': '1372068204459687938',
-                    'name': '总经理',
-                    'code': 'management'
-                },
-                {
-                    'id': '1380500782885216257',
-                    'name': '企业管理员',
-                    'code': 'companyAdmin'
-                },
-                {
-                    'id': '1380759270812372993',
-                    'name': '采购',
-                    'code': 'purchase'
-                },
-                {
-                    'id': '1381515036144533505',
-                    'name': '供应商',
-                    'code': 'sale'
-                },
-                {
-                    'id': '1390548658717392897',
-                    'name': '角色',
-                    'code': 'character '
-                },
-                {
-                    'id': '1397891199436566529',
-                    'name': '客户试用',
-                    'code': 'POC-1'
-                },
-                {
-                    'id': '1402897050928930818',
-                    'name': '售前顾问',
-                    'code': 'presales'
-                },
-                {
-                    'id': '1404333739274653697',
-                    'name': '采购经理',
-                    'code': 'purchaseManagement'
-                },
-                {
-                    'id': '1405830526300819457',
-                    'name': '产品权限',
-                    'code': 'product'
-                },
-                {
-                    'id': '1407306574066565122',
-                    'name': '管理员',
-                    'code': 'Administrator'
-                }
-            ],
+            roleList: [],
+            // 用来保存当前的选中
+            multipleSelection: [],
             selectRoleList: [],
             filterCondition: {},
             currentPage: 1,
             pageSize: 10,
+            pageTotal: 0,
             pageSizeList: [10, 20, 30, 40]
         }
     },
     mounted () {
         this.selectRoleList = this.init()
+        this.multipleSelection = this.selectRoleList ? this.selectRoleList : []
+        this.reloadTable()
         this.updateShowName && this.updateShowName()
     },
     methods: {
@@ -185,8 +153,10 @@ export default {
                 return
             }
 
-            let selectionUserIdList = this.selectRoleList.map((item)=>item.id)
-            let selectionRow  = this.roleList.filter((value)=> selectionUserIdList.indexOf(value.id) != -1)
+            let selectionRow  = this.roleList.filter((value)=> this.curSelectedRowIds.indexOf(value.id) != -1)
+            if (selectionRow.length == 0) {
+                return
+            }
             // 过滤出选中行
             this.$refs.roleListTable.clearSelection()
             selectionRow.forEach((row)=>{
@@ -194,22 +164,48 @@ export default {
                 this.$refs.roleListTable.toggleRowSelection(row)
             })
         },
-        selectOne (row) {
-            if (this.selectionType == 'Checkbox') {
-                return
+        /**
+         * @param selection 选中的rows
+         * @param changedRow 变化的row
+         */
+        handleSelectionChange (selection, changedRow) {
+            if (this.selectionType == 'Radio') {
+                this.multipleSelection = []
             }
-            this.$refs.roleListTable.clearSelection()
-            this.$refs.roleListTable.toggleRowSelection(row, true)
-            this.selectroleList = []
-            this.selectRoleList.push({
-                id: row.id,
-                name: row.name
-            })
+            // 检查有没有新增的，有新增的就push
+            if (selection && selection.length > 0) {
+                selection.forEach((row) => {
+                    if (this.curSelectedRowIds.indexOf(row.id) < 0) {
+                        this.multipleSelection.push(row)
+                    }
+                })
+            }
+            // 如果当前的selection没有changedRow，表示changedRow被cancel了，
+            // 如果this.multipleSelection有这一条，需要splice掉
+            if (changedRow && selection.indexOf(changedRow) < 0) {
+                if (this.curSelectedRowIds.indexOf(changedRow.id) > -1) {
+                    for (let index = 0; index < this.multipleSelection.length; index++) {
+                        if (changedRow.id === this.multipleSelection[index].id) {
+                            this.multipleSelection.splice(index, 1)
+                            break
+                        }
+                    }
+                }
+            }
+            // 如果当前一条都没有选中，表示都没有选中，则需要把当前页面的rows都遍历一下，splice掉没选中的
+            if (selection.length === 0) {
+                this.roleList.forEach((row) => {
+                    let index = this.curSelectedRowIds.indexOf(row.id)
+                    if(index > -1) {
+                        this.multipleSelection.splice(index, 1)
+                    }
+                })
+            }
         },
         changeSelection (rows) {
-            let finalRow = rows
+            let finalRow = this.multipleSelection
             if (this.selectionType == 'Radio' && rows.length > 1) {
-                finalRow = rows.filter((it, index) => {
+                finalRow = this.multipleSelection.filter((it, index) => {
                     if (index == rows.length - 1) {
                         this.$refs.roleListTable.toggleRowSelection(it, true)
                         return true
@@ -229,6 +225,7 @@ export default {
         },
         closeSelection (item) {
             this.selectRoleList = this.selectRoleList.filter((value)=>value.id != item.id)
+            this.multipleSelection = this.multipleSelection.filter((value)=>value.id != item.id)
             this.resetSelectRow()
         },
         openUserModel () {
@@ -236,18 +233,43 @@ export default {
         },
         searchForm (){
             console.log(this.filterCondition)
+            this.currentPage = 1
+            this.reloadTable(this.filterCondition.name, this.filterCondition.code)
         },
         resetForm () {
             this.filterCondition = {}
             this.$refs.filterCondition.resetFields()
+            this.currentPage = 1
+            this.reloadTable()
         },
         handleSizeChange (val) {
             console.log(`每页 ${val} 条`)
             this.pageSize = val
+            this.currentPage = 1
+            this.reloadTable()
         },
         handleCurrentChange (val) {
             console.log(`当前页: ${val}`)
             this.currentPage = val
+            this.reloadTable()
+        },
+        async reloadTable (name, code) {
+            await getRoleListPage({
+                page: this.currentPage,
+                length: this.pageSize,
+                name: name,
+                code: code
+            }).then(result =>{
+                if (result.code == 0) {
+                    this.roleList = result.page.aaData
+                    this.pageTotal = result.page.total
+                } else {
+                    this.$message.error(result.message)
+                }
+            }).finally(() => {
+                this.resetSelectRow()
+            })
+
         }
     }
 }

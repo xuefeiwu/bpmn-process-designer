@@ -7,11 +7,12 @@ import request from '@utils/request'
  * @param config
  * @returns {*}
  */
-export function postAction (url, parameter, config) {
+export function postAction(url, parameter, data, config) {
     let params = {
         url: url,
         method: 'POST',
-        data: parameter
+        params: parameter,
+        data: data
     }
     if (config) {
         Object.assign(params, config)
@@ -26,7 +27,7 @@ export function postAction (url, parameter, config) {
  * @param config
  * @returns {*}
  */
-export function getAction (url, parameter, config) {
+export function getAction(url, parameter, config) {
     let params = {
         url: url,
         method: 'get',

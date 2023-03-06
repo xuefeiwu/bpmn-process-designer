@@ -4,7 +4,7 @@
  * @param processInstanceModelId
  * @returns {*}
  */
-import {getAction} from '@utils/manage'
+import {getAction, postAction} from '@utils/manage'
 
 
 export function loadProcessHistory(processInstanceId, processInstanceModelId, config) {
@@ -46,7 +46,7 @@ export function getUserListPage(params, config) {
  * @param config
  */
 export function getRoleListPage(params, config) {
-    return getAction(
+    return postAction(
         `uc/api/role/list/page`, params, config
     )
 }
@@ -72,5 +72,18 @@ export function getOrgListPage(params, config) {
 export function getScriptListPage(params, config) {
     return getAction(
         `/uc/api/script/page/list`, params, config
+    )
+}
+
+/**
+ *
+ * 获取按钮
+ * @param modelId
+ * @param config
+ * @returns {*}
+ */
+export function getButtonList(params, config) {
+    return getAction(
+        `/a1bpmn/api/btn/List`, params, config
     )
 }

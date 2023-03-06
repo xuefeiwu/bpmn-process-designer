@@ -58,6 +58,8 @@
 
 <script>
 
+import {getButtonList} from '@packages/api/process'
+
 export default {
     name: 'ButtonSelector',
     props: {
@@ -77,98 +79,14 @@ export default {
     data () {
         return {
             selectButtonList: [],
-            allButtonList: [
-                {
-                    id: 1,
-                    alias: 'flowImage',
-                    btnName: '流程图',
-                    nodeId: null,
-                    cssName: ''
-                }, {
-
-                    id: 2,
-                    alias: 'agree',
-                    btnName: '审批通过',
-                    nodeId: null,
-                    cssName: ''
-                }, {
-
-                    id: 3,
-                    alias: 'informed',
-                    btnName: '传阅',
-                    nodeId: null,
-                    cssName: ''
-                }, {
-
-                    id: 4,
-                    alias: 'transferTask',
-                    btnName: '转办',
-                    nodeId: null,
-                    cssName: ''
-                }, {
-
-                    id: 5,
-                    alias: 'backToNode',
-                    btnName: '退回',
-                    nodeId: null,
-                    cssName: ''
-                }, {
-
-                    id: 6,
-                    alias: 'invalid',
-                    btnName: '作废',
-                    nodeId: null,
-                    cssName: ''
-                }, {
-
-                    id: 7,
-                    alias: 'approvalHistory',
-                    btnName: '审批历史',
-                    nodeId: null,
-                    cssName: ''
-                }, {
-
-                    id: 8,
-                    alias: 'headmap',
-                    btnName: '热力图',
-                    nodeId: null,
-                    cssName: ''
-                }, {
-
-                    id: 9,
-                    alias: 'addNode',
-                    btnName: '添加临时任务',
-                    nodeId: null,
-                    cssName: ''
-                }, {
-
-                    id: 10,
-                    alias: 'addSignNode',
-                    btnName: '添加会签',
-                    nodeId: null,
-                    cssName: ''
-                }, {
-
-                    id: 11,
-                    alias: 'transactionUrge',
-                    btnName: '特事特办',
-                    nodeId: null,
-                    cssName: ''
-                }, {
-
-                    id: 12,
-                    alias: 'unPass',
-                    btnName: '拒绝',
-                    nodeId: null,
-                    cssName: ''
-                }
-            ]
+            allButtonList: []
         }
     },
     mounted () {
-        if (this.buttonList && this.buttonList.length > 0 ){
+        if (this.buttonList && this.buttonList.length > 0) {
             this.selectButtonList = JSON.parse(JSON.stringify(this.buttonList))
         }
+        this.reloadTable()
         this.resetSelectRow()
     },
     methods: {
@@ -228,6 +146,18 @@ export default {
         },
         openUserModel () {
             this.resetSelectRow()
+        },
+        async reloadTable () {
+            await getButtonList().then(result => {
+                if (result.code == 0) {
+                    this.allButtonList = JSON.parse(result.data)['UserTask']
+                } else {
+                    this.$message.error(result.message)
+                }
+            }).finally(() => {
+                this.resetSelectRow()
+            })
+
         }
     }
 }

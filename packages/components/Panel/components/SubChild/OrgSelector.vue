@@ -42,7 +42,8 @@
           :height="445"
           :data="orgList"
           @selection-change="changeSelection"
-          @click="selectOne"
+          @select-all="handleSelectionChange"
+          @select="handleSelectionChange"
           style="width: 100%;">
           <el-table-column
             type="selection"
@@ -75,7 +76,7 @@
         </el-table>
         <el-pagination
           background
-          :total="500"
+          :total="pageTotal"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
@@ -103,6 +104,8 @@
 
 <script>
 
+import {getOrgListPage} from '@packages/api/process'
+
 export default {
     name: 'OrgSelector',
     props: {
@@ -123,159 +126,34 @@ export default {
             default: 'Checkbox'
         }
     },
+    // 计算属性
+    computed: {
+        // 根据当前的multipleSelection得到对应选中的id
+        curSelectedRowIds () {
+            let result = []
+            if (this.multipleSelection && this.multipleSelection.length > 0) {
+                result = this.multipleSelection.map((user) => user.id)
+            }
+            return result
+        }
+    },
     data (){
         return{
-            orgList: [
-                {
-                    'id': '1438046022571786241',
-                    'deptName': '广州聚才南沙工厂',
-                    'easyName': '广州聚才南沙工厂',
-                    'deptCode': '3003',
-                    'parent': null,
-                    'path': null,
-                    'demId': null,
-                    'parentId': '1438046022580174883',
-                    'children': null,
-                    'expand': true,
-                    'title': null,
-                    'level': '2'
-                },
-                {
-                    'id': '1438046022571786243',
-                    'deptName': '深圳聚才龙岗工厂',
-                    'easyName': '深圳聚才龙岗工厂',
-                    'deptCode': '3001',
-                    'parent': null,
-                    'path': null,
-                    'demId': null,
-                    'parentId': '1438046022580174884',
-                    'children': null,
-                    'expand': true,
-                    'title': null,
-                    'level': '2'
-                },
-                {
-                    'id': '1438046022571786244',
-                    'deptName': '北京综合采购组',
-                    'easyName': '北京综合采购组',
-                    'deptCode': '5011',
-                    'parent': null,
-                    'path': null,
-                    'demId': null,
-                    'parentId': '1438046022575980548',
-                    'children': null,
-                    'expand': true,
-                    'title': null,
-                    'level': '3'
-                },
-                {
-                    'id': '1438046022571786245',
-                    'deptName': '广州综合采购组',
-                    'easyName': '广州综合采购组',
-                    'deptCode': '5010',
-                    'parent': null,
-                    'path': null,
-                    'demId': null,
-                    'parentId': '1438046022575980548',
-                    'children': null,
-                    'expand': true,
-                    'title': null,
-                    'level': '3'
-                },
-                {
-                    'id': '1438046022571786246',
-                    'deptName': '广州服务采购组',
-                    'easyName': '广州服务采购组',
-                    'deptCode': '5008',
-                    'parent': null,
-                    'path': null,
-                    'demId': null,
-                    'parentId': '1438046022575980550',
-                    'children': null,
-                    'expand': true,
-                    'title': null,
-                    'level': '3'
-                },
-                {
-                    'id': '1438046022571786247',
-                    'deptName': '广州广宣采购组',
-                    'easyName': '广州广宣采购组',
-                    'deptCode': '5009',
-                    'parent': null,
-                    'path': null,
-                    'demId': null,
-                    'parentId': '1438046022575980549',
-                    'children': null,
-                    'expand': true,
-                    'title': null,
-                    'level': '3'
-                },
-                {
-                    'id': '1438046022571786248',
-                    'deptName': '广州固资采购组',
-                    'easyName': '广州固资采购组',
-                    'deptCode': '5007',
-                    'parent': null,
-                    'path': null,
-                    'demId': null,
-                    'parentId': '1438046022575980551',
-                    'children': null,
-                    'expand': true,
-                    'title': null,
-                    'level': '3'
-                },
-                {
-                    'id': '1438046022571786249',
-                    'deptName': '广州物料采购组',
-                    'easyName': '广州物料采购组',
-                    'deptCode': '5006',
-                    'parent': null,
-                    'path': null,
-                    'demId': null,
-                    'parentId': '1438046022575980552',
-                    'children': null,
-                    'expand': true,
-                    'title': null,
-                    'level': '3'
-                },
-                {
-                    'id': '1438046022571786250',
-                    'deptName': '深圳综合采购组',
-                    'easyName': '深圳综合采购组',
-                    'deptCode': '5005',
-                    'parent': null,
-                    'path': null,
-                    'demId': null,
-                    'parentId': '1438046022575980548',
-                    'children': null,
-                    'expand': true,
-                    'title': null,
-                    'level': '3'
-                },
-                {
-                    'id': '1438046022571786251',
-                    'deptName': '深圳广宣采购组',
-                    'easyName': '深圳广宣采购组',
-                    'deptCode': '5004',
-                    'parent': null,
-                    'path': null,
-                    'demId': null,
-                    'parentId': '1438046022575980549',
-                    'children': null,
-                    'expand': true,
-                    'title': null,
-                    'level': '3'
-                }
-            ],
+            orgList: [],
+            // 用来保存当前的选中
+            multipleSelection: [],
             selectOrgList: [],
             filterCondition: {},
             currentPage: 1,
             pageSize: 10,
+            pageTotal: 0,
             pageSizeList: [10, 20, 30, 40]
         }
     },
     mounted () {
         this.selectOrgList = this.init()
+        this.multipleSelection = this.selectOrgList ? this.selectOrgList : []
+        this.reloadTable()
         this.updateShowName && this.updateShowName()
     },
     methods: {
@@ -285,8 +163,12 @@ export default {
                 return
             }
 
-            let selectionUserIdList = this.selectOrgList.map((item)=>item.id)
-            let selectionRow  = this.orgList.filter((value)=> selectionUserIdList.indexOf(value.id) != -1)
+            let selectionRow  = this.orgList.filter((value)=> this.curSelectedRowIds.indexOf(value.id) != -1)
+
+            if (selectionRow.length == 0) {
+                return
+            }
+
             // 过滤出选中行
             this.$refs.orgListTable.clearSelection()
             selectionRow.forEach((row)=>{
@@ -294,22 +176,48 @@ export default {
                 this.$refs.orgListTable.toggleRowSelection(row)
             })
         },
-        selectOne (row) {
-            if (this.selectionType == 'Checkbox') {
-                return
+        /**
+         * @param selection 选中的rows
+         * @param changedRow 变化的row
+         */
+        handleSelectionChange (selection, changedRow) {
+            if (this.selectionType == 'Radio') {
+                this.multipleSelection = []
             }
-            this.$refs.orgListTable.clearSelection()
-            this.$refs.orgListTable.toggleRowSelection(row, true)
-            this.selectOrgList = []
-            this.selectOrgList.push({
-                id: row.id,
-                deptName: row.deptName
-            })
+            // 检查有没有新增的，有新增的就push
+            if (selection && selection.length > 0) {
+                selection.forEach((row) => {
+                    if (this.curSelectedRowIds.indexOf(row.id) < 0) {
+                        this.multipleSelection.push(row)
+                    }
+                })
+            }
+            // 如果当前的selection没有changedRow，表示changedRow被cancel了，
+            // 如果this.multipleSelection有这一条，需要splice掉
+            if (changedRow && selection.indexOf(changedRow) < 0) {
+                if (this.curSelectedRowIds.indexOf(changedRow.id) > -1) {
+                    for (let index = 0; index < this.multipleSelection.length; index++) {
+                        if (changedRow.id === this.multipleSelection[index].id) {
+                            this.multipleSelection.splice(index, 1)
+                            break
+                        }
+                    }
+                }
+            }
+            // 如果当前一条都没有选中，表示都没有选中，则需要把当前页面的rows都遍历一下，splice掉没选中的
+            if (selection.length === 0) {
+                this.orgList.forEach((row) => {
+                    let index = this.curSelectedRowIds.indexOf(row.id)
+                    if(index > -1) {
+                        this.multipleSelection.splice(index, 1)
+                    }
+                })
+            }
         },
         changeSelection (rows) {
-            let finalRow = rows
+            let finalRow = this.multipleSelection
             if (this.selectionType == 'Radio' && rows.length > 1) {
-                finalRow = rows.filter((it, index) => {
+                finalRow = this.multipleSelection.filter((it, index) => {
                     if (index == rows.length - 1) {
                         this.$refs.orgListTable.toggleRowSelection(it, true)
                         return true
@@ -329,25 +237,51 @@ export default {
         },
         closeSelection (item) {
             this.selectOrgList = this.selectOrgList.filter((value)=>value.id != item.id)
+            this.multipleSelection = this.multipleSelection.filter((value)=>value.id != item.id)
             this.resetSelectRow()
         },
         openUserModel () {
             this.resetSelectRow()
         },
         searchForm (){
-            console.log(this.filterCondition)
+            this.currentPage = 1
+            this.reloadTable(this.filterCondition.deptName, this.filterCondition.deptCode)
         },
         resetForm () {
             this.filterCondition = {}
             this.$refs.filterCondition.resetFields()
+            this.currentPage = 1
+            this.reloadTable()
         },
         handleSizeChange (val) {
             console.log(`每页 ${val} 条`)
             this.pageSize = val
+            this.currentPage = 1
+            this.reloadTable()
         },
         handleCurrentChange (val) {
             console.log(`当前页: ${val}`)
             this.currentPage = val
+            this.currentPage = val
+            this.reloadTable()
+        },
+        async reloadTable (deptName, deptCode) {
+            await getOrgListPage({
+                page: this.currentPage,
+                length: this.pageSize,
+                deptName: deptName,
+                deptCode: deptCode
+            }).then(result =>{
+                if (result.code == 0) {
+                    this.orgList = result.page.aaData
+                    this.pageTotal = result.page.total
+                } else {
+                    this.$message.error(result.message)
+                }
+            }).finally(() => {
+                this.resetSelectRow()
+            })
+
         }
     }
 }

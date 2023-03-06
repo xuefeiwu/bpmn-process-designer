@@ -33,7 +33,7 @@
       </el-col>
     </el-row>
     <el-row :gutter="20">
-      <el-col :span="21">
+      <el-col :span="20">
         <el-table
           ref="userListTable"
           border
@@ -95,9 +95,10 @@
           :page-sizes="pageSizeList">
         </el-pagination>
       </el-col>
-      <el-col :span="3">
+      <el-col :span="4">
         <template v-for="(item) in selectUserList">
           <el-tag
+            v-if="item.userName && item.userName != ''"
             :key="item.id"
             closable
             :disable-transitions="false"
@@ -161,7 +162,7 @@ export default {
     },
     mounted () {
         this.selectUserList = this.init()
-        this.multipleSelection = this.selectUserList
+        this.multipleSelection = this.selectUserList ? this.selectUserList : []
         this.reloadTable()
         this.updateShowName && this.updateShowName()
     },
@@ -250,9 +251,6 @@ export default {
         },
         openUserModel () {
             this.resetSelectRow()
-        },
-        getRowKey (row) {
-            return row.id
         },
         searchForm (){
             console.log(this.filterCondition)

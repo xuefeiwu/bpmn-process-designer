@@ -302,14 +302,9 @@ export default {
             this.showSelectDialogType = this.userRule.pluginType
         },
         initSelect () {
-            if (this.userRule.specId) {
-                return this.userRule.specId.split(',').map((item) => {
-                    return {
-                        id: item
-                    }
-                })
+            if (this.userRule.specId && this.userRule.pluginVal) {
+                return JSON.parse(this.userRule.pluginVal)
             }
-
         },
         openSelectorModel () {
             let element = getActive().businessObject
@@ -335,24 +330,28 @@ export default {
                 let selectUserList = this.$refs.userSelector.selectUserList
                 if (selectUserList && selectUserList.length > 0) {
                     this.userRule.specId = selectUserList.map((item) => item.id).join(',')
+                    this.userRule.pluginVal=JSON.stringify(selectUserList)
                     this.setPluginVal(selectUserList.map((item) => item.userName).join(','))
                 }
             } else if (this.userRule.pluginType == 'role') {
                 let selectRoleList = this.$refs.roleSelector.selectRoleList
                 if (selectRoleList && selectRoleList.length > 0) {
                     this.userRule.specId = selectRoleList.map((item) => item.id).join(',')
+                    this.userRule.pluginVal=JSON.stringify(selectRoleList)
                     this.setPluginVal(selectRoleList.map((item) => item.name).join(','))
                 }
             } else if (this.userRule.pluginType == 'org') {
                 let selectOrgList = this.$refs.orgSelector.selectOrgList
                 if (selectOrgList && selectOrgList.length > 0) {
                     this.userRule.specId = selectOrgList.map((item) => item.id).join(',')
+                    this.userRule.pluginVal=JSON.stringify(selectOrgList)
                     this.setPluginVal(selectOrgList.map((item) => item.deptName).join(','))
                 }
             } else if (this.userRule.pluginType == 'userScript') {
                 let selectScriptList = this.$refs.scriptSelector.selectScriptList
                 if (selectScriptList && selectScriptList.length > 0) {
                     this.userRule.specId = selectScriptList.map((item) => item.id).join(',')
+                    this.userRule.pluginVal=JSON.stringify(selectScriptList)
                     this.setPluginVal(selectScriptList.map((item) => item.scriptName).join(','))
                 }
             }

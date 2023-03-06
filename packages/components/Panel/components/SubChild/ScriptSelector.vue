@@ -44,7 +44,8 @@
           :height="445"
           :data="scriptList"
           @selection-change="changeSelection"
-          @click="selectOne"
+          @select-all="handleSelectionChange"
+          @select="handleSelectionChange"
           style="width: 100%;">
           <el-table-column
             type="selection"
@@ -84,10 +85,8 @@
             width="300">
             <template slot-scope="{row}">
               <el-tooltip class="item" effect="dark" placement="top">
-                <div v-html="ToBreak(row.scriptText)" slot="content" style="white-space:pre-wrap"></div>
-                <div class="oneLine">
-                  {{ row.scriptText }}
-                </div>
+                <div v-html="row.scriptText" slot="content" style="white-space:pre-wrap"></div>
+                <div class="oneLine"> {{ row.scriptText }}</div>
               </el-tooltip>
             </template>
 
@@ -102,7 +101,7 @@
         </el-table>
         <el-pagination
           background
-          :total="500"
+          :total="pageTotal"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
@@ -131,6 +130,8 @@
 
 <script>
 
+import {getScriptListPage, getUserListPage} from '@packages/api/process'
+
 export default {
     name: 'ScriptSelector',
     props: {
@@ -151,35 +152,34 @@ export default {
             default: 'Checkbox'
         }
     },
+    // 计算属性
+    computed: {
+        // 根据当前的multipleSelection得到对应选中的id
+        curSelectedRowIds () {
+            let result = []
+            if (this.multipleSelection && this.multipleSelection.length > 0) {
+                result = this.multipleSelection.map((user) => user.id)
+            }
+            return result
+        }
+    },
     data () {
         return {
-            scriptList: [
-                {
-                    'id': '1552595548031279106',
-                    'scriptName': '【角色】企业管理员用户',
-                    'scriptCode': 'companyAdminAndOrg',
-                    'scriptText': 'import com.els.common.util.SpringContextUtils\nimport com.els.modules.account.api.dto.ElsSubAccountDTO\nimport com.els.modules.workflow.rpc.service.WorkflowInvokeAccountRpcService\n\nimport java.util.stream.Collectors\n\n// 1. 获取用户信息\nString currentUserId = (String)innerUser.get("currentUser");\nWorkflowInvokeAccountRpcService workflowInvokeAccountRpcService = SpringContextUtils.getBean(WorkflowInvokeAccountRpcService.class)\nElsSubAccountDTO auditUser = workflowInvokeAccountRpcService.queryUserByUserId(currentUserId);\n\n// 2. 获取指定角色的编码的用户信息\nString roleCode = "companyAdmin";\ndef accountList = workflowInvokeAccountRpcService.getListByRoleCodes(roleCode);\nif (!accountList.isEmpty()) {\n    def userIds = accountList.stream()\n            .filter(accountDTO -> accountDTO.getOrgCode().equals(auditUser.getOrgCode()))\n            .map(ElsSubAccountDTO::getId)\n            .collect(Collectors.toList());\n    return userIds;\n}\nreturn Collections.emptyList();\n',
-                    'scriptDescribe': '针对同一个角色，存在不同组织下用户都属于这个角色，若上一节点是A组织下的用户，则下一节点角色策略会取A组织下的该角色用户',
-                    'tenantId': '307000'
-                },
-                {
-                    'id': '1553992682986225666',
-                    'scriptName': '【角色】企业管理员用户',
-                    'scriptCode': 'companyAdminAndOrg',
-                    'scriptText': 'import com.els.common.util.SpringContextUtils\nimport com.els.modules.account.api.dto.ElsSubAccountDTO\nimport com.els.modules.workflow.rpc.service.WorkflowInvokeAccountRpcService\n\nimport java.util.stream.Collectors\n\n// 1. 获取用户信息\nString currentUserId = (String)innerUser.get("currentUser");\nWorkflowInvokeAccountRpcService workflowInvokeAccountRpcService = SpringContextUtils.getBean(WorkflowInvokeAccountRpcService.class)\nElsSubAccountDTO auditUser = workflowInvokeAccountRpcService.queryUserByUserId(currentUserId);\n\n// 2. 获取指定角色的编码的用户信息\nString roleCode = "companyAdmin";\ndef accountList = workflowInvokeAccountRpcService.getListByRoleCodes(roleCode);\nif (!accountList.isEmpty()) {\n    def userIds = accountList.stream()\n            .filter(accountDTO -> accountDTO.getOrgCode().equals(auditUser.getOrgCode()))\n            .map(ElsSubAccountDTO::getId)\n            .collect(Collectors.toList());\n    return userIds;\n}\nreturn Collections.emptyList();\n',
-                    'scriptDescribe': '针对同一个角色，存在不同组织下用户都属于这个角色，若上一节点是A组织下的用户，则下一节点角色策略会取A组织下的该角色用户',
-                    'tenantId': '100000'
-                }
-            ],
+            scriptList: [],
             selectScriptList: [],
+            // 用来保存当前的选中
+            multipleSelection: [],
             filterCondition: {},
             currentPage: 1,
             pageSize: 10,
+            pageTotal: 0,
             pageSizeList: [10, 20, 30, 40]
         }
     },
     mounted () {
         this.selectScriptList = this.init()
+        this.multipleSelection = this.selectScriptList ? this.selectScriptList : []
+        this.reloadTable()
         this.updateShowName && this.updateShowName()
     },
     methods: {
@@ -189,8 +189,10 @@ export default {
                 return
             }
 
-            let selectionUserIdList = this.selectScriptList.map((item) => item.id)
-            let selectionRow = this.scriptList.filter((value) => selectionUserIdList.indexOf(value.id) != -1)
+            let selectionRow  = this.scriptList.filter((value)=> this.curSelectedRowIds.indexOf(value.id) != -1)
+            if (selectionRow.length == 0) {
+                return
+            }
             // 过滤出选中行
             this.$refs.scriptListTable.clearSelection()
             selectionRow.forEach((row) => {
@@ -198,23 +200,48 @@ export default {
                 this.$refs.scriptListTable.toggleRowSelection(row)
             })
         },
-        selectOne (row) {
-            if (this.selectionType == 'Checkbox') {
-                return
+        /**
+         * @param selection 选中的rows
+         * @param changedRow 变化的row
+         */
+        handleSelectionChange (selection, changedRow) {
+            if (this.selectionType == 'Radio') {
+                this.multipleSelection = []
             }
-            this.$refs.scriptListTable.clearSelection()
-            this.$refs.scriptListTable.toggleRowSelection(row, true)
-            this.selectScriptList = []
-            this.selectScriptList.push({
-                id: row.id,
-                scriptName: row.scriptName,
-                scriptDescribe: row.scriptDescribe
-            })
+            // 检查有没有新增的，有新增的就push
+            if (selection && selection.length > 0) {
+                selection.forEach((row) => {
+                    if (this.curSelectedRowIds.indexOf(row.id) < 0) {
+                        this.multipleSelection.push(row)
+                    }
+                })
+            }
+            // 如果当前的selection没有changedRow，表示changedRow被cancel了，
+            // 如果this.multipleSelection有这一条，需要splice掉
+            if (changedRow && selection.indexOf(changedRow) < 0) {
+                if (this.curSelectedRowIds.indexOf(changedRow.id) > -1) {
+                    for (let index = 0; index < this.multipleSelection.length; index++) {
+                        if (changedRow.id === this.multipleSelection[index].id) {
+                            this.multipleSelection.splice(index, 1)
+                            break
+                        }
+                    }
+                }
+            }
+            // 如果当前一条都没有选中，表示都没有选中，则需要把当前页面的rows都遍历一下，splice掉没选中的
+            if (selection.length === 0) {
+                this.scriptList.forEach((row) => {
+                    let index = this.curSelectedRowIds.indexOf(row.id)
+                    if(index > -1) {
+                        this.multipleSelection.splice(index, 1)
+                    }
+                })
+            }
         },
         changeSelection (rows) {
-            let finalRow = rows
+            let finalRow = this.multipleSelection
             if (this.selectionType == 'Radio' && rows.length > 1) {
-                finalRow = rows.filter((it, index) => {
+                finalRow = this.multipleSelection.filter((it, index) => {
                     if (index == rows.length - 1) {
                         this.$refs.scriptListTable.toggleRowSelection(it, true)
                         return true
@@ -235,6 +262,7 @@ export default {
         },
         closeSelection (item) {
             this.selectScriptList = this.selectScriptList.filter((value) => value.id != item.id)
+            this.multipleSelection = this.multipleSelection.filter((value)=>value.id != item.id)
             this.resetSelectRow()
         },
         openUserModel () {
@@ -242,21 +270,44 @@ export default {
         },
         searchForm () {
             console.log(this.filterCondition)
+            this.currentPage = 1
+            this.reloadTable(this.filterCondition.scriptName, this.filterCondition.scriptCode)
         },
         resetForm () {
             this.filterCondition = {}
             this.$refs.filterCondition.resetFields()
+            this.currentPage = 1
+            this.reloadTable()
         },
         handleSizeChange (val) {
             console.log(`每页 ${val} 条`)
             this.pageSize = val
+            this.currentPage = 1
+            this.reloadTable()
         },
         handleCurrentChange (val) {
             console.log(`当前页: ${val}`)
             this.currentPage = val
+            this.currentPage = val
+            this.reloadTable()
         },
-        ToBreak (val) {
-            return val
+        async reloadTable (scriptName, scriptCode) {
+            await getScriptListPage({
+                page: this.currentPage,
+                length: this.pageSize,
+                scriptName: scriptName,
+                scriptCode: scriptCode
+            }).then(result =>{
+                if (result.code == 0) {
+                    this.scriptList = result.page.aaData
+                    this.pageTotal = result.page.total
+                } else {
+                    this.$message.error(result.message)
+                }
+            }).finally(() => {
+                this.resetSelectRow()
+            })
+
         }
     }
 }
