@@ -85,6 +85,7 @@
           v-if="modelVisible"
           ref="formRef"
           :model="userRule"
+          :rules="formRules"
           class="need-filled"
           label-width="100px"
           aria-modal="true">
@@ -225,6 +226,22 @@ export default {
     name: 'ElementExtA1UserRule',
     components: {CodeEditorModel, UserSelector, RoleSelector, OrgSelector, ScriptSelector},
     data () {
+        let checkRuleId = (rule, value, callback) => {
+            if (this.userRule.pluginType == 'users') {
+                if (!this.userRule.ruleId || this.userRule.ruleId == '')
+                    return callback(new Error('用户规则不能为空'))
+            }
+            return callback()
+        }
+        let checkLogicCal = (rule, value, callback) => {
+            if (this.showLogicCal) {
+                if (!this.userRule.logicCal || this.userRule.logicCal == '')
+                    return callback(new Error('运算类型不能为空'))
+            }
+            return callback()
+
+        }
+
         return {
             pluginTypeList: [],
             logicCalTypeList: [],
@@ -265,7 +282,14 @@ export default {
                 ruleDisplayName: '',
                 // 保存用户、角色等相关id
                 specId: ''
+            },
+            formRules: {
+                pluginType: {required: true, trigger: ['blur', 'change'], message: '处理人类型不能为空'},
+                ruleId: {required: true, trigger: ['blur', 'change'], validator: checkRuleId},
+                logicCal: {required: true, trigger: ['blur', 'change'], validator: checkLogicCal}
+                // callNodes: {required: true, trigger: ['blur', 'change'], validator: checkCallNodes}
             }
+
         }
     },
     mounted () {
