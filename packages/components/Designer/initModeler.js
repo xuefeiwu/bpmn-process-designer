@@ -6,7 +6,6 @@ import { addExtensionProperty } from '@packages/bo-utils/extensionPropertiesUtil
 import { unObserver } from '@utils/tool'
 
 export default function (designerDom, moduleAndExtensions, context) {
-    console.log(moduleAndExtensions)
     const options = {
         container: designerDom,
         additionalModules: moduleAndExtensions[0] || [],

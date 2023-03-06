@@ -26,12 +26,7 @@ export default {
             eventBus: {},
             xml: '',
             modelId: '',
-            processAdminList: [
-                {'id': '1286142373594481852', 'userName': '管理员'},
-                {'id': '1387731059465973761', 'userName': '陈梓宏'},
-                {'id': '1387731059482750979', 'userName': '陈土强'},
-                {'id': '1387731059503722498', 'userName': '李权力'}
-            ]
+            processAdminList: []
         }
     },
     computed: {
@@ -53,12 +48,17 @@ export default {
                 return
             }
 
+            let data = {}
             await loadProcessModel(this.modelId).then((res) => {
                 if (res.code == '0') {
                     this.xml = res.xml
+                    this.processAdminList = res.data.adminInfo && res.data.adminInfo != '' ? res.data.adminInfo : []
+                    data = res.data
                 }
             }).finally(() => {
             })
+
+            return data
         },
 
         reloadProcess: debounce(async function (setting, oldSetting) {
@@ -66,16 +66,18 @@ export default {
             let token = getParamter('messageId')
             this.$store.commit('setToken', token)
             this.modelId = getParamter('id')
-            await this.getProcessModel()
+            let result = await this.getProcessModel()
 
             await this.$nextTick()
             this.modeler = initModeler(this.$refs.designerRef, modelerModules, this)
             this.elementRegistry = this.modeler.get('elementRegistry')
             this.eventBus = this.modeler.get('eventBus')
-
             await createNewDiagram(this.modeler, this.xml, setting)
 
             this.$store.commit('setProcessModel', {
+                modelKey: result.modelKey,
+                modelType: result.modelType,
+                modeId: this.modelId,
                 processAdmin: JSON.stringify(this.processAdminList)
             })
         }, 100)

@@ -21,8 +21,10 @@ const store = new Vuex.Store({
             processId: state.editor.processId
         }),
         getProcessModel: (state) => ({
+            modelType: state.model.modelType,
+            modelKey: state.model.modelKey,
             processName: state.model.processName,
-            processId: state.model.processId,
+            modeId: state.model.modeId,
             processAdmin: state.model.processAdmin
         }),
         getProcessEngine: (state) => state.editor.processEngine,

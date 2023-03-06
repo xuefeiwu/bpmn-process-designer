@@ -25,6 +25,18 @@ export function loadProcessModel(modelId, config) {
     )
 }
 
+/**
+ *
+ * 保存流程
+ * @param modelId
+ * @param config
+ * @returns {*}
+ */
+export function saveProcessModel(body, config) {
+    return postAction(
+        `/a1bpmn/api/models/save`, {}, body, config
+    )
+}
 
 /**
  * page=1&length=10&fullName=33&account=44&userNo=55&admin=false

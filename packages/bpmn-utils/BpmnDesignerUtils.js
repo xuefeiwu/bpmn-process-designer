@@ -24,6 +24,17 @@ export function getModeler () {
     }
 }
 
+export function getProcessModel () {
+    try {
+        if (!store.getters.getProcessModel) {
+            return
+        }
+        return store.getters.getProcessModel
+    } catch (e) {
+        catchError(e)
+    }
+}
+
 export function getProcessAdmin () {
     try {
         if (!store.getters.getProcessModel) {
