@@ -66,7 +66,7 @@ export default {
         let token = getParamter('messageId')
         this.$store.commit('setToken', token)
 
-        this.modelId = getParamter('modelId')
+        this.modelId = getParamter('id')
 
         await this.getProcessModel()
         this.modelerModules = moduleAndExtensions(this.getEditor)

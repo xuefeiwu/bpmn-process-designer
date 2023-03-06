@@ -110,6 +110,10 @@ export default {
                 activatedElementTypeName = ''
             if (!activatedElement) {
                 const modeler = getModeler()
+                if (!modeler) {
+                    return
+                }
+
                 activatedElement =
                     modeler.get('elementRegistry')?.find((el) => el.type === 'bpmn:Process') ||
                     modeler.get('elementRegistry')?.find((el) => el.type === 'bpmn:Collaboration')
