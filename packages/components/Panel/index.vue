@@ -42,7 +42,6 @@ import ElementGlobalProperties from '@packages/components/Panel/components/Eleme
 import ElementExtA1GlobalRequest from '@packages/components/Panel/components/ElementExtA1GlobalRequest'
 import ElementExtA1NodeRequest from '@packages/components/Panel/components/ElementExtA1NodeRequest'
 import {isUserTask} from '@packages/bo-utils/extA1Util'
-import ElementNodeTransferAtaff from '@packages/components/Panel/components/ElementNodeTransferAtaff'
 import ElementExtA1Attributes from '@packages/components/Panel/components/ElementExtA1Attributes'
 import ElementExtA1UserProperty from '@packages/components/Panel/components/ElementExtA1UserProperty'
 import ElementExtA1SignNodes from '@packages/components/Panel/components/ElementExtA1SignNodes'
@@ -58,7 +57,6 @@ export default {
         ElementGenerations,
         ElementExtA1Button,
         ElementExtA1GlobalRequest,
-        ElementNodeTransferAtaff,
         ElementExtA1Attributes,
         ElementExtA1UserRule,
         ElementExtA1Condition,
@@ -147,7 +145,6 @@ export default {
             this.renderComponents.push(ElementExtA1Button)
             isUserTask(element) && this.renderComponents.push(ElementExtA1UserRule)
             isUserTask(element) && this.renderComponents.push(ElementExtA1NodeRequest)
-            isUserTask(element) && this.renderComponents.push(ElementNodeTransferAtaff)
             isUserTask(element) && this.renderComponents.push(ElementExtA1Attributes)
             isUserTask(element) && this.renderComponents.push(ElementExtA1UserProperty)
             isUserTask(element) && this.renderComponents.push(ElementExtA1SignNodes)

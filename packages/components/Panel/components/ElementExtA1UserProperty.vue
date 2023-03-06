@@ -88,6 +88,22 @@
           </el-select>
         </edit-item>
         <edit-item
+          v-if="showNodeTransferAtaffItem"
+          label="转办人员"
+          textAlign="center"
+          :labelWidth="90">
+          <el-input
+            v-model="showNodeTransferAtaff"
+            readonly
+          >
+            <el-button
+              slot="append"
+              type="primary"
+              icon="el-icon-edit"
+              @click="transferAtaffModelVisible = true"/>
+          </el-input>
+        </edit-item>
+        <edit-item
           label="审批期限"
           textAlign="center"
           :labelWidth="90">
@@ -126,6 +142,28 @@
       </template>
 
     </div>
+    <el-dialog
+      :visible.sync="transferAtaffModelVisible"
+      title="选择节点转办人员"
+      width="900px"
+      append-to-body
+      @opened="openNodeTransferAtaffModel"
+      destroy-on-close>
+      <user-selector
+        v-if="transferAtaffModelVisible"
+        :show-name.sync="showNodeTransferAtaff"
+        :init="initTransferAtaff"
+        :update-show-name="updateShowTransferAtaffName"
+        selection-type="Radio"
+        ref="userSelector"
+        :isProcessAdmin="false"/>
+      <template #footer>
+        <el-button @click="transferAtaffModelVisible = false">取 消</el-button>
+        <el-button
+          @click="saveNodeTransferAtaffModel"
+          type="primary">确 认</el-button>
+      </template>
+    </el-dialog>
   </el-collapse-item>
 </template>
 
@@ -133,15 +171,27 @@
 import {getAllUserTask, getExtA1UserProperties, saveExtA1UserProperties} from '@packages/bo-utils/extA1Util'
 import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import EventEmitter from '@utils/EventEmitter'
+import {addExtensionProperty, getExtensionProperties, removeExtensionProperty} from '@packages/bo-utils/extensionPropertiesUtil'
+import UserSelector from '@packages/components/Panel/components/SubChild/UserSelector'
 
 export default {
     name: 'ElementExtA1UserProperty',
+    components: {UserSelector},
     data (){
         return {
             selectUserTaskList: [],
             userTaskList: [],
             showBackNode: false,
             showExpire: false,
+            showNodeTransferAtaffItem: false,
+            showNodeTransferAtaff: '',
+            newProperty: {
+                name: 'nodeTransferAtaff',
+                value: ''
+            },
+            extensionsRaw: [],
+            nodeTransferAtaffList: [],
+            transferAtaffModelVisible: false,
             expireHandlerModelList: [
                 {label: '消息提醒', value: 'taskExpirePulishMessage'},
                 {label: '审批通过', value: 'taskExpireAutoComplete'},
@@ -218,8 +268,10 @@ export default {
                     this.$message.warning('当前驳回指定节点，未选择驳回的节点！')
                 }
             }
+
+            this.initTransferAtaff()
         },
-        saveExtA1UserProperty () {
+        saveExtA1UserProperty (value) {
             this.userProperty.nodeId = getActive().id
             saveExtA1UserProperties(getActive(), this.userProperty)
             this.reloadExtA1UserProperty()
@@ -235,6 +287,42 @@ export default {
         changeExpireFlag (value) {
             this.showExpire = value == '1'
             this.saveExtA1UserProperty()
+        },
+        removeProperty (propIndex) {
+            removeExtensionProperty(getActive(), this.extensionsRaw[propIndex])
+        },
+        openNodeTransferAtaffModel () {
+            this.$refs.userSelector.resetSelectRow()
+        },
+        saveNodeTransferAtaffModel () {
+            this.transferAtaffModelVisible = false
+            this.updateShowTransferAtaffName()
+            this.extensionsRaw = getExtensionProperties(getActive())
+            this.extensionsRaw
+                .forEach((item, index)=>{
+                    if (item.name == 'nodeTransferAtaff') {
+                        this.removeProperty(index)
+                    }
+                })
+
+            this.newProperty.value = JSON.stringify(this.$refs.userSelector.selectUserList)
+            addExtensionProperty(getActive(), this.newProperty)
+            this.initTransferAtaff()
+        },
+        initTransferAtaff () {
+            this.showNodeTransferAtaffItem = this.userProperty.expireHandlerModel == 'taskExpireAutoTransfer'
+            this.nodeTransferAtaffList = []
+            this.extensionsRaw = getExtensionProperties(getActive())
+            if (this.extensionsRaw && this.extensionsRaw.length > 0) {
+                let extensionsRaw =  this.extensionsRaw.filter((item) => item.name == 'nodeTransferAtaff')
+                this.nodeTransferAtaffList = JSON.parse(extensionsRaw[0].value)
+            }
+
+            this.updateShowTransferAtaffName()
+            return this.nodeTransferAtaffList
+        },
+        updateShowTransferAtaffName (){
+            this.showNodeTransferAtaff = this.nodeTransferAtaffList.map((item)=>item.userName).join(',')
         },
         changeExpireSetting (event, type) {
             let value = event.target.value
