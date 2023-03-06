@@ -41,11 +41,14 @@
           :height="445"
           highlight-current-row
           :data="userList"
+          row-key="id"
           @selection-change="changeSelection"
-          @click="selectOne"
+          @select-all="handleSelectionChange"
+          @select="handleSelectionChange"
           style="width: 100%;">
           <el-table-column
             type="selection"
+            :reserve-selection="true"
             width="55">
           </el-table-column>
           <el-table-column
@@ -83,7 +86,7 @@
         </el-table>
         <el-pagination
           background
-          :total="500"
+          :total="pageTotal"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="currentPage"
@@ -95,7 +98,6 @@
       <el-col :span="3">
         <template v-for="(item) in selectUserList">
           <el-tag
-            v-if="item.userName && item.userName != ''"
             :key="item.id"
             closable
             :disable-transitions="false"
@@ -110,6 +112,8 @@
 </template>
 
 <script>
+
+import {getUserListPage} from '@packages/api/process'
 
 export default {
     name: 'UserSelector',
@@ -131,109 +135,34 @@ export default {
             default: 'Checkbox'
         }
     },
+    // 计算属性
+    computed: {
+        // 根据当前的multipleSelection得到对应选中的id
+        curSelectedRowIds () {
+            let result = []
+            if (this.multipleSelection && this.multipleSelection.length > 0) {
+                result = this.multipleSelection.map((user) => user.id)
+            }
+            return result
+        }
+    },
     data (){
         return{
-            userList: [
-                {
-                    'id': '1286142373594481852',
-                    'fullName': '管理员',
-                    'userNo': 'E000088',
-                    'email': '',
-                    'photo': '18038266404',
-                    'account': '1001',
-                    'tenantId': '307000'
-                },
-                {
-                    'id': '1387731059465973761',
-                    'fullName': '陈梓宏',
-                    'userNo': 'E000197',
-                    'email': 'chenzihong@51qqt.com',
-                    'photo': '18814374945',
-                    'account': 'chenzihong',
-                    'tenantId': '307000'
-                },
-                {
-                    'id': '1387731059482750979',
-                    'fullName': '陈土强',
-                    'userNo': 'E000005',
-                    'email': 'chentuqiang@51qqt.com',
-                    'photo': '13421827879',
-                    'account': 'chentuqiang',
-                    'tenantId': '307000'
-                },
-                {
-                    'id': '1387731059503722498',
-                    'fullName': '李权力',
-                    'userNo': 'E000312',
-                    'email': 'liquanli@51qqt.com',
-                    'photo': '17702780314',
-                    'account': 'liquanli',
-                    'tenantId': '307000'
-                },
-                {
-                    'id': '1387731059507916801',
-                    'fullName': '陈文清',
-                    'userNo': 'E000341',
-                    'email': 'chenwenqing@51qqt.com',
-                    'photo': '13732978674',
-                    'account': 'chenwenqing',
-                    'tenantId': '307000'
-                },
-                {
-                    'id': '1387731059507916802',
-                    'fullName': '王朝龙',
-                    'userNo': 'E000361',
-                    'email': 'wan*******************',
-                    'photo': '13123249331',
-                    'account': 'wangchaolong',
-                    'tenantId': '307000'
-                },
-                {
-                    'id': '1387731059575025665',
-                    'fullName': '徐玉霞',
-                    'userNo': 'E000535',
-                    'email': 'xuyuxia@51qqt.com',
-                    'photo': '15659833742',
-                    'account': 'xuyuxia',
-                    'tenantId': '307000'
-                },
-                {
-                    'id': '1387731059612774402',
-                    'fullName': '陈映东',
-                    'userNo': 'E000567',
-                    'email': 'chenyingdong@51qqt.com',
-                    'photo': '17688475387',
-                    'account': 'chenyingdong',
-                    'tenantId': '307000'
-                },
-                {
-                    'id': '1387731059629551618',
-                    'fullName': '温怡君',
-                    'userNo': 'E000600',
-                    'email': 'wenyijun@51qqt.com',
-                    'photo': '13650931750',
-                    'account': 'wenyijun',
-                    'tenantId': '307000'
-                },
-                {
-                    'id': '1387731059721826307',
-                    'fullName': '周健华2',
-                    'userNo': 'E000820',
-                    'email': 'zhoujianhua2@51qqt.com',
-                    'photo': '13533909131',
-                    'account': 'zhoujianhua2',
-                    'tenantId': '307000'
-                }
-            ],
+            userList: [],
             selectUserList: [],
+            // 用来保存当前的选中
+            multipleSelection: [],
             filterCondition: {},
             currentPage: 1,
             pageSize: 10,
+            pageTotal: 0,
             pageSizeList: [10, 20, 30, 40]
         }
     },
     mounted () {
         this.selectUserList = this.init()
+        this.multipleSelection = this.selectUserList
+        this.reloadTable()
         this.updateShowName && this.updateShowName()
     },
     methods: {
@@ -243,8 +172,10 @@ export default {
                 return
             }
 
-            let selectionUserIdList = this.selectUserList.map((item)=>item.id)
-            let selectionRow  = this.userList.filter((value)=> selectionUserIdList.indexOf(value.id) != -1)
+            let selectionRow  = this.userList.filter((value)=> this.curSelectedRowIds.indexOf(value.id) != -1)
+            if (selectionRow.length == 0) {
+                return
+            }
             // 过滤出选中行
             this.$refs.userListTable.clearSelection()
             selectionRow.forEach((row)=>{
@@ -252,22 +183,48 @@ export default {
                 this.$refs.userListTable.toggleRowSelection(row)
             })
         },
-        selectOne (row) {
-            if (this.selectionType == 'Checkbox') {
-                return
+        /**
+         * @param selection 选中的rows
+         * @param changedRow 变化的row
+         */
+        handleSelectionChange (selection, changedRow) {
+            if (this.selectionType == 'Radio') {
+                this.multipleSelection = []
             }
-            this.$refs.userListTable.clearSelection()
-            this.$refs.userListTable.toggleRowSelection(row, true)
-            this.selectUserList = []
-            this.selectUserList.push({
-                id: row.id,
-                userName: row.fullName
-            })
+            // 检查有没有新增的，有新增的就push
+            if (selection && selection.length > 0) {
+                selection.forEach((row) => {
+                    if (this.curSelectedRowIds.indexOf(row.id) < 0) {
+                        this.multipleSelection.push(row)
+                    }
+                })
+            }
+            // 如果当前的selection没有changedRow，表示changedRow被cancel了，
+            // 如果this.multipleSelection有这一条，需要splice掉
+            if (changedRow && selection.indexOf(changedRow) < 0) {
+                if (this.curSelectedRowIds.indexOf(changedRow.id) > -1) {
+                    for (let index = 0; index < this.multipleSelection.length; index++) {
+                        if (changedRow.id === this.multipleSelection[index].id) {
+                            this.multipleSelection.splice(index, 1)
+                            break
+                        }
+                    }
+                }
+            }
+            // 如果当前一条都没有选中，表示都没有选中，则需要把当前页面的rows都遍历一下，splice掉没选中的
+            if (selection.length === 0) {
+                this.userList.forEach((row) => {
+                    let index = this.curSelectedRowIds.indexOf(row.id)
+                    if(index > -1) {
+                        this.multipleSelection.splice(index, 1)
+                    }
+                })
+            }
         },
         changeSelection (rows) {
-            let finalRow = rows
+            let finalRow = this.multipleSelection
             if (this.selectionType == 'Radio' && rows.length > 1) {
-                finalRow = rows.filter((it, index) => {
+                finalRow = this.multipleSelection.filter((it, index) => {
                     if (index == rows.length - 1) {
                         this.$refs.userListTable.toggleRowSelection(it, true)
                         return true
@@ -278,34 +235,66 @@ export default {
                 })
             }
 
+            // 刷选中当前页中选中的值
             this.selectUserList = finalRow.map((item)=>{
                 return {
                     id: item.id,
-                    userName: item.fullName
+                    userName: item.fullName || item.userName
                 }
             })
         },
         closeSelection (item) {
             this.selectUserList = this.selectUserList.filter((value)=>value.id != item.id)
+            this.multipleSelection = this.multipleSelection.filter((value)=>value.id != item.id)
             this.resetSelectRow()
         },
         openUserModel () {
             this.resetSelectRow()
         },
+        getRowKey (row) {
+            return row.id
+        },
         searchForm (){
             console.log(this.filterCondition)
+            this.currentPage = 1
+            this.reloadTable(this.filterCondition.fullName, this.filterCondition.userNo)
         },
         resetForm () {
             this.filterCondition = {}
             this.$refs.filterCondition.resetFields()
+            this.currentPage = 1
+            this.reloadTable()
         },
         handleSizeChange (val) {
             console.log(`每页 ${val} 条`)
             this.pageSize = val
+            this.currentPage = 1
+            this.reloadTable()
         },
         handleCurrentChange (val) {
             console.log(`当前页: ${val}`)
             this.currentPage = val
+            this.reloadTable()
+        },
+        async reloadTable (fullName, userNo) {
+            // page=1&length=10&fullName=33&account=44&userNo=55&admin=false
+            await getUserListPage({
+                page: this.currentPage,
+                length: this.pageSize,
+                fullName: fullName,
+                userNo: userNo,
+                admin: this.isProcessAdmin
+            }).then(result =>{
+                if (result.code == 0) {
+                    this.userList = result.page.aaData
+                    this.pageTotal = result.page.total
+                } else {
+                    this.$message.error(result.message)
+                }
+            }).finally(() => {
+                this.resetSelectRow()
+            })
+
         }
     }
 }

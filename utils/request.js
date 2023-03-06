@@ -22,10 +22,11 @@ export function getParamter (name) {
 
 service.interceptors.request.use(
     (config) => {
-        if (!store.getters.getToken) {
-            return Promise.reject(new Error('token不存在！'))
-        }
-        config.headers['x-access-token'] = store.getters.getToken
+        // if (!store.getters.getToken) {
+        //     return Promise.reject(new Error('token不存在！'))
+        // }
+        // config.headers['x-access-token'] = store.getters.getToken
+        config.headers['x-access-token'] = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzgwOTEyMTQsImFjY291bnQiOiIzMDcwMDBfZGFpd2VpIn0.wXym2Hk20Qgx-0sVsEq3wk-rqGs66ZUU0XHZPzcj-JQ'
         config.headers['Access-Control-Allow-Origin'] = '*'
         config.headers['Access-Control-Allow-Methods'] = 'GET, POST'
 

@@ -158,7 +158,6 @@ export default {
         },
         initProcessAdmin () {
             let processAdmin = getProcessAdmin()
-            console.log(processAdmin)
             if (processAdmin) {
                 return JSON.parse(processAdmin)
             }
