@@ -7,12 +7,14 @@
 </template>
 
 <script>
+import {debounce} from 'min-dash'
 import {mapGetters} from 'vuex'
 import {createNewDiagram} from '@utils/xml'
 import moduleAndExtensions from './moduleAndExtensions'
 import initModeler from './initModeler'
 import {loadProcessModel} from '../../api/process'
 import {getParamter} from '@utils/request'
+import {catchError} from '@utils/printCatch'
 
 export default {
     name: 'BpmnDesigner',
@@ -42,9 +44,6 @@ export default {
         }
     },
     methods: {
-        async reloadProcess () {
-            await createNewDiagram(this.modeler, this.xml, this.getEditor)
-        },
         /**
          * 加载流程图
          * @returns {Promise<void>}
@@ -60,26 +59,39 @@ export default {
                 }
             }).finally(() => {
             })
-        }
+        },
+
+        reloadProcess: debounce(async function (setting, oldSetting) {
+            const modelerModules = moduleAndExtensions(setting)
+            let token = getParamter('messageId')
+            this.$store.commit('setToken', token)
+            this.modelId = getParamter('id')
+            await this.getProcessModel()
+
+            await this.$nextTick()
+            this.modeler = initModeler(this.$refs.designerRef, modelerModules, this)
+            this.elementRegistry = this.modeler.get('elementRegistry')
+            this.eventBus = this.modeler.get('eventBus')
+
+            await createNewDiagram(this.modeler, this.xml, setting)
+
+            this.$store.commit('setProcessModel', {
+                processAdmin: JSON.stringify(this.processAdminList)
+            })
+        }, 100)
     },
-    async created () {
-        let token = getParamter('messageId')
-        this.$store.commit('setToken', token)
-
-        this.modelId = getParamter('id')
-
-        await this.getProcessModel()
-        this.modelerModules = moduleAndExtensions(this.getEditor)
-        this.modeler = initModeler(this.$refs.designerRef, this.modelerModules, this)
-        this.elementRegistry = this.modeler.get('elementRegistry')
-        this.eventBus = this.modeler.get('eventBus')
-
-        await this.reloadProcess()
-
-
-        this.$store.commit('setProcessModel', {
-            processAdmin: JSON.stringify(this.processAdminList)
-        })
+    watch: {
+        getEditor: {
+            immediate: true,
+            deep: true,
+            handler: async function (value, oldValue) {
+                try {
+                    this.reloadProcess(value, oldValue)
+                } catch (e) {
+                    catchError(e)
+                }
+            }
+        }
     }
 }
 </script>
