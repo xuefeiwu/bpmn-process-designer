@@ -41,7 +41,6 @@
           highlight-current-row
           :height="445"
           :data="orgList"
-          @selection-change="changeSelection"
           @select-all="handleSelectionChange"
           @select="handleSelectionChange"
           style="width: 100%;">
@@ -86,17 +85,19 @@
         </el-pagination>
       </el-col>
       <el-col :span="5">
-        <template v-for="(item) in selectOrgList">
-          <el-tag
-            v-if="item.deptName && item.deptName != ''"
-            :key="item.id"
-            closable
-            :disable-transitions="false"
-            @close="closeSelection(item)"
-            style="margin-left: 10px;margin-top: 10px">
-            {{ item.deptName }}
-          </el-tag>
-        </template>
+        <div style="height: 445px;overflow:auto">
+          <template v-for="(item) in selectOrgList">
+            <el-tag
+              v-if="item.deptName && item.deptName != ''"
+              :key="item.id"
+              closable
+              :disable-transitions="false"
+              @close="closeSelection(item)"
+              style="margin-left: 10px;margin-top: 10px">
+              {{ item.deptName }}
+            </el-tag>
+          </template>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -213,11 +214,13 @@ export default {
                     }
                 })
             }
+
+            this.changeSelection(this.multipleSelection)
         },
         changeSelection (rows) {
-            let finalRow = this.multipleSelection
+            let finalRow = rows
             if (this.selectionType == 'Radio' && rows.length > 1) {
-                finalRow = this.multipleSelection.filter((it, index) => {
+                finalRow = rows.filter((it, index) => {
                     if (index == rows.length - 1) {
                         this.$refs.orgListTable.toggleRowSelection(it, true)
                         return true

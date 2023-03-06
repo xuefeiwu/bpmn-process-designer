@@ -42,13 +42,11 @@
           highlight-current-row
           :data="userList"
           row-key="id"
-          @selection-change="changeSelection"
           @select-all="handleSelectionChange"
           @select="handleSelectionChange"
           style="width: 100%;">
           <el-table-column
             type="selection"
-            :reserve-selection="true"
             width="55">
           </el-table-column>
           <el-table-column
@@ -96,17 +94,19 @@
         </el-pagination>
       </el-col>
       <el-col :span="4">
-        <template v-for="(item) in selectUserList">
-          <el-tag
-            v-if="item.userName && item.userName != ''"
-            :key="item.id"
-            closable
-            :disable-transitions="false"
-            @close="closeSelection(item)"
-            style="margin-left: 10px;margin-top: 10px">
-            {{ item.userName }}
-          </el-tag>
-        </template>
+        <div style="height: 445px;overflow:auto">
+          <template v-for="(item) in selectUserList">
+            <el-tag
+              v-if="item.userName && item.userName != ''"
+              :key="item.id"
+              closable
+              :disable-transitions="false"
+              @close="closeSelection(item)"
+              style="margin-left: 10px;margin-top: 10px">
+              {{ item.userName }}
+            </el-tag>
+          </template>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -165,6 +165,7 @@ export default {
         this.multipleSelection = this.selectUserList ? this.selectUserList : []
         this.reloadTable()
         this.updateShowName && this.updateShowName()
+
     },
     methods: {
         resetSelectRow () {
@@ -221,11 +222,13 @@ export default {
                     }
                 })
             }
+
+            this.changeSelection(this.multipleSelection)
         },
         changeSelection (rows) {
-            let finalRow = this.multipleSelection
+            let finalRow = rows
             if (this.selectionType == 'Radio' && rows.length > 1) {
-                finalRow = this.multipleSelection.filter((it, index) => {
+                finalRow = rows.filter((it, index) => {
                     if (index == rows.length - 1) {
                         this.$refs.userListTable.toggleRowSelection(it, true)
                         return true

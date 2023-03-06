@@ -43,7 +43,6 @@
           highlight-current-row
           :height="445"
           :data="scriptList"
-          @selection-change="changeSelection"
           @select-all="handleSelectionChange"
           @select="handleSelectionChange"
           style="width: 100%;">
@@ -111,18 +110,19 @@
         </el-pagination>
       </el-col>
       <el-col :span="5">
-        <template v-for="(item) in selectScriptList">
-          <el-tag
-            v-if="item.scriptName && item.scriptName != ''"
-            :key="item.id"
-            closable
-            :disable-transitions="false"
-            @close="closeSelection(item)"
-            style="margin-left: 10px;margin-top: 10px">
-            {{ item.scriptName }}
-          </el-tag>
-        </template>
-
+        <div style="height: 445px;overflow:auto">
+          <template v-for="(item) in selectScriptList">
+            <el-tag
+              v-if="item.scriptName && item.scriptName != ''"
+              :key="item.id"
+              closable
+              :disable-transitions="false"
+              @close="closeSelection(item)"
+              style="margin-left: 10px;margin-top: 10px">
+              {{ item.scriptName }}
+            </el-tag>
+          </template>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -130,7 +130,7 @@
 
 <script>
 
-import {getScriptListPage, getUserListPage} from '@packages/api/process'
+import {getScriptListPage} from '@packages/api/process'
 
 export default {
     name: 'ScriptSelector',
@@ -207,6 +207,9 @@ export default {
         handleSelectionChange (selection, changedRow) {
             if (this.selectionType == 'Radio') {
                 this.multipleSelection = []
+                if (selection && selection.length > 0) {
+                    selection = selection.length == 1 ? selection : [selection[0]]
+                }
             }
             // 检查有没有新增的，有新增的就push
             if (selection && selection.length > 0) {
@@ -237,11 +240,13 @@ export default {
                     }
                 })
             }
+
+            this.changeSelection(this.multipleSelection)
         },
         changeSelection (rows) {
-            let finalRow = this.multipleSelection
+            let finalRow = rows
             if (this.selectionType == 'Radio' && rows.length > 1) {
-                finalRow = this.multipleSelection.filter((it, index) => {
+                finalRow = rows.filter((it, index) => {
                     if (index == rows.length - 1) {
                         this.$refs.scriptListTable.toggleRowSelection(it, true)
                         return true

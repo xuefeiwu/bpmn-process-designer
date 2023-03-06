@@ -41,7 +41,6 @@
           highlight-current-row
           :height="445"
           :data="roleList"
-          @selection-change="changeSelection"
           @select-all="handleSelectionChange"
           @select="handleSelectionChange"
           style="width: 100%;">
@@ -80,17 +79,19 @@
         </el-pagination>
       </el-col>
       <el-col :span="4">
-        <template v-for="(item) in selectRoleList">
-          <el-tag
-            v-if="item.name && item.name != ''"
-            :key="item.id"
-            closable
-            :disable-transitions="false"
-            @close="closeSelection(item)"
-            style="margin-left: 10px;margin-top: 10px">
-            {{ item.name }}
-          </el-tag>
-        </template>
+        <div style="height: 445px;overflow:auto">
+          <template v-for="(item) in selectRoleList">
+            <el-tag
+              v-if="item.name && item.name != ''"
+              :key="item.id"
+              closable
+              :disable-transitions="false"
+              @close="closeSelection(item)"
+              style="margin-left: 10px;margin-top: 10px">
+              {{ item.name }}
+            </el-tag>
+          </template>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -201,11 +202,13 @@ export default {
                     }
                 })
             }
+
+            this.changeSelection(this.multipleSelection)
         },
         changeSelection (rows) {
-            let finalRow = this.multipleSelection
+            let finalRow = rows
             if (this.selectionType == 'Radio' && rows.length > 1) {
-                finalRow = this.multipleSelection.filter((it, index) => {
+                finalRow = rows.filter((it, index) => {
                     if (index == rows.length - 1) {
                         this.$refs.roleListTable.toggleRowSelection(it, true)
                         return true

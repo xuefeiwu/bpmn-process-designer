@@ -26,7 +26,7 @@ service.interceptors.request.use(
         //     return Promise.reject(new Error('token不存在！'))
         // }
         // config.headers['x-access-token'] = store.getters.getToken
-        config.headers['x-access-token'] = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzgwOTEyMTQsImFjY291bnQiOiIzMDcwMDBfZGFpd2VpIn0.wXym2Hk20Qgx-0sVsEq3wk-rqGs66ZUU0XHZPzcj-JQ'
+        config.headers['x-access-token'] = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzgwOTc3MTIsImFjY291bnQiOiIzMDcwMDBfZGFpd2VpIn0.oMYdzMdyiRVbdjLEcq-oCb5cn-fF9RLMBikBi39bocs'
         config.headers['Access-Control-Allow-Origin'] = '*'
         config.headers['Access-Control-Allow-Methods'] = 'GET, POST'
 
