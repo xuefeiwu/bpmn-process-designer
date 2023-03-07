@@ -20,6 +20,8 @@ export default {
     'Element is not connected':'元素未连接',
     'Toggle linting':'流程校验',
     'Show Simulation Log':'显示流程模拟历史',
+    'Play/Pause Simulation':'启动/暂停模拟',
+    'Reset Simulation':'重新模拟',
     'Process started':'流程启动',
     'Process finished':'流程完成',
 }

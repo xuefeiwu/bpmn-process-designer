@@ -8,7 +8,7 @@
     >
       <lucide-icon
         name="Bot"
-        :size="16" />
+        :size="16"/>
       <el-popover
         ref="processMock"
         content="开启/关闭流程模拟"
@@ -25,7 +25,7 @@
     >
       <lucide-icon
         name="Map"
-        :size="16" />
+        :size="16"/>
       <el-popover
         ref="minimapToggle"
         content="展开/收起小地图"
@@ -41,7 +41,7 @@
       @click="lintToggle">
       <lucide-icon
         name="FileCheck"
-        :size="16" />
+        :size="16"/>
       <el-popover
         ref="lintToggle"
         content="开启/关闭流程校验"
@@ -93,7 +93,7 @@
             <el-input
               v-model="listenerFilter"
               placeholder="事件名称关键字"
-              clearable />
+              clearable/>
           </div>
           <div class="event-listeners-box">
             <p
@@ -145,11 +145,13 @@
           <p>N</p>
         </div>
       </el-dialog>
-    </el-button></el-button-group>
+    </el-button>
+  </el-button-group>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import {mapGetters} from 'vuex'
+import {customTranslate} from '@packages/additional-modules/Translate'
 
 export default {
     name: 'BpmnExternals',
@@ -183,6 +185,13 @@ export default {
     methods: {
         mockSimulationToggle () {
             this.getModeler?.get('toggleMode')?.toggleMode()
+            let btsEntryList = document.querySelectorAll('.bts-entry')
+
+            if (btsEntryList && btsEntryList.length > 0) {
+                btsEntryList[0].setAttribute('title', customTranslate('Play/Pause Simulation'))
+                btsEntryList[1].setAttribute('title', customTranslate('Reset Simulation'))
+                btsEntryList[2].setAttribute('title', customTranslate('Show Simulation Log'))
+            }
         },
         minimapToggle () {
             this.getModeler?.get('minimap')?.toggle()
