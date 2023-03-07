@@ -26,6 +26,8 @@ export default {
             eventBus: {},
             xml: '',
             modelId: '',
+            modelKey: '',
+            modelType: '',
             processAdminList: []
         }
     },
@@ -48,25 +50,36 @@ export default {
                 return
             }
 
-            let data = {}
             await loadProcessModel(this.modelId).then((res) => {
                 if (res.code == '0') {
                     this.xml = res.xml
-                    this.processAdminList = res.data.adminInfo && res.data.adminInfo != '' ? res.data.adminInfo : []
-                    data = res.data
+                    this.processAdminList = []
+                    if (res.data.adminInfo && res.data.adminInfo != '') {
+                        let adminInfoObject = JSON.parse(res.data.adminInfo)
+                        if (this.isFunction(adminInfoObject)) {
+                            this.processAdminList = [adminInfoObject]
+                        } else if (this.isArray(adminInfoObject)) {
+                            this.processAdminList = adminInfoObject
+                        }
+                    }
+                    this.modelKey = res.data.modelKey
+                    this.modelType = res.data.modelType
                 }
             }).finally(() => {
             })
-
-            return data
         },
-
+        isFunction (object) {
+            return Object.prototype.toString.call(object) === '[object Function]'
+        },
+        isArray (object) {
+            return Object.prototype.toString.call(object) === '[object Array]'
+        },
         reloadProcess: debounce(async function (setting, oldSetting) {
             const modelerModules = moduleAndExtensions(setting)
             let token = getParamter('messageId')
             this.$store.commit('setToken', token)
             this.modelId = getParamter('id')
-            let result = await this.getProcessModel()
+            await this.getProcessModel()
 
             await this.$nextTick()
             this.modeler = initModeler(this.$refs.designerRef, modelerModules, this)
@@ -75,10 +88,10 @@ export default {
             await createNewDiagram(this.modeler, this.xml, setting)
 
             this.$store.commit('setProcessModel', {
-                modelKey: result.modelKey,
-                modelType: result.modelType,
+                modelKey: this.modelKey,
+                modelType: this.modelType,
                 modeId: this.modelId,
-                processAdmin: JSON.stringify(this.processAdminList)
+                processAdmin: this.processAdminList
             })
         }, 100)
     },

@@ -1,4 +1,25 @@
 export default {
     Errors: '错误',
-    Warnings: '警告'
+    Warnings: '警告',
+    // bpmn-js-bpmnlint  校验提示
+    'Element is missing label/name': '元素缺少标签/名称',
+    'Incoming flows do not join': '传入流不连接',
+    'Process is missing task node': '流程没有任务节点',
+    'Sub process is missing task node': '子流程没有任务节点',
+    'Sequence flow is missing condition': '连线缺少条件',
+    'Process is missing end event': '流程缺少结束事件',
+    'Sub process is missing end event': '子流程缺少结束事件',
+    '{errors} Errors, {warnings} Warnings': '{errors} 错误, {warnings} 警告',
+    'conditionExpression': '条件表达式',
+    'Start event is missing event definition': '启动事件缺少事件定义',
+    'eventDefinitions': '事件定义',
+    'Flow splits implicitly': '流隐式拆分',
+    'Duplicate outgoing sequence flows': '重复的传出序列流',
+    'SequenceFlow is a duplicate': 'SequenceFlow是重复的',
+    'Process has multiple blank start events':'进程有多个启动事件',
+    'Element is not connected':'元素未连接',
+    'Toggle linting':'流程校验',
+    'Show Simulation Log':'显示流程模拟历史',
+    'Process started':'流程启动',
+    'Process finished':'流程完成',
 }

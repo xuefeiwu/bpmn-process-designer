@@ -31,19 +31,37 @@ export default {
             rootElement.targetNamespace = processElement.id
             rootElement.modelId = getProcessModel().modeId
 
-            const {xml} = await this.getModeler.saveXML({format: true, preamble: true})
+            const {xml} = await modeler.saveXML({format: true, preamble: true})
             let desc = getDocumentValue(processElement) || ''
             let name = getNameValue(processElement) || ''
+
+            // 获取流程图错误校验结果
+            const linting = modeler.get('linting')
+            if (!linting._active) {
+                linting.toggle()
+            }
+
+            // 手动触发一次校验
+            let errors = 0
+            let newIssues = await modeler.get('linting').lint()
+            for (let modelKey in newIssues) {
+                newIssues[modelKey].forEach(function (item) {
+                    if (item.category === 'error') {
+                        errors++
+                    }
+                })
+            }
+
             const body = {
                 xml: xml,
                 designer: 'A1',
                 modelKey: getProcessModel().modelKey,
                 modelType: getProcessModel().modelType,
-                modelError: 0,
+                modelError: errors,
                 name: name,
                 description: desc,
                 modelId: getProcessModel().modeId,
-                adminInfo: getProcessAdmin()
+                adminInfo: JSON.stringify(getProcessAdmin())
                 // thumbnail: '',
                 // admin_ids: '',
                 // admin_names: '',

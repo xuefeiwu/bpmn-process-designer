@@ -10,7 +10,7 @@ export const defaultSettings = {
     bg: 'grid-image',
     toolbar: true,
     useMinimap: true,
-    useLint: false,
+    useLint: true,
     useMock: true,
     contextmenu: true,
     customContextmenu: true,

@@ -153,13 +153,14 @@ export default {
 
             let processAdmin = getProcessAdmin()
             if (processAdmin) {
-                this.showProcessAdminName = JSON.parse(processAdmin).map((item) => item.userName).join(',')
+                this.showProcessAdminName = processAdmin.map((item) => item.userName).join(',')
             }
         },
+
         initProcessAdmin () {
             let processAdmin = getProcessAdmin()
             if (processAdmin) {
-                return JSON.parse(processAdmin)
+                return processAdmin
             }
         },
         updateSkipFirstNode (value) {
@@ -193,11 +194,11 @@ export default {
             this.modelVisible = false
             this.updateShowProcessAdminName()
             this.$store.commit('setProcessModel', {
-                processAdmin: JSON.stringify(this.$refs.userSelector.selectUserList)
+                processAdmin: this.$refs.userSelector.selectUserList
             })
         },
         updateShowProcessAdminName () {
-            this.showProcessAdminName = this.$refs.userSelector.selectUserList.map((item)=>item.userName).join(',')
+            this.showProcessAdminName = this.$refs.userSelector.selectUserList.map((item) => item.userName).join(',')
         }
     }
 }
