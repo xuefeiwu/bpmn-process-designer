@@ -154,7 +154,7 @@
         :show-name.sync="showNodeTransferAtaff"
         :init="initTransferAtaff"
         :update-show-name="updateShowTransferAtaffName"
-        selection-type="Radio"
+        :multiple-choice="false"
         ref="userSelector"
         :isProcessAdmin="false"/>
       <template #footer>

@@ -45,10 +45,17 @@
           :data="scriptList"
           @select-all="handleSelectionChange"
           @select="handleSelectionChange"
+          @current-change="handleOneChange"
           style="width: 100%;">
           <el-table-column
-            type="selection"
-            width="40">
+            :type="multipleChoice ? 'selection' : 'index'"
+            width="55">
+            <template scope="scope" v-if="multipleChoice == false">
+              <el-radio
+                :label="scope.row.id"
+                v-model="radio"
+                @change.native="handleSelectionChange(scope.row)">&nbsp;</el-radio>
+            </template>
           </el-table-column>
           <el-table-column
             type="index"
@@ -147,9 +154,9 @@ export default {
             type: Function,
             default: null
         },
-        selectionType: {
-            type: String,
-            default: 'Checkbox'
+        multipleChoice: {
+            type: Boolean,
+            default: true
         }
     },
     // 计算属性
@@ -165,6 +172,7 @@ export default {
     },
     data () {
         return {
+            radio: '',
             scriptList: [],
             selectScriptList: [],
             // 用来保存当前的选中
@@ -179,37 +187,51 @@ export default {
     mounted () {
         this.selectScriptList = this.init()
         this.multipleSelection = this.selectScriptList ? this.selectScriptList : []
+        this.radio = ''
         this.reloadTable()
         this.updateShowName && this.updateShowName()
     },
     methods: {
         resetSelectRow () {
             if (!this.selectScriptList || this.selectScriptList.length == 0) {
-                this.$refs.scriptListTable.clearSelection()
+                this.$refs.userListTable.clearSelection()
+                this.radio = ''
                 return
             }
 
             let selectionRow  = this.scriptList.filter((value)=> this.curSelectedRowIds.indexOf(value.id) != -1)
             if (selectionRow.length == 0) {
+                this.radio = ''
                 return
             }
-            // 过滤出选中行
-            this.$refs.scriptListTable.clearSelection()
-            selectionRow.forEach((row) => {
-                // 表格选中
-                this.$refs.scriptListTable.toggleRowSelection(row)
-            })
+            if (this.multipleChoice) {
+                // 过滤出选中行
+                this.$refs.scriptListTable.clearSelection()
+                selectionRow.forEach((row) => {
+                    // 表格选中
+                    this.$refs.scriptListTable.toggleRowSelection(row)
+                })
+            } else {
+                this.radio = selectionRow[0].id
+            }
+        },
+        handleOneChange (row) {
+            if (this.multipleChoice) {
+                return
+            }
+            this.radio = row.id
+            this.multipleSelection = [row]
+            this.changeSelection(this.multipleSelection)
         },
         /**
          * @param selection 选中的rows
          * @param changedRow 变化的row
          */
         handleSelectionChange (selection, changedRow) {
-            if (this.selectionType == 'Radio') {
-                this.multipleSelection = []
-                if (selection && selection.length > 0) {
-                    selection = selection.length == 1 ? selection : [selection[0]]
-                }
+            if (!this.multipleChoice) {
+                this.multipleSelection = [selection]
+                this.changeSelection(this.multipleSelection)
+                return
             }
             // 检查有没有新增的，有新增的就push
             if (selection && selection.length > 0) {
@@ -244,20 +266,7 @@ export default {
             this.changeSelection(this.multipleSelection)
         },
         changeSelection (rows) {
-            let finalRow = rows
-            if (this.selectionType == 'Radio' && rows.length > 1) {
-                finalRow = rows.filter((it, index) => {
-                    if (index == rows.length - 1) {
-                        this.$refs.scriptListTable.toggleRowSelection(it, true)
-                        return true
-                    } else {
-                        this.$refs.scriptListTable.toggleRowSelection(it, false)
-                        return false
-                    }
-                })
-            }
-
-            this.selectScriptList = finalRow.map((row) => {
+            this.selectScriptList = rows.map((row) => {
                 return {
                     id: row.id,
                     scriptName: row.scriptName,

@@ -43,10 +43,17 @@
           :data="orgList"
           @select-all="handleSelectionChange"
           @select="handleSelectionChange"
+          @current-change="handleOneChange"
           style="width: 100%;">
           <el-table-column
-            type="selection"
+            :type="multipleChoice ? 'selection' : 'index'"
             width="55">
+            <template scope="scope" v-if="multipleChoice == false">
+              <el-radio
+                :label="scope.row.id"
+                v-model="radio"
+                @change.native="handleSelectionChange(scope.row)">&nbsp;</el-radio>
+            </template>
           </el-table-column>
           <el-table-column
             type="index"
@@ -122,9 +129,9 @@ export default {
             type: Function,
             default: null
         },
-        selectionType: {
-            type: String,
-            default: 'Checkbox'
+        multipleChoice: {
+            type: Boolean,
+            default: true
         }
     },
     // 计算属性
@@ -140,6 +147,7 @@ export default {
     },
     data (){
         return{
+            radio: '',
             orgList: [],
             // 用来保存当前的选中
             multipleSelection: [],
@@ -154,6 +162,7 @@ export default {
     mounted () {
         this.selectOrgList = this.init()
         this.multipleSelection = this.selectOrgList ? this.selectOrgList : []
+        this.radio = ''
         this.reloadTable()
         this.updateShowName && this.updateShowName()
     },
@@ -161,29 +170,44 @@ export default {
         resetSelectRow () {
             if (!this.selectOrgList || this.selectOrgList.length == 0) {
                 this.$refs.orgListTable.clearSelection()
+                this.radio = ''
                 return
             }
 
             let selectionRow  = this.orgList.filter((value)=> this.curSelectedRowIds.indexOf(value.id) != -1)
-
             if (selectionRow.length == 0) {
+                this.radio = ''
                 return
             }
 
-            // 过滤出选中行
-            this.$refs.orgListTable.clearSelection()
-            selectionRow.forEach((row)=>{
-                // 表格选中
-                this.$refs.orgListTable.toggleRowSelection(row)
-            })
+            if (this.multipleChoice) {
+                // 过滤出选中行
+                this.$refs.orgListTable.clearSelection()
+                selectionRow.forEach((row) => {
+                    // 表格选中
+                    this.$refs.orgListTable.toggleRowSelection(row)
+                })
+            } else {
+                this.radio = selectionRow[0].id
+            }
+        },
+        handleOneChange (row) {
+            if (this.multipleChoice) {
+                return
+            }
+            this.radio = row.id
+            this.multipleSelection = [row]
+            this.changeSelection(this.multipleSelection)
         },
         /**
          * @param selection 选中的rows
          * @param changedRow 变化的row
          */
         handleSelectionChange (selection, changedRow) {
-            if (this.selectionType == 'Radio') {
-                this.multipleSelection = []
+            if (!this.multipleChoice) {
+                this.multipleSelection = [selection]
+                this.changeSelection(this.multipleSelection)
+                return
             }
             // 检查有没有新增的，有新增的就push
             if (selection && selection.length > 0) {
@@ -218,20 +242,7 @@ export default {
             this.changeSelection(this.multipleSelection)
         },
         changeSelection (rows) {
-            let finalRow = rows
-            if (this.selectionType == 'Radio' && rows.length > 1) {
-                finalRow = rows.filter((it, index) => {
-                    if (index == rows.length - 1) {
-                        this.$refs.orgListTable.toggleRowSelection(it, true)
-                        return true
-                    } else {
-                        this.$refs.orgListTable.toggleRowSelection(it, false)
-                        return false
-                    }
-                })
-            }
-
-            this.selectOrgList = finalRow.map((item)=>{
+            this.selectOrgList = rows.map((item)=>{
                 return {
                     id: item.id,
                     deptName: item.deptName

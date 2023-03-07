@@ -197,7 +197,7 @@
       <script-selector
         v-if="showSelectDialog && userRule.pluginType == 'userScript'"
         :init="initSelect"
-        selection-type="Radio"
+        :multiple-choice="false"
         ref="scriptSelector"
       />
       <template #footer>
