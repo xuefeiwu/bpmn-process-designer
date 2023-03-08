@@ -22,6 +22,7 @@ import rule_15 from 'bpmnlint/rules/sub-process-blank-start-event'
 import rule_16 from 'bpmnlint/rules/superfluous-gateway'
 
 import taskRequired from '@packages/additional-modules/Lint/customLintRules/taskRequired'
+import signNodeRequired from '@packages/additional-modules/Lint/customLintRules/signNodeRequired'
 
 const cache = {}
 cache['bpmnlint/conditional-flows'] = rule_0
@@ -42,6 +43,7 @@ cache['bpmnlint/start-event-required'] = rule_14
 cache['bpmnlint/sub-process-blank-start-event'] = rule_15
 cache['bpmnlint/superfluous-gateway'] = rule_16
 cache['bpmnlint/task-required'] = taskRequired
+cache['bpmnlint/sign-node-required'] = signNodeRequired
 
 /**
  * A resolver that caches rules and configuration as part of the bundle,

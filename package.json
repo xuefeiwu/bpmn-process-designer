@@ -6,7 +6,8 @@
     "dev": "vue-cli-service serve --mode dev --open",
     "local": "vue-cli-service serve --mode local --open",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@bpmn-io/add-exporter": "^0.2.0",
@@ -28,6 +29,8 @@
     "lodash.debounce": "^4.0.8",
     "lucide-vue": "^0.89.0",
     "min-dash": "^3.5.2",
+    "patch-package": "^6.5.1",
+    "postinstall-postinstall": "^2.1.0",
     "vue": "^2.6.11",
     "vue-codemirror": "^4.0.6",
     "vue-router": "^3.4.9",

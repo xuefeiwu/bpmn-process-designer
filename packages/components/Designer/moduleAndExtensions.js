@@ -97,7 +97,11 @@ export default function (settings) {
             active: true,
             bpmnlint: {
                 config: {
-                    rules: { ...rules, 'task-required': 'error' }
+                    rules: {
+                        ...rules,
+                        'task-required': 'error',
+                        'sign-node-required':'error'
+                    }
                 },
                 resolver
             }

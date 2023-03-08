@@ -54,7 +54,7 @@ export function getExtA1ChildElement (extA1RootElement, filter) {
  */
 export function removeExtA1ChildElement (elementType, removeElement) {
     let extA1RootElement = getExtA1RootElement(elementType)
-    if (!extA1RootElement.child) {
+    if (!extA1RootElement || !extA1RootElement.child) {
         return
     }
 

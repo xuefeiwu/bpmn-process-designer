@@ -64,6 +64,8 @@ export default {
                     }
                     this.modelKey = res.data.modelKey
                     this.modelType = res.data.modelType
+                } else {
+                    this.$message.error(res.message)
                 }
             }).finally(() => {
             })

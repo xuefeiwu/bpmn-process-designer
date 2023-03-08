@@ -1,0 +1,14 @@
+diff --git a/node_modules/bpmnlint/lib/traverse.js b/node_modules/bpmnlint/lib/traverse.js
+index b6b7d60..ac322e9 100644
+--- a/node_modules/bpmnlint/lib/traverse.js
++++ b/node_modules/bpmnlint/lib/traverse.js
+@@ -6,6 +6,9 @@
+  * @param {{ enter?: Function; leave?: Function }} options
+  */
+ module.exports = function traverse(element, options) {
++  if (!element) {
++    return
++  }
+ 
+   const enter = options.enter || null;
+   const leave = options.leave || null;

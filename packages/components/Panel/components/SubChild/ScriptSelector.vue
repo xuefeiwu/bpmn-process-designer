@@ -50,11 +50,11 @@
           <el-table-column
             :type="multipleChoice ? 'selection' : 'index'"
             width="55">
-            <template scope="scope" v-if="multipleChoice == false">
+            <template slot-scope="{row}" v-if="multipleChoice == false">
               <el-radio
-                :label="scope.row.id"
+                :label="row.id"
                 v-model="radio"
-                @change.native="handleSelectionChange(scope.row)">&nbsp;</el-radio>
+                @change.native="handleSelectionChange(row)">&nbsp;</el-radio>
             </template>
           </el-table-column>
           <el-table-column
