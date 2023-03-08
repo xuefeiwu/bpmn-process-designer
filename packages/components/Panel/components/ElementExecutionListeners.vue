@@ -211,7 +211,7 @@ export default {
     methods: {
         reloadExtensionListeners () {
             this.modelVisible = false
-            this.updateListenerType('class')
+            // this.updateListenerType('class')
             this.newListener = { event: getDefaultEvent(getActive()), type: 'class' }
             this.listenerEventTypeOptions = getExecutionListenerTypes(getActive())
             this._listenersRaw = getExecutionListeners(getActive())
@@ -230,9 +230,13 @@ export default {
         updateListenerType (value) {
             this.formItemVisible.listenerType = value
             this.newListener = {
-                ...this.newListener,
+                event: this.newListener.event,
+                $type: this.newListener.$type,
                 type: value,
-                ...(value === 'script' ? { script: this.newListener.script || {} } : {})
+                ...(value === 'class' ? {class: this.newListener.class } : {}),
+                ...(value === 'expression' ? {expression: this.newListener.expression} : {}),
+                ...(value === 'delegateExpression' ? {delegateExpression: this.newListener.delegateExpression} : {}),
+                ...(value === 'script' ? { script: this.newListener.script } : {})
             }
         },
         updateScriptType (value) {
