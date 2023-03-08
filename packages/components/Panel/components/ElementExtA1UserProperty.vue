@@ -263,10 +263,6 @@ export default {
                 if (this.userProperty.backNode) {
                     this.selectUserTaskList = this.userProperty.backNode.split(',')
                 }
-
-                if (this.userProperty.backUserMode == 'normal' && this.userProperty.backNode == '') {
-                    this.$message.warning('当前驳回指定节点，未选择驳回的节点！')
-                }
             }
 
             this.initTransferAtaff()
@@ -327,6 +323,7 @@ export default {
         changeExpireSetting (event, type) {
             let value = event.target.value
             if (!value || value == '') {
+                this.saveExtA1UserProperty()
                 return
             }
 

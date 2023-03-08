@@ -28,4 +28,7 @@ export default {
     'Scale pass system missing scale setting' : '比例通过制缺少比例设置',
     'Countersignature node lacks node staffing' : '会签节点缺少节点人员配置',
     'Auto transfer personnel cannot be empty' : '自动转办人员不能为空',
+    'The node rejection strategy is the specified node, and the rejection node cannot be empty' : '节点驳回策略为指定节点，驳回节点不能为空',
+    'Expiration processing policy cannot be empty' : '过期处理策略不能为空',
+    'Expiration time cannot be empty' : '过期时间不能为空',
 }

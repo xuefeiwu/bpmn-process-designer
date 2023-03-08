@@ -1,6 +1,5 @@
 const {is, isAny} = require('bpmnlint-utils')
 const {getElementById} = require("@packages/bo-utils/extA1ElementUtils");
-const {getExtensionProperties} = require("@packages/bo-utils/extensionPropertiesUtil");
 const {getExtA1UserProperties} = require("@packages/bo-utils/extA1Util");
 
 module.exports = function () {
@@ -16,15 +15,14 @@ module.exports = function () {
         }
 
         let userProperty = userPropertyList[0]
-        if (userProperty.openExpireFlag == '0' || userProperty.expireHandlerModel != 'taskExpireAutoTransfer') {
+
+        if (userProperty.openExpireFlag == '0') {
             return;
         }
 
-        let extensionsRaw = getExtensionProperties(ele).filter((item) => item.name == 'nodeTransferAtaff')
-        if (!extensionsRaw || extensionsRaw.length == 0 ) {
-            reporter.report(node.id, 'Auto transfer personnel cannot be empty')
+        if (userProperty.nodePropertiesDay == '' && userProperty.nodePropertiesHour == '' && userProperty.nodePropertiesMinute == '') {
+            reporter.report(node.id, 'Expiration time cannot be empty')
         }
-
     }
 
     return {check}

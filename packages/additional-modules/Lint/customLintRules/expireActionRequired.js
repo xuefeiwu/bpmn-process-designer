@@ -16,14 +16,12 @@ module.exports = function () {
         }
 
         let userProperty = userPropertyList[0]
-        if (userProperty.openExpireFlag == '0' || userProperty.expireHandlerModel != 'taskExpireAutoTransfer') {
+
+        if (userProperty.openExpireFlag == '0' || userProperty.expireHandlerModel != '') {
             return;
         }
 
-        let extensionsRaw = getExtensionProperties(ele).filter((item) => item.name == 'nodeTransferAtaff')
-        if (!extensionsRaw || extensionsRaw.length == 0 ) {
-            reporter.report(node.id, 'Auto transfer personnel cannot be empty')
-        }
+        reporter.report(node.id, 'Expiration processing policy cannot be empty')
 
     }
 

@@ -26,6 +26,9 @@ import signTypeRequired from '@packages/additional-modules/Lint/customLintRules/
 import signScaleRequired from '@packages/additional-modules/Lint/customLintRules/signScaleRequired'
 import signUserRuleRequired from '@packages/additional-modules/Lint/customLintRules/signUserRuleRequired'
 import transferRequired from '@packages/additional-modules/Lint/customLintRules/transferRequired'
+import backNodeRequired from '@packages/additional-modules/Lint/customLintRules/backNodeRequired'
+import expireActionRequired from '@packages/additional-modules/Lint/customLintRules/expireActionRequired'
+import expireTimeRequired from '@packages/additional-modules/Lint/customLintRules/expireTimeRequired'
 
 const cache = {}
 cache['bpmnlint/conditional-flows'] = rule_0
@@ -50,6 +53,9 @@ cache['bpmnlint/sign-type-required'] = signTypeRequired
 cache['bpmnlint/sign-scale-required'] = signScaleRequired
 cache['bpmnlint/sign-user-rule-required'] = signUserRuleRequired
 cache['bpmnlint/transfer-required'] = transferRequired
+cache['bpmnlint/back-node-required'] = backNodeRequired
+cache['bpmnlint/expire-action-required'] = expireActionRequired
+cache['bpmnlint/expire-time-required'] = expireTimeRequired
 
 /**
  * A resolver that caches rules and configuration as part of the bundle,
@@ -95,6 +101,9 @@ export const rules = {
     'sign-scale-required':'error',
     'sign-user-rule-required':'error',
     'transfer-required':'error',
+    'back-node-required':'error',
+    'expire-action-required':'error',
+    'expire-time-required':'error',
 }
 
 export const config = {
