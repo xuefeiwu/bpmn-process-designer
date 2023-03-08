@@ -1,5 +1,6 @@
 const {is, isAny} = require('bpmnlint-utils')
 const {getElementById} = require("@packages/bo-utils/extA1ElementUtils");
+const {getExtA1SignNodes} = require("@packages/bo-utils/extA1Util");
 
 module.exports = function () {
     function check(node, reporter) {
@@ -11,14 +12,10 @@ module.exports = function () {
         if (!loopCharacteristics) {
             return
         }
-
-        let sequential = loopCharacteristics.isSequential && loopCharacteristics.isSequential == true ? 'true' : 'false'
-        console.log(sequential)
-        // if (!hasStartEvent(node)) {
-        //     const type = is(node, 'bpmn:SubProcess') ? 'Sub process' : 'Process'
-        //
-        //     reporter.report(node.id, type + ' is missing task node')
-        // }
+        let signNodeList = getExtA1SignNodes((index, item) => node.id == item.nodeId)
+        if (!signNodeList || signNodeList.length == 0) {
+            reporter.report(node.id, 'The countersign task is missing the countersign type')
+        }
     }
 
     return {check}

@@ -22,7 +22,9 @@ import rule_15 from 'bpmnlint/rules/sub-process-blank-start-event'
 import rule_16 from 'bpmnlint/rules/superfluous-gateway'
 
 import taskRequired from '@packages/additional-modules/Lint/customLintRules/taskRequired'
-import signNodeRequired from '@packages/additional-modules/Lint/customLintRules/signNodeRequired'
+import signTypeRequired from '@packages/additional-modules/Lint/customLintRules/signTypeRequired'
+import signScaleRequired from '@packages/additional-modules/Lint/customLintRules/signScaleRequired'
+import signUserRuleRequired from '@packages/additional-modules/Lint/customLintRules/signUserRuleRequired'
 
 const cache = {}
 cache['bpmnlint/conditional-flows'] = rule_0
@@ -43,7 +45,9 @@ cache['bpmnlint/start-event-required'] = rule_14
 cache['bpmnlint/sub-process-blank-start-event'] = rule_15
 cache['bpmnlint/superfluous-gateway'] = rule_16
 cache['bpmnlint/task-required'] = taskRequired
-cache['bpmnlint/sign-node-required'] = signNodeRequired
+cache['bpmnlint/sign-type-required'] = signTypeRequired
+cache['bpmnlint/sign-scale-required'] = signScaleRequired
+cache['bpmnlint/sign-user-rule-required'] = signUserRuleRequired
 
 /**
  * A resolver that caches rules and configuration as part of the bundle,
@@ -84,7 +88,10 @@ export const rules = {
     'single-event-definition': 'error',
     'start-event-required': 'error',
     'sub-process-blank-start-event': 'error',
-    'superfluous-gateway': 'warning'
+    'superfluous-gateway': 'warning',
+    'sign-type-required':'error',
+    'sign-scale-required':'error',
+    'sign-user-rule-required':'error',
 }
 
 export const config = {

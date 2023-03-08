@@ -24,4 +24,7 @@ export default {
     'Reset Simulation':'重新模拟',
     'Process started':'流程启动',
     'Process finished':'流程完成',
+    'The countersign task is missing the countersign type' : '会签节点缺少会签类型',
+    'Scale pass system missing scale setting' : '比例通过制缺少比例设置',
+    'Countersignature node lacks node staffing' : '会签节点缺少节点人员配置',
 }

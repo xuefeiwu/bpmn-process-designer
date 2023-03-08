@@ -25,6 +25,7 @@
       <edit-item
         label="类型"
         textAlign="center"
+        v-if="sequential && sequential !=''"
         :labelWidth="90">
         <el-select
           v-model="signNode.signType"
@@ -138,8 +139,8 @@ export default {
                 this.showSignScale = false
             }
 
-            console.log(this.signNode)
             saveExtA1SignNodes(getActive(), this.signNode)
+            updateMultiInstanceLoopCharacteristics(getActive(), this.sequential)
             this.reloadSignNodes()
         },
         changeSignScale (event) {
@@ -161,6 +162,7 @@ export default {
             }
 
             saveExtA1SignNodes(getActive(), this.signNode)
+            updateMultiInstanceLoopCharacteristics(getActive(), this.sequential)
             this.reloadSignNodes()
         }
     }

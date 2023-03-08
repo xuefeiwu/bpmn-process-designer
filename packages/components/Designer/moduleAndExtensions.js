@@ -100,7 +100,6 @@ export default function (settings) {
                     rules: {
                         ...rules,
                         'task-required': 'error',
-                        'sign-node-required':'error'
                     }
                 },
                 resolver
