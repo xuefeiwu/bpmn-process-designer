@@ -25,6 +25,7 @@ import taskRequired from '@packages/additional-modules/Lint/customLintRules/task
 import signTypeRequired from '@packages/additional-modules/Lint/customLintRules/signTypeRequired'
 import signScaleRequired from '@packages/additional-modules/Lint/customLintRules/signScaleRequired'
 import signUserRuleRequired from '@packages/additional-modules/Lint/customLintRules/signUserRuleRequired'
+import transferRequired from '@packages/additional-modules/Lint/customLintRules/transferRequired'
 
 const cache = {}
 cache['bpmnlint/conditional-flows'] = rule_0
@@ -48,6 +49,7 @@ cache['bpmnlint/task-required'] = taskRequired
 cache['bpmnlint/sign-type-required'] = signTypeRequired
 cache['bpmnlint/sign-scale-required'] = signScaleRequired
 cache['bpmnlint/sign-user-rule-required'] = signUserRuleRequired
+cache['bpmnlint/transfer-required'] = transferRequired
 
 /**
  * A resolver that caches rules and configuration as part of the bundle,
@@ -92,6 +94,7 @@ export const rules = {
     'sign-type-required':'error',
     'sign-scale-required':'error',
     'sign-user-rule-required':'error',
+    'transfer-required':'error',
 }
 
 export const config = {

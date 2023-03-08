@@ -140,7 +140,6 @@ export default {
             }
 
             saveExtA1SignNodes(getActive(), this.signNode)
-            updateMultiInstanceLoopCharacteristics(getActive(), this.sequential)
             this.reloadSignNodes()
         },
         changeSignScale (event) {
@@ -162,7 +161,6 @@ export default {
             }
 
             saveExtA1SignNodes(getActive(), this.signNode)
-            updateMultiInstanceLoopCharacteristics(getActive(), this.sequential)
             this.reloadSignNodes()
         }
     }
