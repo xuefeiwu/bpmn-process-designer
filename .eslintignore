@@ -1,6 +1,7 @@
 /public
 /node_modules
 /dist
-*.js
+packages/components/common/help/groovy-hint.js
+packages/components/common/mod/ProcessInnerProps.js
 /src/utils/encryption/aesEncrypt.js
 /src/utils/LodopFuncs.js

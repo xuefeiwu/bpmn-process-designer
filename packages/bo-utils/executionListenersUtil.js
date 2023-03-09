@@ -105,9 +105,9 @@ function updateListenerProperty (element, listener, props) {
     listenerClass && updateProperty('class', listenerClass)
     expression && updateProperty('expression', expression)
     delegateExpression && updateProperty('delegateExpression', delegateExpression)
-    console.log(props)
 
     if (script) {
+        updateProperty('type', 'script')
         const bpmnScript = createScript(script)
         modeling.updateModdleProperties(element, listener, { script: bpmnScript })
     }
