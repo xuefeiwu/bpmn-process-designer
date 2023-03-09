@@ -160,7 +160,12 @@ export default {
         initProcessAdmin () {
             let processAdmin = getProcessAdmin()
             if (processAdmin) {
-                return processAdmin
+                return processAdmin.map((item) => {
+                    return {
+                        id: item.userId,
+                        userName: item.userName
+                    }
+                })
             }
         },
         updateSkipFirstNode (value) {
@@ -194,7 +199,12 @@ export default {
             this.modelVisible = false
             this.updateShowProcessAdminName()
             this.$store.commit('setProcessModel', {
-                processAdmin: this.$refs.userSelector.selectUserList
+                processAdmin: this.$refs.userSelector.selectUserList.map((item)=>{
+                    return {
+                        userId: item.id,
+                        userName: item.userName
+                    }
+                })
             })
         },
         updateShowProcessAdminName () {

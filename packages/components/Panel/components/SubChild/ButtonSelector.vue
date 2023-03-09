@@ -14,13 +14,21 @@
           @current-change="handleOneChange"
           style="width: 100%">
           <el-table-column
-            :type="multipleChoice ? 'selection' : 'index'"
+            v-if="multipleChoice == true"
+            type="selection"
+            align="center"
             width="55">
-            <template slot-scope="{row}" v-if="multipleChoice == false">
+          </el-table-column>
+          <el-table-column
+            v-if="multipleChoice == false"
+            type="index"
+            align="center"
+            width="55">
+            <template slot-scope="{row}">
               <el-radio
                 :label="row.alias"
                 v-model="radio"
-                @change.native="handleSelectionChange(row)">&nbsp;</el-radio>
+                @change.native="handleSelectionChange(row)">{{ '' }}</el-radio>
             </template>
           </el-table-column>
           <el-table-column

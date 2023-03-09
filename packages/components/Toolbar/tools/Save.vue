@@ -61,15 +61,22 @@ export default {
                 name: name,
                 description: desc,
                 modelId: getProcessModel().modeId,
-                adminInfo: JSON.stringify(getProcessAdmin())
+                adminInfo: getProcessAdmin().length > 0 ? JSON.stringify(getProcessAdmin()) : '',
+                formJson: ''
                 // thumbnail: '',
                 // admin_ids: '',
                 // admin_names: '',
                 // nodeTransferAtaffSetting: '',
-                // formJson: ''
             }
 
-            saveProcessModel(body)
+            saveProcessModel(body).then((res)=>{
+                if (res.code == '0') {
+                    this.$message.success(res.message)
+                    this.$bus.$emit('reload', res.data)
+                } else {
+                    this.$message.error('保存失败')
+                }
+            })
         }
     }
 }

@@ -16,6 +16,7 @@ import {loadProcessModel} from '../../api/process'
 import {getParamter} from '@utils/request'
 import {catchError} from '@utils/printCatch'
 
+
 export default {
     name: 'BpmnDesigner',
     data () {
@@ -39,6 +40,33 @@ export default {
             if (bg === 'image') return 'designer-with-image'
             return ''
         }
+    },
+    mounted () {
+        let that = this
+        this.$bus.$on('reload', debounce(async function (model) {
+            // 保存成功之后，重新reload
+            that.xml = model.modelEditorXmlStr
+            that.processAdminList = []
+            if (model.adminInfo && model.adminInfo != '') {
+                let adminInfoObject = JSON.parse(model.adminInfo)
+                if (that.isFunction(adminInfoObject)) {
+                    that.processAdminList = [adminInfoObject]
+                } else if (that.isArray(adminInfoObject)) {
+                    that.processAdminList = adminInfoObject
+                }
+            }
+
+            await createNewDiagram(that.modeler, that.xml, that.getEditor)
+
+            this.$store.commit('setProcessModel', {
+                modelKey: model.modelKey,
+                modelType: model.modelType,
+                modeId: model.id,
+                processAdmin: that.processAdminList
+            })
+
+            console.log('xml===>reload success')
+        }, 500))
     },
     methods: {
         /**
