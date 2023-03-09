@@ -145,7 +145,7 @@ export default {
                 propSkipRules
             } = xmlProperties
 
-            this.properties.parameterUserAssign = parameterUserAssign
+            this.properties.parameterUserAssign = parameterUserAssign || 'prop_skipFirstNode'
             this.properties.subjectRule = subjectRule
             if (propSkipRules && propSkipRules != '') {
                 this.propSkipRulesValue = propSkipRules.split(',')
