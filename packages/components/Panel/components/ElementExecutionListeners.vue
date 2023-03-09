@@ -2,11 +2,11 @@
   <el-collapse-item name="element-execution-listeners">
     <template #title>
       <collapse-title title="执行监听">
-        <lucide-icon name="Radio" />
+        <lucide-icon name="Radio"/>
       </collapse-title>
       <number-tag
         :value="listeners.length"
-        margin-left="12px" />
+        margin-left="12px"/>
     </template>
     <div class="element-extension-listeners">
       <el-table
@@ -17,25 +17,27 @@
         <el-table-column
           label="序号"
           type="index"
-          width="50" />
+          width="50"/>
         <el-table-column
           label="事件类型"
           prop="event"
-          show-overflow-tooltip />
+          show-overflow-tooltip/>
         <el-table-column
           label="监听器类型"
           prop="type"
-          show-overflow-tooltip />
+          show-overflow-tooltip/>
         <el-table-column
           label="操作"
           width="90">
           <template slot-scope="{ row, $index }">
             <el-button
               type="text"
-              @click="openListenerModel($index, row)">编辑</el-button>
+              @click="openListenerModel($index, row)">编辑
+            </el-button>
             <el-button
               type="text"
-              @click="removeListener($index)">移除</el-button>
+              @click="removeListener($index)">移除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -83,7 +85,7 @@
               v-for="{ label, value } in listenerTypeOptions"
               :label="label"
               :value="value"
-              :key="value" />
+              :key="value"/>
           </el-select>
         </el-form-item>
         <el-form-item
@@ -92,7 +94,7 @@
           label="Java类( Java Class )">
           <el-input
             v-model="newListener.class"
-            @keydown.enter.prevent />
+            @keydown.enter.prevent/>
         </el-form-item>
         <el-form-item
           v-if="formItemVisible.listenerType === 'expression'"
@@ -101,7 +103,7 @@
         >
           <el-input
             v-model="newListener.expression"
-            @keydown.enter.prevent />
+            @keydown.enter.prevent/>
         </el-form-item>
         <el-form-item
           v-if="formItemVisible.listenerType === 'delegateExpression'"
@@ -110,16 +112,21 @@
         >
           <el-input
             v-model="newListener.delegateExpression"
-            @keydown.enter.prevent />
+            @keydown.enter.prevent/>
         </el-form-item>
         <template v-if="formItemVisible.listenerType === 'script' && newListener.script">
           <el-form-item
             key="scriptFormat"
             path="script.scriptFormat"
-            label="脚本格式( Script Format )">
-            <el-input
-              v-model="newListener.script.scriptFormat"
-              @keydown.enter.prevent />
+            label="脚本语言( Script Format )">
+            <el-select
+              v-model="newListener.script.scriptFormat">
+              <el-option
+                v-for="{ label, value } in scriptFormatOptions"
+                :label="label"
+                :value="value"
+                :key="value"/>
+            </el-select>
           </el-form-item>
           <el-form-item
             key="scriptType"
@@ -132,7 +139,7 @@
                 v-for="{ label, value } in scriptTypeOptions"
                 :label="label"
                 :value="value"
-                :key="value" />
+                :key="value"/>
             </el-select>
           </el-form-item>
           <el-form-item
@@ -141,10 +148,13 @@
             path="script.value"
             label="脚本内容( Script Content )"
           >
-            <el-input
-              v-model="newListener.script.value"
-              type="textarea"
-              @keydown.enter.prevent />
+            <code-editor-model
+              title="脚本内容( Script Content )"
+              :code-language="newListener.script.scriptFormat"
+              :code-string="scriptValue"
+              :readOnly="false"
+              @handleSureClick="saveEventScript($event)"
+            />
           </el-form-item>
           <el-form-item
             v-if="formItemVisible.scriptType === 'external'"
@@ -154,7 +164,7 @@
           >
             <el-input
               v-model="newListener.script.resource"
-              @keydown.enter.prevent />
+              @keydown.enter.prevent/>
           </el-form-item>
         </template>
       </el-form>
@@ -162,14 +172,15 @@
         <el-button @click="modelVisible = false">取 消</el-button>
         <el-button
           type="primary"
-          @click="saveExecutionListener">确 认</el-button>
+          @click="saveExecutionListener">确 认
+        </el-button>
       </template>
     </el-dialog>
   </el-collapse-item>
 </template>
 
 <script>
-import { listenerTypeOptions, scriptTypeOptions } from '@packages/preset-configuration/enumsOption'
+import {listenerTypeOptions, scriptFormatOptions, scriptTypeOptions} from '@packages/preset-configuration/enumsOption'
 import {
     addExecutionListener,
     getDefaultEvent,
@@ -179,28 +190,33 @@ import {
     removeExecutionListener,
     updateExecutionListener
 } from '@packages/bo-utils/executionListenersUtil'
-import { getScriptType } from '@packages/bo-utils/scriptUtil'
+import {getScriptType} from '@packages/bo-utils/scriptUtil'
 import EventEmitter from '@utils/EventEmitter'
-import { getActive } from '@packages/bpmn-utils/BpmnDesignerUtils'
+import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
+import CodeEditorModel from '@packages/components/common/CodeEditorModel'
+import {saveExtA1CommonScripts} from '@packages/bo-utils/extA1Util'
 
 export default {
     name: 'ElementExecutionListeners',
+    components: {CodeEditorModel},
     data () {
         return {
             modelVisible: false,
             listeners: [],
             newListener: {},
             formRules: {
-                event: { required: true, trigger: ['blur', 'change'], message: '事件类型不能为空' },
-                type: { required: true, trigger: ['blur', 'change'], message: '监听器类型不能为空' }
+                event: {required: true, trigger: ['blur', 'change'], message: '事件类型不能为空'},
+                type: {required: true, trigger: ['blur', 'change'], message: '监听器类型不能为空'}
             },
             formItemVisible: {
                 listenerType: 'class',
                 scriptType: 'none'
             },
             listenerEventTypeOptions: [],
+            scriptValue: '',
             listenerTypeOptions: listenerTypeOptions,
-            scriptTypeOptions: scriptTypeOptions
+            scriptTypeOptions: scriptTypeOptions,
+            scriptFormatOptions: scriptFormatOptions
         }
     },
 
@@ -212,14 +228,14 @@ export default {
         reloadExtensionListeners () {
             this.modelVisible = false
             // this.updateListenerType('class')
-            this.newListener = { event: getDefaultEvent(getActive()), type: 'class' }
+            this.newListener = {event: getDefaultEvent(getActive()), type: 'class'}
             this.listenerEventTypeOptions = getExecutionListenerTypes(getActive())
             this._listenersRaw = getExecutionListeners(getActive())
             const list = this._listenersRaw.map((item) => ({
                 ...item,
                 ...(item.script
                     ? {
-                        script: { ...item.script, scriptType: getScriptType(item.script) }
+                        script: {...item.script, scriptType: getScriptType(item.script)}
                     }
                     : {}),
                 type: getExecutionListenerType(item)
@@ -233,10 +249,14 @@ export default {
                 event: this.newListener.event,
                 $type: this.newListener.$type,
                 type: value,
-                ...(value === 'class' ? {class: this.newListener.class } : {}),
+                ...(value === 'class' ? {class: this.newListener.class} : {}),
                 ...(value === 'expression' ? {expression: this.newListener.expression} : {}),
                 ...(value === 'delegateExpression' ? {delegateExpression: this.newListener.delegateExpression} : {}),
-                ...(value === 'script' ? { script: this.newListener.script } : {})
+                ...(value === 'script' ? {script: this.newListener.script || {
+                    scriptFormat: 'javaScript'
+                }} : {
+                    scriptFormat: 'javaScript'
+                })
             }
         },
         updateScriptType (value) {
@@ -250,6 +270,10 @@ export default {
             const listener = this._listenersRaw[index]
             removeExecutionListener(getActive(), listener)
             this.reloadExtensionListeners()
+        },
+        saveEventScript (code) {
+            this.scriptValue = code
+            this.newListener.script.value = code
         },
         async saveExecutionListener (index) {
             await this.$refs.formRef.validate()

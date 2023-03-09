@@ -7,8 +7,14 @@ export const scriptTypeOptions = [
 export const listenerTypeOptions = [
     { label: 'Java Class', value: 'class' },
     { label: 'Expression', value: 'expression' },
-    { label: 'DelegateExpression', value: 'delegateExpression' }
-    // { label: 'Script', value: 'script' }
+    { label: 'DelegateExpression', value: 'delegateExpression' },
+    { label: 'Script', value: 'script' }
+]
+
+export const scriptFormatOptions = [
+    { label: 'javaScript', value: 'javaScript' },
+    { label: 'groovy', value: 'groovy' },
+    { label: 'juel', value: 'juel' }
 ]
 
 export const listenerEventTypeOptions = [
