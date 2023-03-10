@@ -424,6 +424,11 @@
           "type": "String"
         },
         {
+          "name": "skipExpression",
+          "isAttr": true,
+          "type": "String"
+        },
+        {
           "name": "resultVariable",
           "isAttr": true,
           "type": "String"

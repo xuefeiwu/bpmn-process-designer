@@ -1,5 +1,5 @@
 import {createFactoyElement} from '@packages/bpmn-utils/BpmnFactoryUtils'
-import {getModeler} from '@packages/bpmn-utils/BpmnDesignerUtils'
+import {getModeler, getProcessEngine} from '@packages/bpmn-utils/BpmnDesignerUtils'
 
 /**
  * 更新会签节点
@@ -19,5 +19,18 @@ export function updateMultiInstanceLoopCharacteristics (element, isSequential) {
 
     modeling.updateProperties(element, {
         loopCharacteristics: loopCharacteristics
+    })
+}
+
+/**
+ * 更新表达式
+ * @param element
+ * @param isSequential
+ */
+export function updateSkipExpression (element, skipExpression) {
+    const modeling = getModeler.getModeling()
+    const prefix = getProcessEngine()
+    modeling.updateProperties(element, {
+        [`${prefix}:skipExpression`]: skipExpression ? skipExpression : null
     })
 }

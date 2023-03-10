@@ -10,9 +10,23 @@
     </template>
     <div class="element_ext_a1_user_property">
       <edit-item
+        textAlign="center"
+        :labelWidth="100"
+        :showTooltip="true"
+        :tooltip-content="skipExpressionTooltip"
+        label="跳过表达式">
+        <code-editor-model
+          title="跳过表达式"
+          code-language="Java"
+          :code-string="skipExpression"
+          :readOnly="false"
+          @handleSureClick="saveEventScript($event)"
+        />
+      </edit-item>
+      <edit-item
         label="驳回策略"
         textAlign="center"
-        :labelWidth="90">
+        :labelWidth="100">
         <el-select
           v-model="userProperty.backUserMode"
           @change="changeBackModel"
@@ -29,7 +43,7 @@
         label="回退节点"
         v-if="showBackNode"
         textAlign="center"
-        :labelWidth="90">
+        :labelWidth="100">
         <el-select
           v-model="selectUserTaskList"
           multiple
@@ -46,7 +60,7 @@
       <edit-item
         label="处理人策略"
         textAlign="center"
-        :labelWidth="90">
+        :labelWidth="100">
         <el-select
           v-model="userProperty.executor"
           @change="saveExtA1UserProperty"
@@ -62,7 +76,7 @@
       <edit-item
         label="过期策略"
         textAlign="center"
-        :labelWidth="90">
+        :labelWidth="100">
         <el-switch
           v-model="userProperty.openExpireFlag"
           @change="changeExpireFlag"
@@ -74,7 +88,7 @@
         <edit-item
           label="过期动作"
           textAlign="center"
-          :labelWidth="90">
+          :labelWidth="100">
           <el-select
             v-model="userProperty.expireHandlerModel"
             @change="saveExtA1UserProperty"
@@ -91,7 +105,7 @@
           v-if="showNodeTransferAtaffItem"
           label="转办人员"
           textAlign="center"
-          :labelWidth="90">
+          :labelWidth="100">
           <el-input
             v-model="showNodeTransferAtaff"
             readonly
@@ -106,7 +120,7 @@
         <edit-item
           label="审批期限"
           textAlign="center"
-          :labelWidth="90">
+          :labelWidth="100">
           <el-switch
             v-model="userProperty.dateType"
             @change="saveExtA1UserProperty"
@@ -119,7 +133,7 @@
         <edit-item
           label="过期时间"
           textAlign="center"
-          :labelWidth="90">
+          :labelWidth="100">
           <el-input
             style="width: 120px;"
             @blur="changeExpireSetting($event,'day')"
@@ -173,12 +187,16 @@ import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import EventEmitter from '@utils/EventEmitter'
 import {addExtensionProperty, getExtensionProperties, removeExtensionProperty} from '@packages/bo-utils/extensionPropertiesUtil'
 import UserSelector from '@packages/components/Panel/components/SubChild/UserSelector'
+import CodeEditorModel from '@packages/components/common/CodeEditorModel'
+import {updateSkipExpression} from '@packages/bo-utils/userTaskUtil'
 
 export default {
     name: 'ElementExtA1UserProperty',
-    components: {UserSelector},
+    components: {UserSelector, CodeEditorModel},
     data (){
         return {
+            skipExpression: '',
+            skipExpressionTooltip: '返回结果ture/false，例如：${execution.getVariable("skip")}',
             selectUserTaskList: [],
             userTaskList: [],
             showBackNode: false,
@@ -355,6 +373,11 @@ export default {
                 }
             }
 
+            this.saveExtA1UserProperty()
+        },
+        saveEventScript (code) {
+            this.skipExpression = code
+            updateSkipExpression(getActive(), this.skipExpression)
             this.saveExtA1UserProperty()
         }
     }

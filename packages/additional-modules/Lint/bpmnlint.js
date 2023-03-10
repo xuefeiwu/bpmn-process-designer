@@ -29,6 +29,7 @@ import transferRequired from '@packages/additional-modules/Lint/customLintRules/
 import backNodeRequired from '@packages/additional-modules/Lint/customLintRules/backNodeRequired'
 import expireActionRequired from '@packages/additional-modules/Lint/customLintRules/expireActionRequired'
 import expireTimeRequired from '@packages/additional-modules/Lint/customLintRules/expireTimeRequired'
+import serviceTaskRequired from '@packages/additional-modules/Lint/customLintRules/serviceTaskRequired'
 
 const cache = {}
 cache['bpmnlint/conditional-flows'] = rule_0
@@ -56,6 +57,7 @@ cache['bpmnlint/transfer-required'] = transferRequired
 cache['bpmnlint/back-node-required'] = backNodeRequired
 cache['bpmnlint/expire-action-required'] = expireActionRequired
 cache['bpmnlint/expire-time-required'] = expireTimeRequired
+cache['bpmnlint/service-task-required'] = serviceTaskRequired
 
 /**
  * A resolver that caches rules and configuration as part of the bundle,
@@ -97,13 +99,14 @@ export const rules = {
     'start-event-required': 'error',
     'sub-process-blank-start-event': 'error',
     'superfluous-gateway': 'warning',
-    'sign-type-required':'error',
-    'sign-scale-required':'error',
-    'sign-user-rule-required':'error',
-    'transfer-required':'error',
-    'back-node-required':'error',
-    'expire-action-required':'error',
-    'expire-time-required':'error',
+    'sign-type-required': 'error',
+    'sign-scale-required': 'error',
+    'sign-user-rule-required': 'error',
+    'transfer-required': 'error',
+    'back-node-required': 'error',
+    'expire-action-required': 'error',
+    'expire-time-required': 'error',
+    'service-task-required': 'error'
 }
 
 export const config = {

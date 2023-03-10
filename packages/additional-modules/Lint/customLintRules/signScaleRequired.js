@@ -1,9 +1,9 @@
 const {is, isAny} = require('bpmnlint-utils')
-const {getElementById} = require("@packages/bo-utils/extA1ElementUtils");
-const {getExtA1SignNodes} = require("@packages/bo-utils/extA1Util");
+const {getElementById} = require('@packages/bo-utils/extA1ElementUtils')
+const {getExtA1SignNodes} = require('@packages/bo-utils/extA1Util')
 
 module.exports = function () {
-    function check(node, reporter) {
+    function check (node, reporter) {
         if (!isAny(node, ['bpmn:UserTask'])) {
             return
         }

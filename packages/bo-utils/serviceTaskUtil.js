@@ -3,11 +3,12 @@ import {getModeler, getProcessEngine} from '@packages/bpmn-utils/BpmnDesignerUti
 export function updateServiceTaskProperty (element, props) {
     const modeling = getModeler.getModeling()
     const prefix = getProcessEngine()
-    const { class: eventClass, expression, delegateExpression} = props
+    const { class: eventClass, expression, delegateExpression, skipExpression} = props
 
     modeling.updateProperties(element, {
-        [`${prefix}:class`]: eventClass ? eventClass : '',
-        [`${prefix}:expression`]: expression ? expression : '',
-        [`${prefix}:delegateExpression`]: delegateExpression ? delegateExpression : ''
+        [`${prefix}:class`]: eventClass ? eventClass : null,
+        [`${prefix}:expression`]: expression ? expression : null,
+        [`${prefix}:delegateExpression`]: delegateExpression ? delegateExpression : null,
+        [`${prefix}:skipExpression`]: skipExpression ? skipExpression : null
     })
 }

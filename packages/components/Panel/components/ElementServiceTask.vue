@@ -11,8 +11,7 @@
         :labelWidth="130"
         label="事件类型">
         <el-select
-          v-model="eventType"
-        >
+          v-model="eventType">
           <el-option
             v-for="{ label, value } in eventTypeOptions"
             :label="label"
@@ -61,6 +60,21 @@
           @change="changeEventValue"
           @keydown.enter.prevent/>
       </edit-item>
+
+      <edit-item
+        textAlign="center"
+        :labelWidth="130"
+        :showTooltip="true"
+        :tooltip-content="skipExpressionTooltip"
+        label="跳过表达式">
+        <code-editor-model
+          title="跳过表达式"
+          code-language="Java"
+          :code-string="skipExpression"
+          :readOnly="false"
+          @handleSureClick="saveEventScript($event)"
+        />
+      </edit-item>
     </div>
   </el-collapse-item>
 </template>
@@ -71,13 +85,16 @@ import EventEmitter from '@utils/EventEmitter'
 import EditItem from '@packages/components/common/EditItem'
 import {getActive} from '@packages/bpmn-utils/BpmnDesignerUtils'
 import {updateServiceTaskProperty} from '@packages/bo-utils/serviceTaskUtil'
+import CodeEditorModel from '@packages/components/common/CodeEditorModel'
 
 export default {
     name: 'ElementServiceTask',
-    components: {EditItem},
+    components: {EditItem, CodeEditorModel},
     data () {
         return {
             eventType: '',
+            skipExpression: '',
+            skipExpressionTooltip: '返回结果ture/false，例如：${execution.getVariable("skip")}',
             clazz: '',
             classTooltip: '' +
                 'public class MyServiceTask implements JavaDelegate {\n' +
@@ -113,6 +130,7 @@ export default {
             this.clazz = ele.class
             this.expression = ele.expression
             this.delegateExpression = ele.delegateExpression
+            this.skipExpression = ele.skipExpression
 
             if (this.expression && this.expression != '') {
                 this.eventType = 'expression'
@@ -128,8 +146,15 @@ export default {
                 ...(this.eventType === 'expression' ? {expression: this.expression} : {}),
                 ...(this.eventType === 'delegateExpression' ? {delegateExpression: this.delegateExpression} : {})
             })
+            this.reloadServiceTask()
+        },
+        saveEventScript (code) {
+            this.skipExpression = code
+            updateServiceTaskProperty(getActive(), {
+                skipExpression: this.skipExpression
+            })
+            this.reloadServiceTask()
         }
-
     }
 }
 </script>
