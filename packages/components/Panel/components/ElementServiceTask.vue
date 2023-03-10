@@ -158,6 +158,7 @@ export default {
                 this.delegateExpression = code
             }
             updateServiceTaskProperty(getActive(), {
+                skipExpression: this.skipExpression,
                 ...(this.eventType === 'class' ? {class: this.clazz} : {}),
                 ...(this.eventType === 'expression' ? {expression: this.expression} : {}),
                 ...(this.eventType === 'delegateExpression' ? {delegateExpression: this.delegateExpression} : {})
@@ -167,7 +168,10 @@ export default {
         saveEventScript (code) {
             this.skipExpression = code
             updateServiceTaskProperty(getActive(), {
-                skipExpression: this.skipExpression
+                skipExpression: this.skipExpression,
+                ...(this.eventType === 'class' ? {class: this.clazz} : {}),
+                ...(this.eventType === 'expression' ? {expression: this.expression} : {}),
+                ...(this.eventType === 'delegateExpression' ? {delegateExpression: this.delegateExpression} : {})
             })
             this.reloadServiceTask()
         }

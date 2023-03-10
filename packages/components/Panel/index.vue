@@ -7,12 +7,24 @@
       <p>{{ bpmnElementName }}</p>
       <p>{{ customTranslate(currentElementType || "Process") }}</p>
     </div>
-    <el-collapse v-model="activeNames">
-      <component
-        v-for="cp in this.renderComponents"
-        :key="cp.name"
-        :is="cp"/>
-    </el-collapse>
+    <el-tabs v-model="tagActiveName" type="card">
+      <el-tab-pane label="基本信息" name="global" >
+        <el-collapse v-model="activeGlobalNames" :style="{height:clientHeight}">
+          <component
+            v-for="cp in this.renderGlobalComponents"
+            :key="cp.name"
+            :is="cp"/>
+        </el-collapse>
+      </el-tab-pane>
+      <el-tab-pane label="节点信息" name="node">
+        <el-collapse v-model="activeNodeNames" :style="{height:clientHeight}">
+          <component
+            v-for="cp in this.renderNodeComponents"
+            :key="cp.name"
+            :is="cp"/>
+        </el-collapse>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
@@ -73,6 +85,13 @@ export default {
         ElementServiceTask,
         ElementStartInitiator
     },
+    computed: {
+        // 滚动区高度
+        // (业务需求：手机屏幕高度减去头部标题和底部tabbar的高度，当然这2个高度也是可以动态获取的)
+        clientHeight: function () {
+            return (document.body.clientWidth) + 'px'
+        }
+    },
     data () {
         return {
             bpmnElementName: 'Process',
@@ -80,8 +99,11 @@ export default {
             currentElementType: undefined,
             currentElementId: undefined,
             customTranslate,
-            renderComponents: [],
-            activeNames: ['element_ext_a1_user_rule']
+            renderGlobalComponents: [],
+            renderNodeComponents: [],
+            tagActiveName: 'global',
+            activeGlobalNames: 'base-info',
+            activeNodeNames: ''
         }
     },
     created () {
@@ -141,31 +163,39 @@ export default {
         }, 100),
         //
         setCurrentComponents (element) {
-            this.renderComponents.splice(0, this.renderComponents.length) // 清空
+            this.renderGlobalComponents.splice(0, this.renderGlobalComponents.length) // 清空
+            this.renderNodeComponents.splice(0, this.renderNodeComponents.length) // 清空
             // 重设
-            this.renderComponents.push(ElementGenerations)
+            this.renderGlobalComponents.push(ElementGenerations)
 
             // 添加自定义配置
-            this.renderComponents.push(ElementGlobalProperties)
-            this.renderComponents.push(ElementExtA1GlobalRequest)
-            this.renderComponents.push(ElementExtA1Button)
-            isUserTask(element) && this.renderComponents.push(ElementExtA1UserRule)
-            isUserTask(element) && this.renderComponents.push(ElementExtA1NodeRequest)
-            isUserTask(element) && this.renderComponents.push(ElementExtA1Attributes)
-            isUserTask(element) && this.renderComponents.push(ElementExtA1UserProperty)
-            isUserTask(element) && this.renderComponents.push(ElementExtA1SignNodes)
-            isUserTask(element) && this.renderComponents.push(ElementExtA1EventScript)
-            isServiceTask(element) && this.renderComponents.push(ElementServiceTask)
-            if (isUserTask(element) || isConditionalSource(element)) {
-                this.renderComponents.push(ElementExtA1Condition)
+            this.renderGlobalComponents.push(ElementGlobalProperties)
+            this.renderGlobalComponents.push(ElementExtA1GlobalRequest)
+            this.renderGlobalComponents.push(ElementExtA1Button)
+            isExecutable(element) && this.renderGlobalComponents.push(ElementExecutionListeners)
+
+            if (isUserTask(element) || isServiceTask(element)) {
+                this.renderNodeComponents.push(ElementExtA1UserRule)
             }
+
+            isUserTask(element) && this.renderNodeComponents.push(ElementExtA1UserProperty)
+            isUserTask(element) && this.renderNodeComponents.push(ElementExtA1SignNodes)
+            isUserTask(element) && this.renderNodeComponents.push(ElementExtA1EventScript)
+            isServiceTask(element) && this.renderNodeComponents.push(ElementServiceTask)
+            if (isUserTask(element) || isConditionalSource(element)) {
+                this.renderNodeComponents.push(ElementExtA1Condition)
+            }
+
+            isUserTask(element) && this.renderNodeComponents.push(ElementExtA1NodeRequest)
+            isUserTask(element) && this.renderNodeComponents.push(ElementExtA1Attributes)
 
             // isCanbeConditional(element) && this.renderComponents.push(ElementConditional)
             // isJobExecutable(element) && this.renderComponents.push(ElementJobExecution)
             // this.renderComponents.push(ElementExtensionProperties)
-            isExecutable(element) && this.renderComponents.push(ElementExecutionListeners)
+            // isExecutable(element) && this.renderGlobalComponents.push(ElementExecutionListeners)
             // isAsynchronous(element) && this.renderComponents.push(ElementAsyncContinuations)
             // isStartInitializable(element) && this.renderComponents.push(ElementStartInitiator)
+
         }
     }
 }

@@ -260,6 +260,7 @@ export default {
                 this.userTaskList = userTaskList.filter((item)=> getActive().id != item.id)
             }
 
+            this.skipExpression = getActive().businessObject.skipExpression
             let userPropertyList = getExtA1UserProperties((index, item)=>getActive().id == item.nodeId)
             if (userPropertyList && userPropertyList.length > 0) {
                 let {id, nodeId, backNode, backUserMode, dateType, nodePropertiesDay, nodePropertiesHour, nodePropertiesMinute, executor, choose, openExpireFlag, expireHandlerModel} = userPropertyList[0]
