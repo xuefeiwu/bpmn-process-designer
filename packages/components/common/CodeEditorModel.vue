@@ -5,6 +5,7 @@
       <el-tooltip :content="showCode" class="item" effect="dark" :disabled="showCode == ''">
         <el-input
           v-model="showCode"
+          :placeholder="placeholder"
           readonly>
           <el-button slot="append" icon="el-icon-edit" @click="editorModalFlag= true" :disabled="disableBtn"></el-button>
         </el-input>
@@ -107,6 +108,10 @@ export default {
     props: {
         // value 必传，并且是字符串
         codeString: {
+            type: String,
+            default: ''
+        },
+        placeholder: {
             type: String,
             default: ''
         },

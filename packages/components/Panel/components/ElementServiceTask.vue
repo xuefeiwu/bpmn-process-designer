@@ -27,11 +27,14 @@
         :tooltip-content="expressionTooltip"
         label="条件表达式"
       >
-        <el-input
-          v-model="expression"
+        <code-editor-model
+          title="条件表达式"
+          code-language="Java"
+          :code-string="expression"
           placeholder="${myServiceTask.hello()}"
-          @change="changeEventValue"
-          @keydown.enter.prevent/>
+          :readOnly="false"
+          @handleSureClick="changeEventValue($event)"
+        />
       </edit-item>
       <edit-item
         v-else-if="eventType === 'delegateExpression'"
@@ -41,11 +44,14 @@
         :tooltip-content="delegateExpressionTooltip"
         label="代理条件表达式"
       >
-        <el-input
-          v-model="delegateExpression"
+        <code-editor-model
+          title="代理条件表达式"
+          code-language="Java"
           placeholder="${myServiceTask}"
-          @change="changeEventValue"
-          @keydown.enter.prevent/>
+          :code-string="delegateExpression"
+          :readOnly="false"
+          @handleSureClick="changeEventValue($event)"
+        />
       </edit-item>
       <edit-item
         v-else
@@ -54,11 +60,14 @@
         :showTooltip="true"
         :tooltip-content="classTooltip"
         label="全限定类名">
-        <el-input
-          v-model="clazz"
+        <code-editor-model
+          title="条件表达式"
+          code-language="Java"
           placeholder="org.flowable.service.MyServiceTask"
-          @change="changeEventValue"
-          @keydown.enter.prevent/>
+          :code-string="clazz"
+          :readOnly="false"
+          @handleSureClick="changeEventValue($event)"
+        />
       </edit-item>
 
       <edit-item
@@ -140,7 +149,14 @@ export default {
                 this.eventType = 'class'
             }
         },
-        changeEventValue () {
+        changeEventValue (code) {
+            if (this.eventType === 'class') {
+                this.clazz = code
+            } else if (this.eventType === 'expression') {
+                this.expression = code
+            } else if (this.eventType === 'delegateExpression') {
+                this.delegateExpression = code
+            }
             updateServiceTaskProperty(getActive(), {
                 ...(this.eventType === 'class' ? {class: this.clazz} : {}),
                 ...(this.eventType === 'expression' ? {expression: this.expression} : {}),
