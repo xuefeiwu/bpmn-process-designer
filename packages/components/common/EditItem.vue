@@ -2,7 +2,17 @@
   <div class="edit-item">
     <div
       class="edit-item_label"
-      :style="labelStyle">{{ label }}：</div>
+      :style="labelStyle">
+      {{ label }}
+      <template v-if="showTooltip">
+        <el-tooltip class="item" effect="dark" placement="top">
+          <!--  问号的图标   -->
+          <i class="el-icon-question" style="font-size: 14px; vertical-align: middle;"></i>
+          <!--  提示的内容 -->
+          <div v-html="tooltipContent" slot="content" style="white-space:pre-wrap"/>
+        </el-tooltip>
+      </template>：
+    </div>
     <div class="edit-item_content">
       <slot></slot>
     </div>
@@ -14,6 +24,14 @@ export default {
     name: 'EditItem',
     props: {
         label: {
+            type: String,
+            default: ''
+        },
+        showTooltip: {
+            type: Boolean,
+            default: false
+        },
+        tooltipContent: {
             type: String,
             default: ''
         },

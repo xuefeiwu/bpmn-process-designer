@@ -41,7 +41,7 @@ import ElementStartInitiator from '@packages/components/Panel/components/Element
 import ElementGlobalProperties from '@packages/components/Panel/components/ElementExtA1GlobalProperties'
 import ElementExtA1GlobalRequest from '@packages/components/Panel/components/ElementExtA1GlobalRequest'
 import ElementExtA1NodeRequest from '@packages/components/Panel/components/ElementExtA1NodeRequest'
-import {isUserTask} from '@packages/bo-utils/extA1Util'
+import {isServiceTask, isUserTask} from '@packages/bo-utils/extA1Util'
 import ElementExtA1Attributes from '@packages/components/Panel/components/ElementExtA1Attributes'
 import ElementExtA1UserProperty from '@packages/components/Panel/components/ElementExtA1UserProperty'
 import ElementExtA1SignNodes from '@packages/components/Panel/components/ElementExtA1SignNodes'
@@ -49,6 +49,7 @@ import ElementExtA1Condition from '@packages/components/Panel/components/Element
 import ElementExtA1EventScript from '@packages/components/Panel/components/ElementExtA1EventScript'
 import ElementExtA1Button from '@packages/components/Panel/components/ElementExtA1Button'
 import ElementExtA1UserRule from '@packages/components/Panel/components/ElementExtA1UserRule'
+import ElementServiceTask from '@packages/components/Panel/components/ElementServiceTask'
 
 export default {
     name: 'BpmnPanel',
@@ -69,6 +70,7 @@ export default {
         ElementExtA1SignNodes,
         ElementAsyncContinuations,
         ElementExtA1NodeRequest,
+        ElementServiceTask,
         ElementStartInitiator
     },
     data () {
@@ -153,6 +155,7 @@ export default {
             isUserTask(element) && this.renderComponents.push(ElementExtA1UserProperty)
             isUserTask(element) && this.renderComponents.push(ElementExtA1SignNodes)
             isUserTask(element) && this.renderComponents.push(ElementExtA1EventScript)
+            isServiceTask(element) && this.renderComponents.push(ElementServiceTask)
             if (isUserTask(element) || isConditionalSource(element)) {
                 this.renderComponents.push(ElementExtA1Condition)
             }

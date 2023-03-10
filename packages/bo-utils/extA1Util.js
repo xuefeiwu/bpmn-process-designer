@@ -9,7 +9,7 @@ import {is} from 'bpmn-js/lib/util/ModelUtil'
  * @param extA1ChildElementType
  * @param properties
  */
-export function saveExtA1Properties(properties) {
+export function saveExtA1Properties (properties) {
     try {
         const modeling = getModeler.getModeling()
         const bpmnDefinitionElement = getDefinitionElement()
@@ -43,7 +43,7 @@ export function saveExtA1Properties(properties) {
  * 获取properties配置参数
  * @returns {*}
  */
-export function getExtA1Properties() {
+export function getExtA1Properties () {
     try {
         // 判断是否存在ExtProperties
         let extPropertiesElement = getExtA1RootElement('extA1:ExtProperties')
@@ -68,7 +68,7 @@ export function getExtA1Properties() {
  * @param extA1ChildElementType
  * @param properties
  */
-export function saveExtA1Globals(element, properties) {
+export function saveExtA1Globals (element, properties) {
     try {
         const modeling = getModeler.getModeling()
         const bpmnDefinitionElement = getDefinitionElement()
@@ -111,7 +111,7 @@ export function saveExtA1Globals(element, properties) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function getExtA1Globals(filter) {
+export function getExtA1Globals (filter) {
     // 判断是否存在ExtProperties
     let extGlobalsElement = getExtA1RootElement('extA1:Globals')
     if (!extGlobalsElement) {
@@ -126,7 +126,7 @@ export function getExtA1Globals(filter) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function getExtA1Attributes(filter) {
+export function getExtA1Attributes (filter) {
     // 判断是否存在ExtProperties
     let extGlobalsElement = getExtA1RootElement('extA1:ExtAttributes')
     if (!extGlobalsElement) {
@@ -141,7 +141,7 @@ export function getExtA1Attributes(filter) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function saveExtAttributes(element, properties) {
+export function saveExtAttributes (element, properties) {
     try {
         const bpmnDefinitionElement = getDefinitionElement()
 
@@ -179,7 +179,7 @@ export function saveExtAttributes(element, properties) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function saveExtA1UserProperties(element, properties) {
+export function saveExtA1UserProperties (element, properties) {
     try {
         const modeling = getModeler.getModeling()
         const eventBus = getModeler.get('eventBus')
@@ -209,7 +209,7 @@ export function saveExtA1UserProperties(element, properties) {
             extGlobalsElement.child.push(extGlobalElement)
         }
 
-        eventBus.fire('linting.toggle', { elements: element });
+        eventBus.fire('linting.toggle', { elements: element })
     } catch (e) {
         console.log(e)
     }
@@ -221,7 +221,7 @@ export function saveExtA1UserProperties(element, properties) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function getExtA1UserProperties(filter) {
+export function getExtA1UserProperties (filter) {
     // 判断是否存在ExtProperties
     let extGlobalsElement = getExtA1RootElement('extA1:UserPropertyes')
     if (!extGlobalsElement) {
@@ -234,7 +234,7 @@ export function getExtA1UserProperties(filter) {
  * 移除extA1:ExtAttribute
  * @param element
  */
-export function removeExtA1Attribute(element) {
+export function removeExtA1Attribute (element) {
     removeExtA1ChildElement('extA1:ExtAttributes', element)
 }
 
@@ -243,15 +243,24 @@ export function removeExtA1Attribute(element) {
  * @param element
  * @returns {boolean}
  */
-export function isUserTask(element) {
+export function isUserTask (element) {
     return is(element, 'bpmn:UserTask')
+}
+
+/**
+ * 是否为服务节点
+ * @param element
+ * @returns {boolean}
+ */
+export function isServiceTask (element) {
+    return is(element, 'bpmn:ServiceTask')
 }
 
 /**
  * 移除全局事件节点
  * @param element
  */
-export function removeExtA1GlobalRequest(element) {
+export function removeExtA1GlobalRequest (element) {
     removeExtA1ChildElement('extA1:Globals', element)
 }
 
@@ -260,7 +269,7 @@ export function removeExtA1GlobalRequest(element) {
  * @param bpmnModeler
  * @returns {*[]}
  */
-export function getAllUserTask() {
+export function getAllUserTask () {
     const elementRegistry = getModeler().get('elementRegistry')
     const _elements = elementRegistry._elements
     let result = new Array()
@@ -281,7 +290,7 @@ export function getAllUserTask() {
  * @param extA1ChildElementType
  * @param properties
  */
-export function getExtA1SignNodes(filter) {
+export function getExtA1SignNodes (filter) {
     // 判断是否存在ExtProperties
     let extGlobalsElement = getExtA1RootElement('extA1:SignNodes')
     if (!extGlobalsElement) {
@@ -296,7 +305,7 @@ export function getExtA1SignNodes(filter) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function saveExtA1SignNodes(element, properties) {
+export function saveExtA1SignNodes (element, properties) {
     try {
         const eventBus = getModeler.get('eventBus')
         const bpmnDefinitionElement = getDefinitionElement()
@@ -325,7 +334,7 @@ export function saveExtA1SignNodes(element, properties) {
             extGlobalsElement.child.push(extGlobalElement)
         }
 
-        eventBus.fire('linting.toggle', { elements: element });
+        eventBus.fire('linting.toggle', { elements: element })
     } catch (e) {
         console.log(e)
     }
@@ -335,7 +344,7 @@ export function saveExtA1SignNodes(element, properties) {
  * 移除全局事件节点
  * @param element
  */
-export function removeExtA1SignNodes(element) {
+export function removeExtA1SignNodes (element) {
     removeExtA1ChildElement('extA1:SignNodes', element)
 }
 
@@ -345,7 +354,7 @@ export function removeExtA1SignNodes(element) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function saveExtA1CommonScripts(element, properties) {
+export function saveExtA1CommonScripts (element, properties) {
     try {
         const bpmnDefinitionElement = getDefinitionElement()
 
@@ -383,7 +392,7 @@ export function saveExtA1CommonScripts(element, properties) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function getExtA1CommonScripts(filter) {
+export function getExtA1CommonScripts (filter) {
     // 判断是否存在ExtProperties
     let extGlobalsElement = getExtA1RootElement('extA1:CommonScripts')
     if (!extGlobalsElement) {
@@ -397,7 +406,7 @@ export function getExtA1CommonScripts(filter) {
  * 移除CommonScripts
  * @param element
  */
-export function removeExtA1CommonScripts(element) {
+export function removeExtA1CommonScripts (element) {
     removeExtA1ChildElement('extA1:CommonScripts', element)
 }
 
@@ -407,7 +416,7 @@ export function removeExtA1CommonScripts(element) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function saveExtA1Buttons(element, properties) {
+export function saveExtA1Buttons (element, properties) {
     try {
         const bpmnDefinitionElement = getDefinitionElement()
 
@@ -437,7 +446,7 @@ export function saveExtA1Buttons(element, properties) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function getExtA1Buttons(filter) {
+export function getExtA1Buttons (filter) {
     // 判断是否存在ExtProperties
     let extGlobalsElement = getExtA1RootElement('extA1:Buttons')
     if (!extGlobalsElement) {
@@ -450,7 +459,7 @@ export function getExtA1Buttons(filter) {
  * 移除Buttons
  * @param element
  */
-export function removeExtA1Buttons(element) {
+export function removeExtA1Buttons (element) {
     removeExtA1ChildElement('extA1:Buttons', element)
 }
 
@@ -458,7 +467,7 @@ export function removeExtA1Buttons(element) {
  * 移除Buttons
  * @param element
  */
-export function removeExtA1ButtonByNode(element) {
+export function removeExtA1ButtonByNode (element) {
     // 判断是否存在ExtAttributes
     let extGlobalsElement = getExtA1RootElement('extA1:Buttons')
     if (!extGlobalsElement) {
@@ -482,7 +491,7 @@ export function removeExtA1ButtonByNode(element) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function saveExtA1UserRules(element, properties) {
+export function saveExtA1UserRules (element, properties) {
     try {
         const eventBus = getModeler.get('eventBus')
         const modeling = getModeler.getModeling()
@@ -516,7 +525,7 @@ export function saveExtA1UserRules(element, properties) {
             modeling.updateProperties(extGlobalElement, properties)
         }
 
-        eventBus.fire('linting.toggle', { elements: element });
+        eventBus.fire('linting.toggle', { elements: element })
     } catch (e) {
         console.log(e)
     }
@@ -528,7 +537,7 @@ export function saveExtA1UserRules(element, properties) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function getExtA1UserRules(filter) {
+export function getExtA1UserRules (filter) {
     // 判断是否存在ExtProperties
     let extGlobalsElement = getExtA1RootElement('extA1:UserRules')
     if (!extGlobalsElement) {
@@ -544,6 +553,6 @@ export function getExtA1UserRules(filter) {
  * @param extA1ChildElementType
  * @param properties
  */
-export function removeExtA1UserRules(element) {
+export function removeExtA1UserRules (element) {
     removeExtA1ChildElement('extA1:UserRules', element)
 }

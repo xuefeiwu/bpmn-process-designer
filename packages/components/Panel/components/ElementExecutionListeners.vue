@@ -62,9 +62,11 @@
         :model="newListener"
         :rules="formRules"
         class="need-filled"
+        label-position="top"
         aria-modal="true">
         <el-form-item
           path="event"
+          label-width="190px"
           label="事件类型( Event Type )">
           <el-select v-model="newListener.event">
             <el-option
@@ -77,6 +79,7 @@
         </el-form-item>
         <el-form-item
           path="type"
+          label-width="190px"
           label="监听器类型( Listener Type )">
           <el-select
             v-model="newListener.type"
@@ -91,26 +94,57 @@
         <el-form-item
           v-if="formItemVisible.listenerType === 'class'"
           path="class"
-          label="Java类( Java Class )">
+          label-width="190px"
+          label="全限定类名">
+          <template slot="label">
+            <span>全限定类名</span>
+            <el-tooltip class="item" effect="dark" placement="top">
+              <!--  问号的图标   -->
+              <i class="el-icon-question" style="font-size: 14px; vertical-align: middle;"/>
+              <!--  提示的内容 -->
+              <div v-html="classTooltip" slot="content" style="white-space:pre-wrap"/>
+            </el-tooltip>
+          </template>
           <el-input
+            placeholder="org.flowable.service.MyServiceTask"
             v-model="newListener.class"
             @keydown.enter.prevent/>
         </el-form-item>
         <el-form-item
           v-if="formItemVisible.listenerType === 'expression'"
           path="expression"
-          label="条件表达式( Expression )"
-        >
+          label-width="190px"
+          label="条件表达式( Expression )">
+          <template slot="label">
+            <span>条件表达式( Expression )</span>
+            <el-tooltip class="item" effect="dark" placement="top">
+              <!--  问号的图标   -->
+              <i class="el-icon-question" style="font-size: 14px; vertical-align: middle;"/>
+              <!--  提示的内容 -->
+              <div v-html="expressionTooltip" slot="content" style="white-space:pre-wrap"/>
+            </el-tooltip>
+          </template>
           <el-input
+            placeholder="${myServiceTask.hello()}"
             v-model="newListener.expression"
             @keydown.enter.prevent/>
         </el-form-item>
         <el-form-item
           v-if="formItemVisible.listenerType === 'delegateExpression'"
           path="delegateExpression"
-          label="代理条件表达式( Delegate Expression )"
-        >
+          label-width="190px"
+          label="代理条件表达式( Delegate Expression )">
+          <template slot="label">
+            <span>代理条件表达式( Delegate Expression )</span>
+            <el-tooltip class="item" effect="dark" placement="top">
+              <!--  问号的图标   -->
+              <i class="el-icon-question" style="font-size: 14px; vertical-align: middle;"/>
+              <!--  提示的内容 -->
+              <div v-html="delegateExpressionTooltip" slot="content" style="white-space:pre-wrap"/>
+            </el-tooltip>
+          </template>
           <el-input
+            placeholder="${myServiceTask}"
             v-model="newListener.delegateExpression"
             @keydown.enter.prevent/>
         </el-form-item>
@@ -118,6 +152,7 @@
           <el-form-item
             key="scriptFormat"
             path="script.scriptFormat"
+            label-width="190px"
             label="脚本语言( Script Format )">
             <el-select
               v-model="newListener.script.scriptFormat">
@@ -131,6 +166,7 @@
           <el-form-item
             key="scriptType"
             path="script.scriptType"
+            label-width="190px"
             label="脚本类型( Script Type )">
             <el-select
               v-model="newListener.script.scriptType"
@@ -146,6 +182,7 @@
             v-if="formItemVisible.scriptType === 'inline'"
             key="scriptContent"
             path="script.value"
+            label-width="190px"
             label="脚本内容( Script Content )"
           >
             <code-editor-model
@@ -160,6 +197,7 @@
             v-if="formItemVisible.scriptType === 'external'"
             key="scriptResource"
             path="script.resource"
+            label-width="190px"
             label="外链脚本地址( Script Resource )"
           >
             <el-input
@@ -201,6 +239,24 @@ export default {
     components: {CodeEditorModel},
     data () {
         return {
+            classTooltip: '' +
+                'public class MyServiceTask implements JavaDelegate {\n' +
+                '    @Override\n' +
+                '    public void execute(DelegateExecution execution) {\n' +
+                '    }\n' +
+                '}\n',
+            expressionTooltip: '@Component\n' +
+                'public class MyServiceTask2 {\n' +
+                '    public void hello() {\n' +
+                '    }\n' +
+                '}\n',
+            delegateExpressionTooltip: '' +
+                '@Component\n' +
+                'public class MyServiceTask implements JavaDelegate {\n' +
+                '    @Override\n' +
+                '    public void execute(DelegateExecution execution) {\n' +
+                '    }\n' +
+                '}\n',
             modelVisible: false,
             listeners: [],
             newListener: {},
