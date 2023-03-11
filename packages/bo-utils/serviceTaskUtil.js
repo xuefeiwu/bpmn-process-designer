@@ -11,4 +11,7 @@ export function updateServiceTaskProperty (element, props) {
         [`${prefix}:delegateExpression`]: delegateExpression ? delegateExpression : null,
         [`${prefix}:skipExpression`]: skipExpression ? skipExpression : null
     })
+
+    const eventBus = getModeler.get('eventBus')
+    eventBus.fire('linting.toggle', { elements: element })
 }

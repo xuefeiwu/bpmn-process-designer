@@ -33,5 +33,7 @@ export default {
     'Expiration time cannot be empty': '过期时间不能为空',
     'Fully qualified class name cannot be empty': '全限定类名不能为空',
     'Delegate expression cannot be empty': '委托条件表达式不能为空',
-    'Expression cannot be empty': '条件表达式不能为空'
+    'Expression cannot be empty': '条件表达式不能为空',
+    'Circulation node miss node personnel': '传阅节点缺少节点人员',
+    'Node is missing incoming Sequence': '节点缺少连线'
 }

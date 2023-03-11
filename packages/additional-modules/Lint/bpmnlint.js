@@ -30,6 +30,7 @@ import backNodeRequired from '@packages/additional-modules/Lint/customLintRules/
 import expireActionRequired from '@packages/additional-modules/Lint/customLintRules/expireActionRequired'
 import expireTimeRequired from '@packages/additional-modules/Lint/customLintRules/expireTimeRequired'
 import serviceTaskRequired from '@packages/additional-modules/Lint/customLintRules/serviceTaskRequired'
+import sequenceRequired from '@packages/additional-modules/Lint/customLintRules/sequenceRequired'
 
 const cache = {}
 cache['bpmnlint/conditional-flows'] = rule_0
@@ -58,6 +59,7 @@ cache['bpmnlint/back-node-required'] = backNodeRequired
 cache['bpmnlint/expire-action-required'] = expireActionRequired
 cache['bpmnlint/expire-time-required'] = expireTimeRequired
 cache['bpmnlint/service-task-required'] = serviceTaskRequired
+cache['bpmnlint/sequence-required'] = sequenceRequired
 
 /**
  * A resolver that caches rules and configuration as part of the bundle,
@@ -106,7 +108,8 @@ export const rules = {
     'back-node-required': 'error',
     'expire-action-required': 'error',
     'expire-time-required': 'error',
-    'service-task-required': 'error'
+    'service-task-required': 'error',
+    'sequence-required': 'error'
 }
 
 export const config = {

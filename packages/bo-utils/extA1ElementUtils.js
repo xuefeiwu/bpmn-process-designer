@@ -59,6 +59,9 @@ export function removeExtA1ChildElement (elementType, removeElement) {
     }
 
     extA1RootElement.child = extA1RootElement.child.filter((item, index, self)=> item.id != removeElement.id)
+
+    const eventBus = getModeler.get('eventBus')
+    eventBus.fire('linting.toggle', { elements: removeElement })
 }
 
 /**

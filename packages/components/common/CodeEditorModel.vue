@@ -6,6 +6,7 @@
         <el-input
           v-model="showCode"
           :placeholder="placeholder"
+          :disabled="disableBtn"
           readonly>
           <el-button slot="append" icon="el-icon-edit" @click="editorModalFlag= true" :disabled="disableBtn"></el-button>
         </el-input>

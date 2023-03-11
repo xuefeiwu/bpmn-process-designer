@@ -307,7 +307,6 @@ export function getExtA1SignNodes (filter) {
  */
 export function saveExtA1SignNodes (element, properties) {
     try {
-        const eventBus = getModeler.get('eventBus')
         const bpmnDefinitionElement = getDefinitionElement()
 
         // 判断是否存在ExtAttributes
@@ -334,6 +333,7 @@ export function saveExtA1SignNodes (element, properties) {
             extGlobalsElement.child.push(extGlobalElement)
         }
 
+        const eventBus = getModeler.get('eventBus')
         eventBus.fire('linting.toggle', { elements: element })
     } catch (e) {
         console.log(e)

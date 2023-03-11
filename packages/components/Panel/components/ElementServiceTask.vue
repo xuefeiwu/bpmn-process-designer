@@ -9,81 +9,92 @@
       <edit-item
         textAlign="center"
         :labelWidth="130"
-        label="事件类型">
-        <el-select
-          v-model="eventType">
-          <el-option
-            v-for="{ label, value } in eventTypeOptions"
-            :label="label"
-            :value="value"
-            :key="value"/>
-        </el-select>
+        label="自动传阅">
+        <el-switch
+          v-model="autoCirculate"
+          @change="changeAutoCirculate"
+          active-color="#13ce66">
+        </el-switch>
       </edit-item>
-      <edit-item
-        v-if="eventType === 'expression'"
-        textAlign="center"
-        :labelWidth="130"
-        :showTooltip="true"
-        :tooltip-content="expressionTooltip"
-        label="条件表达式"
-      >
-        <code-editor-model
-          title="条件表达式"
-          code-language="Java"
-          :code-string="expression"
-          placeholder="${myServiceTask.hello()}"
-          :readOnly="false"
-          @handleSureClick="changeEventValue($event)"
-        />
-      </edit-item>
-      <edit-item
-        v-else-if="eventType === 'delegateExpression'"
-        textAlign="center"
-        :labelWidth="130"
-        :showTooltip="true"
-        :tooltip-content="delegateExpressionTooltip"
-        label="代理条件表达式"
-      >
-        <code-editor-model
-          title="代理条件表达式"
-          code-language="Java"
-          placeholder="${myServiceTask}"
-          :code-string="delegateExpression"
-          :readOnly="false"
-          @handleSureClick="changeEventValue($event)"
-        />
-      </edit-item>
-      <edit-item
-        v-else
-        textAlign="center"
-        :labelWidth="130"
-        :showTooltip="true"
-        :tooltip-content="classTooltip"
-        label="全限定类名">
-        <code-editor-model
-          title="条件表达式"
-          code-language="Java"
-          placeholder="org.flowable.service.MyServiceTask"
-          :code-string="clazz"
-          :readOnly="false"
-          @handleSureClick="changeEventValue($event)"
-        />
-      </edit-item>
-
-      <edit-item
-        textAlign="center"
-        :labelWidth="130"
-        :showTooltip="true"
-        :tooltip-content="skipExpressionTooltip"
-        label="跳过表达式">
-        <code-editor-model
-          title="跳过表达式"
-          code-language="Java"
-          :code-string="skipExpression"
-          :readOnly="false"
-          @handleSureClick="saveEventScript($event)"
-        />
-      </edit-item>
+      <template v-if="!autoCirculate">
+        <edit-item
+          textAlign="center"
+          :labelWidth="130"
+          label="事件类型">
+          <el-select
+            v-model="eventType">
+            <el-option
+              v-for="{ label, value } in eventTypeOptions"
+              :label="label"
+              :value="value"
+              :key="value"/>
+          </el-select>
+        </edit-item>
+        <edit-item
+          v-if="eventType === 'expression'"
+          textAlign="center"
+          :labelWidth="130"
+          :showTooltip="true"
+          :tooltip-content="expressionTooltip"
+          label="条件表达式"
+        >
+          <code-editor-model
+            title="条件表达式"
+            code-language="Java"
+            :code-string="expression"
+            placeholder="${myServiceTask.hello()}"
+            :readOnly="false"
+            @handleSureClick="changeEventValue($event)"
+          />
+        </edit-item>
+        <edit-item
+          v-else-if="eventType === 'delegateExpression'"
+          textAlign="center"
+          :labelWidth="130"
+          :showTooltip="true"
+          :tooltip-content="delegateExpressionTooltip"
+          label="代理条件表达式"
+        >
+          <code-editor-model
+            title="代理条件表达式"
+            code-language="Java"
+            placeholder="${myServiceTask}"
+            :code-string="delegateExpression"
+            :readOnly="false"
+            @handleSureClick="changeEventValue($event)"
+          />
+        </edit-item>
+        <edit-item
+          v-else
+          textAlign="center"
+          :labelWidth="130"
+          :showTooltip="true"
+          :tooltip-content="classTooltip"
+          label="全限定类名">
+          <code-editor-model
+            title="条件表达式"
+            code-language="Java"
+            placeholder="org.flowable.service.MyServiceTask"
+            :code-string="clazz"
+            :readOnly="false"
+            @handleSureClick="changeEventValue($event)"
+          />
+        </edit-item>
+        <edit-item
+          textAlign="center"
+          :labelWidth="130"
+          :showTooltip="true"
+          :tooltip-content="skipExpressionTooltip"
+          label="跳过表达式">
+          <code-editor-model
+            title="跳过表达式"
+            code-language="Java"
+            :code-string="skipExpression"
+            :readOnly="false"
+            @handleSureClick="saveEventScript($event)"
+          />
+        </edit-item>
+      </template>
     </div>
   </el-collapse-item>
 </template>
@@ -101,6 +112,7 @@ export default {
     components: {EditItem, CodeEditorModel},
     data () {
         return {
+            autoCirculate: false,
             eventType: '',
             skipExpression: '',
             skipExpressionTooltip: '返回结果ture/false，例如：${execution.getVariable("skip")}',
@@ -145,9 +157,22 @@ export default {
                 this.eventType = 'expression'
             } else if (this.delegateExpression && this.delegateExpression != '') {
                 this.eventType = 'delegateExpression'
+                this.autoCirculate = this.delegateExpression == '#{customServiceTask}'
             } else {
                 this.eventType = 'class'
             }
+        },
+        changeAutoCirculate (value) {
+            if (value == true) {
+                updateServiceTaskProperty(getActive(), {
+                    delegateExpression: '#{customServiceTask}'
+                })
+            } else {
+                // 清空配置
+                updateServiceTaskProperty(getActive(), {})
+            }
+
+            this.reloadServiceTask()
         },
         changeEventValue (code) {
             if (this.eventType === 'class') {
