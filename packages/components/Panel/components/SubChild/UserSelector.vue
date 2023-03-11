@@ -9,9 +9,9 @@
           class="demo-form-inline">
           <el-form-item
             label="姓名"
-            prop="fullName">
+            prop="userName">
             <el-input
-              v-model="filterCondition.fullName"
+              v-model="filterCondition.userName"
               placeholder="请输入姓名"></el-input>
           </el-form-item>
           <el-form-item
@@ -71,7 +71,7 @@
             width="50">
           </el-table-column>
           <el-table-column
-            prop="fullName"
+            prop="userName"
             label="姓名"
             align="center"
             show-overflow-tooltip>
@@ -264,7 +264,7 @@ export default {
             this.selectUserList = rows.map((item)=>{
                 return {
                     id: item.id,
-                    userName: item.fullName || item.userName
+                    userName: item.userName
                 }
             })
         },
@@ -279,7 +279,7 @@ export default {
         searchForm (){
             console.log(this.filterCondition)
             this.currentPage = 1
-            this.reloadTable(this.filterCondition.fullName, this.filterCondition.userNo)
+            this.reloadTable(this.filterCondition.userName, this.filterCondition.userNo)
         },
         resetForm () {
             this.filterCondition = {}
@@ -298,12 +298,12 @@ export default {
             this.currentPage = val
             this.reloadTable()
         },
-        async reloadTable (fullName, userNo) {
-            // page=1&length=10&fullName=33&account=44&userNo=55&admin=false
+        async reloadTable (userName, userNo) {
+            // page=1&length=10&userName=33&account=44&userNo=55&admin=false
             await getUserListPage({
                 page: this.currentPage,
                 length: this.pageSize,
-                fullName: fullName,
+                userName: userName,
                 userNo: userNo,
                 admin: this.isProcessAdmin
             }).then(result =>{
